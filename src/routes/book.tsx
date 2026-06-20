@@ -21,6 +21,7 @@ import { fmtMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { PwaInstall } from "@/components/pwa-install";
 import { createBooking, getPublicBookingCatalog } from "@/lib/bookings.functions";
+import type { Booking, Branch, Employee, Service } from "@/types/domain";
 
 export const Route = createFileRoute("/book")({
   head: () => ({
@@ -554,8 +555,8 @@ function Summary({
   time,
 }: {
   lang: "en" | "ar";
-  branch: ReturnType<typeof useData.getState>["branches"][number] | null;
-  service: ReturnType<typeof useData.getState>["services"][number] | null;
+  branch: Branch | null;
+  service: Service | null;
   date: string;
   time: string | null;
 }) {
@@ -597,8 +598,8 @@ function ConfirmedView({
   bookingId,
 }: {
   lang: "en" | "ar";
-  branch: ReturnType<typeof useData.getState>["branches"][number] | null;
-  service: ReturnType<typeof useData.getState>["services"][number] | null;
+  branch: Branch | null;
+  service: Service | null;
   date: string;
   time: string | null;
   bookingId: string | null;
@@ -723,4 +724,15 @@ function buildSlots({
     }
   }
   return slots;
+}
+
+function pickAvailableEmployee(employees: Employee[], bookings: Booking[], start: Date, end: Date) {
+  const startMs = start.getTime();
+  const endMs = end.getTime();
+  return employees.find((employee) =>
+    !bookings.some((booking) => {
+      if (booking.employeeId !== employee.id || booking.status === "cancelled" || booking.status === "noShow") return false;
+      return new Date(booking.start).getTime() < endMs && new Date(booking.end).getTime() > startMs;
+    })
+  )?.id;
 }
