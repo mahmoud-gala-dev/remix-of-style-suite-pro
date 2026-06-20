@@ -6,6 +6,8 @@ import { useCurrentBranch, useData } from "@/lib/store";
 import { useI18n, useT } from "@/lib/i18n";
 import { fmtMoney, fmtTime, fmtDate, isToday } from "@/lib/format";
 import { Plus } from "lucide-react";
+import { useState } from "react";
+import { BookingDialog } from "@/components/dialogs/booking-dialog";
 
 export const Route = createFileRoute("/_authenticated/bookings")({
   ssr: false,
@@ -29,6 +31,7 @@ function Page() {
   const customers = useData((s) => s.customers);
   const employees = useData((s) => s.employees);
   const services = useData((s) => s.services);
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto">
@@ -36,7 +39,10 @@ function Page() {
         title={t("bookings")}
         subtitle={`${bookings.length} total · ${bookings.filter((b) => isToday(b.start)).length} today`}
         actions={
-          <button className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest hover:brightness-110">
+          <button
+            onClick={() => setOpen(true)}
+            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest hover:brightness-110"
+          >
             <Plus className="size-3.5" />
             {t("newBooking")}
           </button>
@@ -81,6 +87,7 @@ function Page() {
           </tbody>
         </table>
       </Surface>
+      <BookingDialog open={open} onClose={() => setOpen(false)} branchId={branch.id} />
     </div>
   );
 }
