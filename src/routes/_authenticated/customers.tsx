@@ -8,6 +8,17 @@ import { useMemo, useState } from "react";
 import { Plus, Search, Download, Phone, MessageCircle, Pencil, Trash2, CalendarPlus, Sparkles } from "lucide-react";
 import { CustomerDialog } from "@/components/dialogs/customer-dialog";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   ContextMenu,
   ContextMenuTrigger,
   ContextMenuContent,
@@ -158,17 +169,23 @@ function Page() {
                     <Pencil className="size-3.5 me-2" /> Edit
                   </ContextMenuItem>
                   <ContextMenuSeparator />
-                  <ContextMenuItem
-                    onSelect={() => {
-                      toast(`Delete ${c.name}?`, {
-                        action: { label: "Delete", onClick: () => { removeCustomer(c.id); toast.success("Deleted"); } },
-                        cancel: { label: "Cancel", onClick: () => {} },
-                      });
-                    }}
-                    className="text-red-500 focus:text-red-500"
-                  >
-                    <Trash2 className="size-3.5 me-2" /> Delete
-                  </ContextMenuItem>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <ContextMenuItem onSelect={(e) => e.preventDefault()} className="text-red-500 focus:text-red-500">
+                        <Trash2 className="size-3.5 me-2" /> Delete
+                      </ContextMenuItem>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete {c.name}?</AlertDialogTitle>
+                        <AlertDialogDescription>This removes the customer from this device's current list.</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => { removeCustomer(c.id); toast.success("Deleted"); }}>Delete</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </ContextMenuContent>
               </ContextMenu>
             ))}

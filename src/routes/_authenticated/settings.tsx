@@ -4,6 +4,17 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useT, useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { useLayout } from "@/lib/layout";
@@ -130,7 +141,7 @@ function Page() {
               عندما يكون مفعّلًا. يتأثّر بنفس قواعد الأدوار.
             </li>
             <li className="text-[11px] opacity-80">
-              جميع الإعدادات تُحفظ تلقائيًا لكل دور في المتصفّح وتُطبَّق فورًا على القائمة والفوتر.
+              جميع الإعدادات تُحفظ تلقائيًا في ملف المستخدم وتُطبَّق فورًا على القائمة والفوتر عبر الأجهزة.
             </li>
           </ul>
         </details>
@@ -282,17 +293,23 @@ function Page() {
           >
             {seedMut.isPending ? "…" : "Load demo data"}
           </button>
-          <button
-            onClick={() => {
-              toast("Reset local store to seed?", {
-                action: { label: "Reset", onClick: () => { reset(); toast.success("Local store reset"); } },
-                cancel: { label: "Cancel", onClick: () => {} },
-              });
-            }}
-            className="px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest border border-destructive/40 text-destructive hover:bg-destructive/10"
-          >
-            Reset local
-          </button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button className="px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest border border-destructive/40 text-destructive hover:bg-destructive/10">
+                Reset local
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Reset local store?</AlertDialogTitle>
+                <AlertDialogDescription>This restores local demo state on this device only.</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={() => { reset(); toast.success("Local store reset"); }}>Reset</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
         {msg && <p className="text-xs text-dim mt-3">{msg}</p>}
       </Surface>

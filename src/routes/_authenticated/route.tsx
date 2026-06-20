@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useHydrate } from "@/lib/db/hydrate";
+import { useProfilePrefs } from "@/lib/use-profile-prefs";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -16,5 +17,6 @@ export const Route = createFileRoute("/_authenticated")({
 
 function AuthedShell() {
   useHydrate();
+  useProfilePrefs();
   return <Outlet />;
 }

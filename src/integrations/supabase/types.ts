@@ -665,6 +665,7 @@ export type Database = {
           display_name: string | null
           id: string
           phone: string | null
+          preferences: Json
           preferred_language: string
           updated_at: string
         }
@@ -674,6 +675,7 @@ export type Database = {
           display_name?: string | null
           id: string
           phone?: string | null
+          preferences?: Json
           preferred_language?: string
           updated_at?: string
         }
@@ -683,6 +685,7 @@ export type Database = {
           display_name?: string | null
           id?: string
           phone?: string | null
+          preferences?: Json
           preferred_language?: string
           updated_at?: string
         }

@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
-import { useData } from "@/lib/store";
 import { useT } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
+import { getReportsSummary } from "@/lib/reports.functions";
 import {
   Area,
   AreaChart,
@@ -19,7 +21,7 @@ import {
   YAxis,
 } from "recharts";
 import { useI18n } from "@/lib/i18n";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/reports")({
   ssr: false,
@@ -34,67 +36,32 @@ export const Route = createFileRoute("/_authenticated/reports")({
 function Page() {
   const t = useT();
   const lang = useI18n((s) => s.lang);
-  const branches = useData((s) => s.branches);
-  const bookings = useData((s) => s.bookings);
-  const services = useData((s) => s.services);
+  const today = new Date().toISOString().slice(0, 10);
+  const defaultFrom = useMemo(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 29);
+    return d.toISOString().slice(0, 10);
+  }, []);
+  const [from, setFrom] = useState(defaultFrom);
+  const [to, setTo] = useState(today);
+  const [branchId, setBranchId] = useState<string>("all");
+  const fetchReports = useServerFn(getReportsSummary);
+  const { data, isFetching } = useQuery({
+    queryKey: ["reports", from, to, branchId],
+    queryFn: () => fetchReports({ data: { from, to, branchId: branchId === "all" ? null : branchId } }),
+  });
 
-  const byBranch = branches.map((b) => ({
-    name: b.nameEn.split(" ")[0],
-    revenue: bookings
-      .filter((x) => x.branchId === b.id && (x.status === "completed" || x.status === "inProgress"))
-      .reduce((s, x) => s + x.price, 0),
-  }));
-
-  const byStatus = ["completed", "inProgress", "confirmed", "pending", "cancelled"].map((st) => ({
-    name: st,
-    value: bookings.filter((b) => b.status === st).length,
-  }));
+  const report = data ?? {
+    branches: [],
+    byBranch: [],
+    byStatus: [],
+    trend: [],
+    peakHours: [],
+    topServices: [],
+    totals: { bookings: 0, revenue: 0, branches: 0 },
+  };
 
   const COLORS = ["var(--color-primary)", "var(--color-chart-2)", "var(--color-chart-3)", "var(--color-chart-4)", "var(--color-destructive)"];
-
-  const trend = useMemo(() => {
-    const days: { name: string; revenue: number; bookings: number }[] = [];
-    const now = new Date();
-    for (let i = 29; i >= 0; i--) {
-      const d = new Date(now);
-      d.setDate(now.getDate() - i);
-      const key = d.toISOString().slice(0, 10);
-      const dayBookings = bookings.filter((b) => b.start.slice(0, 10) === key);
-      days.push({
-        name: d.toLocaleDateString(undefined, { month: "short", day: "numeric" }),
-        revenue: dayBookings
-          .filter((b) => b.status === "completed" || b.status === "inProgress")
-          .reduce((s, b) => s + b.price, 0),
-        bookings: dayBookings.length,
-      });
-    }
-    return days;
-  }, [bookings]);
-
-  const peakHours = useMemo(() => {
-    const buckets = Array.from({ length: 12 }, (_, i) => ({
-      name: `${i + 9}:00`,
-      count: 0,
-    }));
-    bookings.forEach((b) => {
-      const h = new Date(b.start).getHours();
-      const idx = h - 9;
-      if (idx >= 0 && idx < buckets.length) buckets[idx].count += 1;
-    });
-    return buckets;
-  }, [bookings]);
-
-  const topServices = useMemo(() => {
-    const counts = new Map<string, number>();
-    bookings.forEach((b) => counts.set(b.serviceId, (counts.get(b.serviceId) ?? 0) + 1));
-    return [...counts.entries()]
-      .map(([id, count]) => {
-        const s = services.find((x) => x.id === id);
-        return { name: s ? (lang === "ar" ? s.nameAr : s.nameEn) : "—", count };
-      })
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 6);
-  }, [bookings, services, lang]);
 
   const tooltipStyle = {
     background: "var(--color-surface)",
@@ -105,15 +72,41 @@ function Page() {
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto space-y-6">
-      <PageHeader title={t("reports")} subtitle="Cross-branch performance" />
+      <PageHeader title={t("reports")} subtitle="Cross-branch performance from database" />
+
+      <Surface>
+        <div className="grid gap-3 sm:grid-cols-4">
+          <label className="space-y-1.5 text-xs text-dim">
+            <span className="block uppercase tracking-wider">From</span>
+            <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" />
+          </label>
+          <label className="space-y-1.5 text-xs text-dim">
+            <span className="block uppercase tracking-wider">To</span>
+            <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" />
+          </label>
+          <label className="space-y-1.5 text-xs text-dim sm:col-span-2">
+            <span className="block uppercase tracking-wider">Branch</span>
+            <select value={branchId} onChange={(e) => setBranchId(e.target.value)} className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground">
+              <option value="all">All branches</option>
+              {report.branches.map((b) => <option key={b.id} value={b.id}>{lang === "ar" ? b.nameAr : b.nameEn}</option>)}
+            </select>
+          </label>
+        </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <Metric label="Revenue" value={fmtMoney(report.totals.revenue)} />
+          <Metric label="Bookings" value={String(report.totals.bookings)} />
+          <Metric label="Active branches" value={String(report.totals.branches)} />
+        </div>
+        {isFetching && <p className="mt-3 text-xs text-dim">Refreshing…</p>}
+      </Surface>
 
       <Surface>
         <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-6">
-          Revenue · last 30 days
+          Revenue · selected period
         </h3>
         <div className="h-72">
           <ResponsiveContainer>
-            <AreaChart data={trend} margin={{ left: -10, right: 8, top: 8 }}>
+            <AreaChart data={report.trend} margin={{ left: -10, right: 8, top: 8 }}>
               <defs>
                 <linearGradient id="rev" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="var(--color-primary)" stopOpacity={0.5} />
@@ -135,7 +128,7 @@ function Page() {
           <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-6">Revenue by Branch</h3>
           <div className="h-64">
             <ResponsiveContainer>
-              <BarChart data={byBranch}>
+              <BarChart data={report.byBranch}>
                 <CartesianGrid stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="name" stroke="var(--color-dim)" fontSize={11} tickLine={false} axisLine={false} />
                 <YAxis stroke="var(--color-dim)" fontSize={11} tickLine={false} axisLine={false} />
@@ -151,8 +144,8 @@ function Page() {
           <div className="h-64">
             <ResponsiveContainer>
               <PieChart>
-                <Pie data={byStatus} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80}>
-                  {byStatus.map((_, i) => (
+                <Pie data={report.byStatus} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80}>
+                  {report.byStatus.map((_, i) => (
                     <Cell key={i} fill={COLORS[i % COLORS.length]} />
                   ))}
                 </Pie>
@@ -168,7 +161,7 @@ function Page() {
           <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-6">Peak hours</h3>
           <div className="h-56">
             <ResponsiveContainer>
-              <BarChart data={peakHours}>
+              <BarChart data={report.peakHours}>
                 <CartesianGrid stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="name" stroke="var(--color-dim)" fontSize={10} tickLine={false} axisLine={false} />
                 <YAxis stroke="var(--color-dim)" fontSize={10} tickLine={false} axisLine={false} />
@@ -181,12 +174,12 @@ function Page() {
         <Surface>
           <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-6">Top services</h3>
           <ul className="space-y-3">
-            {topServices.map((s, i) => {
-              const max = topServices[0]?.count || 1;
+            {report.topServices.map((s, i) => {
+              const max = report.topServices[0]?.count || 1;
               return (
-                <li key={i}>
+                <li key={s.id}>
                   <div className="flex items-center justify-between text-sm mb-1">
-                    <span className="font-medium truncate pe-2">{s.name}</span>
+                    <span className="font-medium truncate pe-2">{lang === "ar" ? s.nameAr : s.nameEn}</span>
                     <span className="font-mono text-xs text-dim">{s.count}</span>
                   </div>
                   <div className="h-1.5 rounded-full bg-surface-2 overflow-hidden">
@@ -198,12 +191,21 @@ function Page() {
                 </li>
               );
             })}
-            {topServices.length === 0 && (
+            {report.topServices.length === 0 && (
               <li className="text-sm text-dim">{t("noData")}</li>
             )}
           </ul>
         </Surface>
       </div>
+    </div>
+  );
+}
+
+function Metric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-border bg-surface-2/30 p-3">
+      <div className="text-[10px] uppercase tracking-widest text-dim">{label}</div>
+      <div className="mt-1 font-display text-2xl">{value}</div>
     </div>
   );
 }
