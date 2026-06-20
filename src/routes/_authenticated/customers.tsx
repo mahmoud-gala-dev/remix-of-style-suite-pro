@@ -7,7 +7,7 @@ import { fmtDate, fmtMoney, initials } from "@/lib/format";
 import { useMemo, useState } from "react";
 import { Plus, Search } from "lucide-react";
 
-export const Route = createFileRoute("/customers")({
+export const Route = createFileRoute("/_authenticated/customers")({
   ssr: false,
   head: () => ({ meta: [{ title: "Customers" }] }),
   component: () => (

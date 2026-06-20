@@ -7,7 +7,7 @@ import { minutesSince } from "@/lib/format";
 import { ArrowRight, CheckCircle2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export const Route = createFileRoute("/queue")({
+export const Route = createFileRoute("/_authenticated/queue")({
   ssr: false,
   head: () => ({ meta: [{ title: "Live Queue" }] }),
   component: () => (

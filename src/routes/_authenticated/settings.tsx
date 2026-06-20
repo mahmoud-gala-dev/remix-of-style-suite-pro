@@ -5,7 +5,7 @@ import { useT, useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { useData } from "@/lib/store";
 
-export const Route = createFileRoute("/settings")({
+export const Route = createFileRoute("/_authenticated/settings")({
   ssr: false,
   head: () => ({ meta: [{ title: "Settings" }] }),
   component: () => (

@@ -18,7 +18,7 @@ import { useT, useI18n } from "@/lib/i18n";
 import { fmtMoney, fmtTime, initials, isToday, minutesSince } from "@/lib/format";
 import { useMemo } from "react";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   ssr: false,
   head: () => ({
     meta: [
