@@ -114,7 +114,7 @@ function BookPage() {
     if (step > 0) setStep((s) => (s - 1) as Step);
   }
 
-  async function confirm() {
+  async function submitBooking() {
     if (!branch || !service || !time) return;
     const start = new Date(`${date}T${time}:00`);
     const end = new Date(start.getTime() + service.durationMin * 60_000);
@@ -403,7 +403,7 @@ function BookPage() {
               {lang === "ar" ? "السابق" : "Back"}
             </button>
             <button
-              onClick={step === 4 ? confirm : next}
+              onClick={step === 4 ? submitBooking : next}
               disabled={!canNext}
               className="inline-flex flex-1 items-center justify-center gap-1 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition disabled:opacity-40"
             >
