@@ -6,6 +6,8 @@ import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
 import { useT, useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
+import { useLayout } from "@/lib/layout";
+import { MODULES, MODULE_GROUPS } from "@/lib/modules";
 import { useData } from "@/lib/store";
 import { claimSuperAdmin, seedDemoData } from "@/lib/admin.functions";
 
@@ -25,6 +27,7 @@ function Page() {
   const setLang = useI18n((s) => s.setLang);
   const themeMode = useTheme((s) => s.mode);
   const setTheme = useTheme((s) => s.set);
+  const layout = useLayout();
   const reset = useData((s) => s.reset);
   const router = useRouter();
   const qc = useQueryClient();
