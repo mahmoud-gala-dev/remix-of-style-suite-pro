@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
+import { checkSetupStatus } from "@/lib/setup.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,6 +17,12 @@ export const Route = createFileRoute("/auth")({
   beforeLoad: async () => {
     const { data } = await supabase.auth.getUser();
     if (data.user) throw redirect({ to: "/" });
+    try {
+      const status = await checkSetupStatus();
+      if (!status.hasAdmin) throw redirect({ to: "/setup" });
+    } catch (e) {
+      if (e && typeof e === "object" && "to" in e) throw e;
+    }
   },
   component: AuthPage,
 });
