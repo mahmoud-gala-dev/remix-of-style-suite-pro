@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 import {
   Check,
   ChevronRight,
@@ -13,11 +16,11 @@ import {
   MessageCircle,
 } from "lucide-react";
 
-import { useData } from "@/lib/store";
 import { useI18n, useT, useDir } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { PwaInstall } from "@/components/pwa-install";
+import { createBooking, getPublicBookingCatalog } from "@/lib/bookings.functions";
 
 export const Route = createFileRoute("/book")({
   head: () => ({
@@ -42,13 +45,13 @@ type Step = 0 | 1 | 2 | 3 | 4 | 5;
 const ANY_EMPLOYEE = "__any__";
 
 function BookPage() {
-  const branches = useData((s) => s.branches.filter((b) => b.active));
-  const services = useData((s) => s.services);
-  const employees = useData((s) => s.employees);
-  const bookings = useData((s) => s.bookings);
-  const addBooking = useData((s) => s.addBooking);
-  const addCustomer = useData((s) => s.addCustomer);
-  const customers = useData((s) => s.customers);
+  const fetchCatalog = useServerFn(getPublicBookingCatalog);
+  const createBookingFn = useServerFn(createBooking);
+  const catalog = useQuery({ queryKey: ["public-booking-catalog"], queryFn: () => fetchCatalog() });
+  const branches = catalog.data?.branches ?? [];
+  const services = catalog.data?.services ?? [];
+  const employees = catalog.data?.employees ?? [];
+  const bookings = catalog.data?.bookings ?? [];
 
   const lang = useI18n((s) => s.lang);
   const setLang = useI18n((s) => s.setLang);
@@ -64,6 +67,7 @@ function BookPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [confirmedId, setConfirmedId] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const branch = branches.find((b) => b.id === branchId) ?? null;
   const service = services.find((s) => s.id === serviceId) ?? null;
@@ -100,7 +104,7 @@ function BookPage() {
     (step === 1 && serviceId) ||
     step === 2 ||
     (step === 3 && time) ||
-    (step === 4 && name.trim().length > 1 && phone.trim().length > 5);
+    (step === 4 && name.trim().length > 1 && phone.trim().length > 5 && !submitting);
 
   function next() {
     if (step < 5) setStep((s) => (s + 1) as Step);
@@ -109,42 +113,39 @@ function BookPage() {
     if (step > 0) setStep((s) => (s - 1) as Step);
   }
 
-  function confirm() {
+  async function confirm() {
     if (!branch || !service || !time) return;
-    const empId =
-      employeeId === ANY_EMPLOYEE
-        ? branchEmployees[Math.floor(Math.random() * Math.max(branchEmployees.length, 1))]?.id
-        : employeeId;
-    if (!empId) return;
-
-    let cust = customers.find((c) => c.phone === phone.trim());
-    if (!cust) {
-      addCustomer({
-        branchId: branch.id,
-        name: name.trim(),
-        phone: phone.trim(),
-      });
-      cust = useData
-        .getState()
-        .customers.find((c) => c.phone === phone.trim());
-    }
-    if (!cust) return;
-
     const start = new Date(`${date}T${time}:00`);
     const end = new Date(start.getTime() + service.durationMin * 60_000);
-    const id = Math.random().toString(36).slice(2, 10);
-    addBooking({
-      branchId: branch.id,
-      customerId: cust.id,
-      employeeId: empId,
-      serviceId: service.id,
-      start: start.toISOString(),
-      end: end.toISOString(),
-      status: "confirmed",
-      price: service.price,
-    });
-    setConfirmedId(id);
-    setStep(5);
+    const empId =
+      employeeId === ANY_EMPLOYEE
+        ? pickAvailableEmployee(branchEmployees, bookings, start, end)
+        : employeeId;
+    if (!empId) return;
+    setSubmitting(true);
+    try {
+      const res = await createBookingFn({
+        data: {
+          branchId: branch.id,
+          employeeId: empId,
+          serviceId: service.id,
+          customerName: name.trim(),
+          customerPhone: phone.trim(),
+          startAt: start.toISOString(),
+          endAt: end.toISOString(),
+          price: service.price,
+        },
+      });
+      setConfirmedId(res.id);
+      setStep(5);
+      await catalog.refetch();
+    } catch (error) {
+      toast.error(error instanceof Error && error.message ? error.message : "Slot taken — choose another time.");
+      setTime(null);
+      await catalog.refetch();
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   const steps = [
