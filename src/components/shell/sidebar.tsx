@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useT, type DictKey } from "@/lib/i18n";
+import { useT } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { MODULES, MODULE_GROUPS } from "@/lib/modules";
 import { useLayout } from "@/lib/layout";
