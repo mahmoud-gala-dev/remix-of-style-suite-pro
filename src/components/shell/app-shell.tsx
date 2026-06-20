@@ -4,6 +4,7 @@ import { Topbar } from "./topbar";
 import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { CommandPalette } from "@/components/command-palette";
+import { PwaInstall } from "@/components/pwa-install";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const lang = useI18n((s) => s.lang);
@@ -29,6 +30,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="flex-1 overflow-y-auto">{children}</div>
       </main>
       <CommandPalette />
+      <PwaInstall />
     </div>
   );
 }

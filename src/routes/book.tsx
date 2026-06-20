@@ -10,12 +10,14 @@ import {
   User,
   Calendar as CalIcon,
   Sparkles,
+  MessageCircle,
 } from "lucide-react";
 
 import { useData } from "@/lib/store";
 import { useI18n, useT, useDir } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { PwaInstall } from "@/components/pwa-install";
 
 export const Route = createFileRoute("/book")({
   head: () => ({
@@ -420,6 +422,7 @@ function BookPage() {
           </div>
         </footer>
       )}
+      <PwaInstall />
     </div>
   );
 }
@@ -628,6 +631,18 @@ function ConfirmedView({
         </div>
       )}
       <div className="mt-8">
+        <div className="flex flex-wrap items-center justify-center gap-2">
+        {branch && service && time && (
+          <a
+            href={waLink({ branch: lang === "ar" ? branch.nameAr : branch.nameEn, phone: branch.phone, service: lang === "ar" ? service.nameAr : service.nameEn, date, time, lang })}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-md bg-[#25D366] px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+          >
+            <MessageCircle className="h-4 w-4" />
+            {lang === "ar" ? "إرسال عبر واتساب" : "Send via WhatsApp"}
+          </a>
+        )}
         <Link
           to="/book"
           reloadDocument
@@ -635,9 +650,33 @@ function ConfirmedView({
         >
           {lang === "ar" ? "حجز آخر" : "Book another"}
         </Link>
+        </div>
       </div>
     </div>
   );
+}
+
+function waLink({
+  branch,
+  phone,
+  service,
+  date,
+  time,
+  lang,
+}: {
+  branch: string;
+  phone: string;
+  service: string;
+  date: string;
+  time: string;
+  lang: "en" | "ar";
+}) {
+  const msg =
+    lang === "ar"
+      ? `مرحباً ${branch}، أود تأكيد حجزي:\nالخدمة: ${service}\nالموعد: ${date} ${time}`
+      : `Hi ${branch}, please confirm my booking:\nService: ${service}\nWhen: ${date} ${time}`;
+  const num = phone.replace(/[^\d]/g, "");
+  return `https://wa.me/${num}?text=${encodeURIComponent(msg)}`;
 }
 
 function buildSlots({
