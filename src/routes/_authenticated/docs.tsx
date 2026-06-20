@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { ArrowLeft, ExternalLink, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -17,7 +18,7 @@ type Module = {
   table?: string;
   description: string;
   fields: string[];
-  icon: JSX.Element;
+  icon: ReactNode;
 };
 
 const C = {

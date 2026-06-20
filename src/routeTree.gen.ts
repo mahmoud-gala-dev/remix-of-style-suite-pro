@@ -22,6 +22,7 @@ import { Route as AuthenticatedMembershipsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedLoyaltyRouteImport } from './routes/_authenticated/loyalty'
 import { Route as AuthenticatedInvoicesRouteImport } from './routes/_authenticated/invoices'
 import { Route as AuthenticatedEmployeesRouteImport } from './routes/_authenticated/employees'
+import { Route as AuthenticatedDocsRouteImport } from './routes/_authenticated/docs'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
 import { Route as AuthenticatedCouponsRouteImport } from './routes/_authenticated/coupons'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
@@ -93,6 +94,11 @@ const AuthenticatedEmployeesRoute = AuthenticatedEmployeesRouteImport.update({
   path: '/employees',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDocsRoute = AuthenticatedDocsRouteImport.update({
+  id: '/docs',
+  path: '/docs',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedCustomersRoute = AuthenticatedCustomersRouteImport.update({
   id: '/customers',
   path: '/customers',
@@ -129,6 +135,7 @@ export interface FileRoutesByFullPath {
   '/calendar': typeof AuthenticatedCalendarRoute
   '/coupons': typeof AuthenticatedCouponsRoute
   '/customers': typeof AuthenticatedCustomersRoute
+  '/docs': typeof AuthenticatedDocsRoute
   '/employees': typeof AuthenticatedEmployeesRoute
   '/invoices': typeof AuthenticatedInvoicesRoute
   '/loyalty': typeof AuthenticatedLoyaltyRoute
@@ -147,6 +154,7 @@ export interface FileRoutesByTo {
   '/calendar': typeof AuthenticatedCalendarRoute
   '/coupons': typeof AuthenticatedCouponsRoute
   '/customers': typeof AuthenticatedCustomersRoute
+  '/docs': typeof AuthenticatedDocsRoute
   '/employees': typeof AuthenticatedEmployeesRoute
   '/invoices': typeof AuthenticatedInvoicesRoute
   '/loyalty': typeof AuthenticatedLoyaltyRoute
@@ -168,6 +176,7 @@ export interface FileRoutesById {
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/coupons': typeof AuthenticatedCouponsRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
+  '/_authenticated/docs': typeof AuthenticatedDocsRoute
   '/_authenticated/employees': typeof AuthenticatedEmployeesRoute
   '/_authenticated/invoices': typeof AuthenticatedInvoicesRoute
   '/_authenticated/loyalty': typeof AuthenticatedLoyaltyRoute
@@ -190,6 +199,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/coupons'
     | '/customers'
+    | '/docs'
     | '/employees'
     | '/invoices'
     | '/loyalty'
@@ -208,6 +218,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/coupons'
     | '/customers'
+    | '/docs'
     | '/employees'
     | '/invoices'
     | '/loyalty'
@@ -228,6 +239,7 @@ export interface FileRouteTypes {
     | '/_authenticated/calendar'
     | '/_authenticated/coupons'
     | '/_authenticated/customers'
+    | '/_authenticated/docs'
     | '/_authenticated/employees'
     | '/_authenticated/invoices'
     | '/_authenticated/loyalty'
@@ -339,6 +351,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEmployeesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/docs': {
+      id: '/_authenticated/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof AuthenticatedDocsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/customers': {
       id: '/_authenticated/customers'
       path: '/customers'
@@ -383,6 +402,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedCouponsRoute: typeof AuthenticatedCouponsRoute
   AuthenticatedCustomersRoute: typeof AuthenticatedCustomersRoute
+  AuthenticatedDocsRoute: typeof AuthenticatedDocsRoute
   AuthenticatedEmployeesRoute: typeof AuthenticatedEmployeesRoute
   AuthenticatedInvoicesRoute: typeof AuthenticatedInvoicesRoute
   AuthenticatedLoyaltyRoute: typeof AuthenticatedLoyaltyRoute
@@ -400,6 +420,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedCouponsRoute: AuthenticatedCouponsRoute,
   AuthenticatedCustomersRoute: AuthenticatedCustomersRoute,
+  AuthenticatedDocsRoute: AuthenticatedDocsRoute,
   AuthenticatedEmployeesRoute: AuthenticatedEmployeesRoute,
   AuthenticatedInvoicesRoute: AuthenticatedInvoicesRoute,
   AuthenticatedLoyaltyRoute: AuthenticatedLoyaltyRoute,
