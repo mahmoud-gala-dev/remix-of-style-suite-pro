@@ -8,6 +8,8 @@ import { useT, useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { useLayout } from "@/lib/layout";
 import { MODULES, MODULE_GROUPS } from "@/lib/modules";
+import { ADMIN_ONLY_MODULES, type RoleKind } from "@/lib/layout";
+import { useRole } from "@/lib/use-role";
 import { useData } from "@/lib/store";
 import { claimSuperAdmin, seedDemoData } from "@/lib/admin.functions";
 
