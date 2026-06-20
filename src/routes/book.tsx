@@ -14,7 +14,7 @@ import {
 
 import { useData } from "@/lib/store";
 import { useI18n, useT, useDir } from "@/lib/i18n";
-import { formatCurrency } from "@/lib/format";
+import { fmtMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/book")({
@@ -233,7 +233,7 @@ function BookPage() {
                           {lang === "ar" ? s.nameAr : s.nameEn}
                         </div>
                         <div className="font-display text-sm">
-                          {formatCurrency(s.price)}
+                          {fmtMoney(s.price)}
                         </div>
                       </div>
                       <div className="mt-1 text-xs text-muted-foreground">
@@ -567,7 +567,7 @@ function Summary({
         <Row label={lang === "ar" ? "التاريخ" : "Date"} value={`${date} · ${time}`} />
         <Row
           label={lang === "ar" ? "الإجمالي" : "Total"}
-          value={formatCurrency(service.price)}
+          value={fmtMoney(service.price)}
           strong
         />
       </div>
