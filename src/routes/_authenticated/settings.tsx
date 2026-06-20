@@ -30,6 +30,8 @@ function Page() {
   const themeMode = useTheme((s) => s.mode);
   const setTheme = useTheme((s) => s.set);
   const layout = useLayout();
+  const { isAdmin } = useRole();
+  const [roleTab, setRoleTab] = useState<RoleKind>("user");
   const reset = useData((s) => s.reset);
   const router = useRouter();
   const qc = useQueryClient();
