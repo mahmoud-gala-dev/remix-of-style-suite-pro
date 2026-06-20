@@ -103,6 +103,43 @@ function Page() {
 
       <Surface>
         <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-4">Navigation Layout</h3>
+        <details className="mb-5 rounded-md border border-border/60 bg-muted/20 p-3 group" open>
+          <summary className="cursor-pointer text-[11px] font-bold uppercase tracking-widest text-dim hover:text-foreground">
+            دليل الخيارات · How these options work
+          </summary>
+          <ul className="mt-3 space-y-2.5 text-xs leading-relaxed text-dim" dir="rtl">
+            <li>
+              <b className="text-foreground">الدور (Configuring role):</b> يحدّد أيّ مجموعة إعدادات تُعدّلها الآن
+              (Admin أو User). كل دور يحفظ قائمته الخاصة من العناصر المرئية وعناصر الفوتر. الموديولات الإدارية
+              تبقى مخفية دائمًا عن دور User حتى لو فُعِّلت.
+            </li>
+            <li>
+              <b className="text-foreground">Shell mode — Side menu:</b> يعرض القائمة كشريط جانبي عمودي على يمين/يسار
+              الصفحة، مناسب للشاشات الواسعة وللتنقّل السريع بين عدد كبير من الموديولات.
+            </li>
+            <li>
+              <b className="text-foreground">Shell mode — Top toolbar:</b> يُحوِّل القائمة إلى شريط علوي يشبه
+              تطبيقات سطح المكتب مع قوائم منسدلة لكل مجموعة (Operations / Management / Finance)، ويوفّر مساحة
+              أفقية أكبر للمحتوى.
+            </li>
+            <li>
+              <b className="text-foreground">Visible modules:</b> اضغط على أي زر موديول لإظهاره/إخفائه من
+              الشريط الجانبي أو الشريط العلوي للدور المحدّد. الأزرار الملوّنة = ظاهرة، الباهتة = مخفيّة،
+              والمشطوبة = إدارية وغير متاحة لدور User.
+            </li>
+            <li>
+              <b className="text-foreground">Footer — Visible/Hidden:</b> يفعّل أو يخفي شريط الفوتر بالكامل
+              من جميع الصفحات.
+            </li>
+            <li>
+              <b className="text-foreground">Footer items:</b> يحدّد الموديولات التي تظهر كاختصارات داخل الفوتر
+              عندما يكون مفعّلًا. يتأثّر بنفس قواعد الأدوار.
+            </li>
+            <li className="text-[11px] opacity-80">
+              جميع الإعدادات تُحفظ تلقائيًا لكل دور في المتصفّح وتُطبَّق فورًا على القائمة والفوتر.
+            </li>
+          </ul>
+        </details>
         <div className="space-y-5">
           {isAdmin && (
             <div>
