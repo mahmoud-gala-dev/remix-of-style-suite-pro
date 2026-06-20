@@ -1,4 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
 import { StatusPill } from "@/components/shell/status-pill";
@@ -32,6 +35,18 @@ function Page() {
   const t = useT();
   const lang = useI18n((s) => s.lang);
   const branch = useCurrentBranch();
+  const qc = useQueryClient();
+  useEffect(() => {
+    const ch = supabase
+      .channel("realtime:bookings")
+      .on("postgres_changes", { event: "*", schema: "public", table: "bookings" }, () => {
+        qc.invalidateQueries({ queryKey: ["hydrate"] });
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
+  }, [qc]);
   const allBookings = useData((s) => s.bookings);
   const bookings = allBookings
     .filter((b) => b.branchId === branch.id)

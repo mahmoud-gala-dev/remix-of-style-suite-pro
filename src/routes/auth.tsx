@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,6 +37,18 @@ function AuthPage() {
   const navigate = useNavigate();
   const [tab, setTab] = useState<"signin" | "signup">("signin");
   const [busy, setBusy] = useState(false);
+  // Rate limit: 5 failed attempts per minute, in-memory per tab.
+  const attempts = useRef<number[]>([]);
+  const checkRate = () => {
+    const now = Date.now();
+    attempts.current = attempts.current.filter((t) => now - t < 60_000);
+    if (attempts.current.length >= 5) {
+      const wait = Math.ceil((60_000 - (now - attempts.current[0])) / 1000);
+      toast.error(`Too many attempts. Try again in ${wait}s.`);
+      return false;
+    }
+    return true;
+  };
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((evt, session) => {
@@ -51,14 +63,21 @@ function AuthPage() {
   const signup = useForm<CredForm>({ resolver: zodResolver(credSchema), defaultValues: { email: "", password: "" } });
 
   const onSignIn = signin.handleSubmit(async (values) => {
+    if (!checkRate()) return;
     setBusy(true);
     const { error } = await supabase.auth.signInWithPassword(values);
     setBusy(false);
-    if (error) toast.error(error.message);
-    else navigate({ to: "/" });
+    if (error) {
+      attempts.current.push(Date.now());
+      toast.error(error.message);
+    } else {
+      attempts.current = [];
+      navigate({ to: "/" });
+    }
   });
 
   const onSignUp = signup.handleSubmit(async (values) => {
+    if (!checkRate()) return;
     setBusy(true);
     const { error } = await supabase.auth.signUp({
       email: values.email,
@@ -66,8 +85,13 @@ function AuthPage() {
       options: { emailRedirectTo: `${window.location.origin}/` },
     });
     setBusy(false);
-    if (error) toast.error(error.message);
-    else toast.success("Account created — check your email if confirmation is required.");
+    if (error) {
+      attempts.current.push(Date.now());
+      toast.error(error.message);
+    } else {
+      attempts.current = [];
+      toast.success("Account created — check your email if confirmation is required.");
+    }
   });
 
   const onGoogle = async () => {
