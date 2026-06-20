@@ -21,7 +21,7 @@ export const getPublicBookingCatalog = createServerFn({ method: "GET" }).handler
     supabaseAdmin.from("branches").select("id,name_en,name_ar,address,phone,chairs,hours_open,hours_close,active").eq("active", true),
     supabaseAdmin.from("services").select("id,branch_id,name_en,name_ar,category,duration_min,price,gender,active").eq("active", true),
     supabaseAdmin.from("employees").select("id,branch_id,name_en,name_ar,phone,role,commission_pct,rating,active").eq("active", true),
-    supabaseAdmin.from("bookings").select("id,branch_id,customer_id,employee_id,service_id,start_at,end_at,status,price").gte("start_at", today.toISOString()),
+    supabaseAdmin.from("bookings").select("id,branch_id,employee_id,service_id,start_at,end_at,status,price").gte("start_at", today.toISOString()),
   ]);
   for (const result of [branches, services, employees, bookings]) {
     if (result.error) throw new Error(result.error.message);
@@ -30,7 +30,7 @@ export const getPublicBookingCatalog = createServerFn({ method: "GET" }).handler
     branches: (branches.data ?? []).map((b) => ({ id: b.id, nameEn: b.name_en, nameAr: b.name_ar, address: b.address ?? "", phone: b.phone ?? "", chairs: b.chairs, hoursOpen: b.hours_open, hoursClose: b.hours_close, active: b.active })),
     services: (services.data ?? []).map((s) => ({ id: s.id, branchId: s.branch_id, nameEn: s.name_en, nameAr: s.name_ar, category: s.category ?? "", durationMin: s.duration_min, price: Number(s.price), gender: s.gender, active: s.active })),
     employees: (employees.data ?? []).map((e) => ({ id: e.id, branchId: e.branch_id, nameEn: e.name_en, nameAr: e.name_ar, phone: e.phone ?? "", role: e.role, commissionPct: Number(e.commission_pct), rating: Number(e.rating), active: e.active })),
-    bookings: (bookings.data ?? []).map((b) => ({ id: b.id, branchId: b.branch_id, customerId: b.customer_id, employeeId: b.employee_id, serviceId: b.service_id, start: b.start_at, end: b.end_at, status: b.status === "in_progress" ? "inProgress" : b.status === "no_show" ? "noShow" : b.status, price: Number(b.price) })),
+    bookings: (bookings.data ?? []).map((b) => ({ id: b.id, branchId: b.branch_id, employeeId: b.employee_id, serviceId: b.service_id, start: b.start_at, end: b.end_at, status: b.status === "in_progress" ? "inProgress" : b.status === "no_show" ? "noShow" : b.status, price: Number(b.price) })),
   };
 });
 
