@@ -9,12 +9,14 @@ import {
 import { useT } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { MODULES, MODULE_GROUPS } from "@/lib/modules";
-import { useLayout } from "@/lib/layout";
+import { useLayout, ADMIN_ONLY_MODULES } from "@/lib/layout";
+import { useRole } from "@/lib/use-role";
 
 export function TopNav() {
   const t = useT();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const hidden = useLayout((s) => s.hiddenItems);
+  const { role, isAdmin } = useRole();
+  const hidden = useLayout((s) => s.hiddenItems[role]);
 
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/70">
@@ -25,7 +27,12 @@ export function TopNav() {
         </div>
         <nav className="hidden md:flex items-center gap-1">
           {MODULE_GROUPS.map((groupKey) => {
-            const items = MODULES.filter((m) => m.group === groupKey && !hidden.includes(m.id));
+            const items = MODULES.filter(
+              (m) =>
+                m.group === groupKey &&
+                !hidden.includes(m.id) &&
+                (isAdmin || !ADMIN_ONLY_MODULES.has(m.id)),
+            );
             if (items.length === 0) return null;
             const isActiveGroup = items.some(
               (i) => pathname === i.to || (i.to !== "/" && pathname.startsWith(i.to)),

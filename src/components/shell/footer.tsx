@@ -2,17 +2,21 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useT } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { MODULES } from "@/lib/modules";
-import { useLayout } from "@/lib/layout";
+import { useLayout, ADMIN_ONLY_MODULES } from "@/lib/layout";
+import { useRole } from "@/lib/use-role";
 
 export function Footer() {
   const t = useT();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const enabled = useLayout((s) => s.footerEnabled);
-  const ids = useLayout((s) => s.footerItems);
+  const { role, isAdmin } = useRole();
+  const ids = useLayout((s) => s.footerItems[role]);
   if (!enabled) return null;
   const items = ids
     .map((id) => MODULES.find((m) => m.id === id))
-    .filter((m): m is (typeof MODULES)[number] => Boolean(m));
+    .filter((m): m is (typeof MODULES)[number] =>
+      Boolean(m) && (isAdmin || !ADMIN_ONLY_MODULES.has(m!.id)),
+    );
   if (items.length === 0) return null;
 
   return (
