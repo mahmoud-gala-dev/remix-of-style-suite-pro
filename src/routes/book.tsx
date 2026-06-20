@@ -17,6 +17,7 @@ import { useData } from "@/lib/store";
 import { useI18n, useT, useDir } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { PwaInstall } from "@/components/pwa-install";
 
 export const Route = createFileRoute("/book")({
   head: () => ({
@@ -421,6 +422,7 @@ function BookPage() {
           </div>
         </footer>
       )}
+      <PwaInstall />
     </div>
   );
 }
