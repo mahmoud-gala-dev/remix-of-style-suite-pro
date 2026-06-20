@@ -6,6 +6,7 @@ import { useT } from "@/lib/i18n";
 import { fmtDate, fmtMoney, initials } from "@/lib/format";
 import { useMemo, useState } from "react";
 import { Plus, Search } from "lucide-react";
+import { CustomerDialog } from "@/components/dialogs/customer-dialog";
 
 export const Route = createFileRoute("/_authenticated/customers")({
   ssr: false,
@@ -23,6 +24,7 @@ function Page() {
   const allRaw = useData((s) => s.customers);
   const all = useMemo(() => allRaw.filter((c) => c.branchId === branchId), [allRaw, branchId]);
   const [q, setQ] = useState("");
+  const [open, setOpen] = useState(false);
 
   const list = useMemo(() => {
     if (!q.trim()) return all;
@@ -36,7 +38,10 @@ function Page() {
         title={t("customers")}
         subtitle={`${all.length} total`}
         actions={
-          <button className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest">
+          <button
+            onClick={() => setOpen(true)}
+            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest"
+          >
             <Plus className="size-3.5" />
             {t("add")}
           </button>
@@ -99,6 +104,7 @@ function Page() {
           </tbody>
         </table>
       </Surface>
+      <CustomerDialog open={open} onClose={() => setOpen(false)} branchId={branchId} />
     </div>
   );
 }

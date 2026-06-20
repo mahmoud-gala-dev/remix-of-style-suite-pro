@@ -5,6 +5,8 @@ import { useCurrentBranch, useData } from "@/lib/store";
 import { useI18n, useT } from "@/lib/i18n";
 import { initials } from "@/lib/format";
 import { Phone, Plus, Star } from "lucide-react";
+import { useState } from "react";
+import { EmployeeDialog } from "@/components/dialogs/employee-dialog";
 
 export const Route = createFileRoute("/_authenticated/employees")({
   ssr: false,
@@ -21,6 +23,7 @@ function Page() {
   const lang = useI18n((s) => s.lang);
   const branch = useCurrentBranch();
   const list = useData((s) => s.employees).filter((x) => x.branchId === branch.id);
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto">
@@ -28,7 +31,10 @@ function Page() {
         title={t("employees")}
         subtitle={`${list.length} on staff`}
         actions={
-          <button className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest">
+          <button
+            onClick={() => setOpen(true)}
+            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest"
+          >
             <Plus className="size-3.5" />
             {t("add")}
           </button>
@@ -63,6 +69,7 @@ function Page() {
           </Surface>
         ))}
       </div>
+      <EmployeeDialog open={open} onClose={() => setOpen(false)} branchId={branch.id} />
     </div>
   );
 }
