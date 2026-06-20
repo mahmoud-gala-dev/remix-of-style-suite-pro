@@ -1,8 +1,10 @@
-import { Bell, ChevronDown, Moon, Search, Sun } from "lucide-react";
+import { Bell, ChevronDown, LogOut, Moon, Search, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { useI18n, useT } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { useData, useCurrentBranch } from "@/lib/store";
+import { supabase } from "@/integrations/supabase/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +23,12 @@ export function Topbar() {
   const branches = useData((s) => s.branches);
   const setCurrentBranch = useData((s) => s.setCurrentBranch);
   const [now, setNow] = useState<string>("");
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
+  };
 
   useEffect(() => {
     const tick = () => setNow(new Date().toLocaleString([], { dateStyle: "medium", timeStyle: "short" }));
@@ -98,6 +106,15 @@ export function Topbar() {
 
         <button className="size-8 grid place-items-center border border-border rounded-full text-dim hover:text-foreground transition-colors">
           <Bell className="size-3.5" />
+        </button>
+
+        <button
+          onClick={handleSignOut}
+          className="size-8 grid place-items-center border border-border rounded-full text-dim hover:text-foreground transition-colors"
+          aria-label="Sign out"
+          title="Sign out"
+        >
+          <LogOut className="size-3.5" />
         </button>
       </div>
     </header>
