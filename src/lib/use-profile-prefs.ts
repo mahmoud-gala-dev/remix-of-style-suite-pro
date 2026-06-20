@@ -38,8 +38,9 @@ export function useProfilePrefs() {
     loaded.current = true;
     const initialLayout = query.data.layout ?? readLegacyLocalLayout();
     if (initialLayout) applyProfileLayout(initialLayout);
+    if (!query.data.layout && initialLayout) saveProfileLayout(initialLayout);
     setReady(true);
-  }, [applyProfileLayout, query.data]);
+  }, [applyProfileLayout, query.data, saveProfileLayout]);
 
   useEffect(() => {
     if (!ready) return;
