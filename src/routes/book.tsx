@@ -726,7 +726,12 @@ function buildSlots({
   return slots;
 }
 
-function pickAvailableEmployee(employees: Pick<Employee, "id">[], bookings: Booking[], start: Date, end: Date) {
+function pickAvailableEmployee(
+  employees: Pick<Employee, "id">[],
+  bookings: Pick<Booking, "employeeId" | "start" | "end">[] & { status: string }[],
+  start: Date,
+  end: Date,
+) {
   const startMs = start.getTime();
   const endMs = end.getTime();
   return employees.find((employee) =>
