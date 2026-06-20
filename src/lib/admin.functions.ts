@@ -109,17 +109,16 @@ export const seedDemoData = createServerFn({ method: "POST" })
       { branch_id: brDowntown, customer_id: cu4, status: "waiting", position: 3 },
     ];
 
-    const steps: Array<[string, () => Promise<{ error: { message: string } | null }>]> = [
-      ["branches", () => supabaseAdmin.from("branches").insert(branches)],
-      ["services", () => supabaseAdmin.from("services").insert(services)],
-      ["employees", () => supabaseAdmin.from("employees").insert(employees)],
-      ["customers", () => supabaseAdmin.from("customers").insert(customers)],
-      ["bookings", () => supabaseAdmin.from("bookings").insert(bookings)],
-      ["queue_items", () => supabaseAdmin.from("queue_items").insert(queue)],
-    ];
-    for (const [name, fn] of steps) {
-      const { error } = await fn();
-      if (error) throw new Error(`${name}: ${error.message}`);
-    }
+    const ins = async (table: string, rows: unknown) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabaseAdmin.from(table as any) as any).insert(rows);
+      if (error) throw new Error(`${table}: ${error.message}`);
+    };
+    await ins("branches", branches);
+    await ins("services", services);
+    await ins("employees", employees);
+    await ins("customers", customers);
+    await ins("bookings", bookings);
+    await ins("queue_items", queue);
     return { ok: true, skipped: false as const };
   });
