@@ -141,19 +141,19 @@ function AddServiceDialog({ branchId, onClose }: { branchId: string; onClose: ()
         className="w-full max-w-md bg-surface border border-white/10 rounded-lg p-6 space-y-3"
       >
         <h2 className="font-display text-xl">{t("add")} {t("services")}</h2>
-        <Field label="Name (EN)"><input required value={nameEn} onChange={(e) => setNameEn(e.target.value)} className="input" /></Field>
-        <Field label="Name (AR)"><input value={nameAr} onChange={(e) => setNameAr(e.target.value)} className="input" /></Field>
-        <Field label="Category"><input value={category} onChange={(e) => setCategory(e.target.value)} className="input" /></Field>
+        <Field label="Name (EN)"><input required value={nameEn} onChange={(e) => setNameEn(e.target.value)} className="w-full bg-surface-2 border border-white/10 rounded-md px-3 py-2 text-sm" /></Field>
+        <Field label="Name (AR)"><input value={nameAr} onChange={(e) => setNameAr(e.target.value)} className="w-full bg-surface-2 border border-white/10 rounded-md px-3 py-2 text-sm" /></Field>
+        <Field label="Category"><input value={category} onChange={(e) => setCategory(e.target.value)} className="w-full bg-surface-2 border border-white/10 rounded-md px-3 py-2 text-sm" /></Field>
         <div className="grid grid-cols-2 gap-3">
           <Field label="Duration (min)">
-            <input type="number" min={1} value={durationMin} onChange={(e) => setDurationMin(+e.target.value)} className="input" />
+            <input type="number" min={1} value={durationMin} onChange={(e) => setDurationMin(+e.target.value)} className="w-full bg-surface-2 border border-white/10 rounded-md px-3 py-2 text-sm" />
           </Field>
           <Field label="Price">
-            <input type="number" min={0} step="0.01" value={price} onChange={(e) => setPrice(+e.target.value)} className="input" />
+            <input type="number" min={0} step="0.01" value={price} onChange={(e) => setPrice(+e.target.value)} className="w-full bg-surface-2 border border-white/10 rounded-md px-3 py-2 text-sm" />
           </Field>
         </div>
         <Field label="Gender">
-          <select value={gender} onChange={(e) => setGender(e.target.value as Gender)} className="input">
+          <select value={gender} onChange={(e) => setGender(e.target.value as Gender)} className="w-full bg-surface-2 border border-white/10 rounded-md px-3 py-2 text-sm">
             <option value="both">Both</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
