@@ -5,6 +5,8 @@ import { useData } from "@/lib/store";
 import { useI18n, useT } from "@/lib/i18n";
 import { Clock, MapPin, Phone, Plus, Store } from "lucide-react";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { BranchDialog } from "@/components/dialogs/branch-dialog";
 
 export const Route = createFileRoute("/_authenticated/branches")({
   ssr: false,
@@ -24,6 +26,7 @@ function Page() {
   const current = useData((s) => s.currentBranchId);
   const bookings = useData((s) => s.bookings);
   const employees = useData((s) => s.employees);
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto">
@@ -31,7 +34,10 @@ function Page() {
         title={t("branches")}
         subtitle={`${branches.length} locations`}
         actions={
-          <button className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest">
+          <button
+            onClick={() => setOpen(true)}
+            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest"
+          >
             <Plus className="size-3.5" />
             {t("newBranch")}
           </button>
@@ -82,6 +88,7 @@ function Page() {
           </motion.button>
         ))}
       </div>
+      <BranchDialog open={open} onClose={() => setOpen(false)} />
     </div>
   );
 }
