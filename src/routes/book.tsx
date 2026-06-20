@@ -728,7 +728,7 @@ function buildSlots({
 
 function pickAvailableEmployee(
   employees: Pick<Employee, "id">[],
-  bookings: Pick<Booking, "employeeId" | "start" | "end">[] & { status: string }[],
+  bookings: Array<Pick<Booking, "employeeId" | "start" | "end"> & { status: string }>,
   start: Date,
   end: Date,
 ) {
