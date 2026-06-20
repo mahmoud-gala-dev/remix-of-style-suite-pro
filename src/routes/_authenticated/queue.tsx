@@ -28,6 +28,7 @@ function Page() {
     const ch = supabase
       .channel("realtime:queue_items")
       .on("postgres_changes", { event: "*", schema: "public", table: "queue_items" }, () => {
+        qc.invalidateQueries({ queryKey: ["queue"] });
         qc.invalidateQueries({ queryKey: ["hydrate"] });
       })
       .subscribe();

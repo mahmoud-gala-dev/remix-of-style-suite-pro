@@ -51,6 +51,7 @@ function Page() {
     const ch = supabase
       .channel("realtime:bookings")
       .on("postgres_changes", { event: "*", schema: "public", table: "bookings" }, () => {
+        qc.invalidateQueries({ queryKey: ["bookings"] });
         qc.invalidateQueries({ queryKey: ["hydrate"] });
       })
       .subscribe();
