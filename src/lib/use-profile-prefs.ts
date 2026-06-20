@@ -17,7 +17,7 @@ export function useProfilePrefs() {
     staleTime: 60_000,
   });
 
-  const saveMutation = useMutation({
+  const { mutate: saveProfileLayout } = useMutation({
     mutationFn: (layout: LayoutSnapshot) => saveLayout({ data: layout }),
   });
 
@@ -31,9 +31,9 @@ export function useProfilePrefs() {
   useEffect(() => {
     if (!ready) return;
     return useLayout.subscribe((state) => {
-      saveMutation.mutate(snapshotLayout(state));
+      saveProfileLayout(snapshotLayout(state));
     });
-  }, [ready, saveMutation]);
+  }, [ready, saveProfileLayout]);
 
   return query;
 }
