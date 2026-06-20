@@ -15,6 +15,7 @@ import {
   ContextMenuSeparator,
 } from "@/components/ui/context-menu";
 import { downloadCsv, toCsv } from "@/lib/csv";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/customers")({
   ssr: false,
@@ -159,7 +160,10 @@ function Page() {
                   <ContextMenuSeparator />
                   <ContextMenuItem
                     onSelect={() => {
-                      if (confirm(`Delete ${c.name}?`)) removeCustomer(c.id);
+                      toast(`Delete ${c.name}?`, {
+                        action: { label: "Delete", onClick: () => { removeCustomer(c.id); toast.success("Deleted"); } },
+                        cancel: { label: "Cancel", onClick: () => {} },
+                      });
                     }}
                     className="text-red-500 focus:text-red-500"
                   >

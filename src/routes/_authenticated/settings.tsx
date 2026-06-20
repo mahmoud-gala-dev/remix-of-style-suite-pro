@@ -12,6 +12,7 @@ import { ADMIN_ONLY_MODULES, type RoleKind } from "@/lib/layout";
 import { useRole } from "@/lib/use-role";
 import { useData } from "@/lib/store";
 import { claimSuperAdmin, seedDemoData } from "@/lib/admin.functions";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   ssr: false,
@@ -92,13 +93,6 @@ function Page() {
             </button>
           ))}
         </div>
-      </Surface>
-
-      <Surface>
-        <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-4">Data</h3>
-        <p className="text-xs text-dim mb-3">
-          First-time setup: claim super-admin, then load demo data into Lovable Cloud.
-        </p>
       </Surface>
 
       <Surface>
@@ -290,7 +284,10 @@ function Page() {
           </button>
           <button
             onClick={() => {
-              if (confirm("Reset local store to seed?")) reset();
+              toast("Reset local store to seed?", {
+                action: { label: "Reset", onClick: () => { reset(); toast.success("Local store reset"); } },
+                cancel: { label: "Cancel", onClick: () => {} },
+              });
             }}
             className="px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest border border-destructive/40 text-destructive hover:bg-destructive/10"
           >

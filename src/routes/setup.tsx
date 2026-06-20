@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Copy, Check, Database, ShieldCheck, Cloud, Link2 } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
-import { checkSetupStatus, createInitialAdmin } from "@/lib/setup.functions";
+import { isSetupComplete, createInitialAdmin } from "@/lib/setup.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,8 +14,8 @@ export const Route = createFileRoute("/setup")({
   ssr: false,
   beforeLoad: async () => {
     try {
-      const status = await checkSetupStatus();
-      if (status.hasAdmin) throw redirect({ to: "/auth" });
+      const done = await isSetupComplete();
+      if (done) throw redirect({ to: "/auth" });
     } catch (e) {
       if (e && typeof e === "object" && "to" in e) throw e;
     }
