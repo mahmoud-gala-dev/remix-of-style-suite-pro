@@ -1,65 +1,17 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import {
-  CalendarDays,
-  LayoutDashboard,
-  ListOrdered,
-  Scissors,
-  Settings,
-  Store,
-  Users,
-  UserCog,
-  ClipboardList,
-  BarChart3,
-  Crown,
-  Ticket,
-  Receipt,
-  Sparkles,
-  BookOpen,
-} from "lucide-react";
-import { useT, type DictKey } from "@/lib/i18n";
+import { useT } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
-
-const groups: { label: DictKey; items: { to: string; icon: React.ComponentType<{ className?: string }>; label: DictKey }[] }[] = [
-  {
-    label: "operations",
-    items: [
-      { to: "/", icon: LayoutDashboard, label: "dashboard" },
-      { to: "/calendar", icon: CalendarDays, label: "calendar" },
-      { to: "/bookings", icon: ClipboardList, label: "bookings" },
-      { to: "/queue", icon: ListOrdered, label: "queue" },
-      { to: "/customers", icon: Users, label: "customers" },
-    ],
-  },
-  {
-    label: "management",
-    items: [
-      { to: "/services", icon: Scissors, label: "services" },
-      { to: "/employees", icon: UserCog, label: "employees" },
-      { to: "/branches", icon: Store, label: "branches" },
-      { to: "/reports", icon: BarChart3, label: "reports" },
-      { to: "/settings", icon: Settings, label: "settings" },
-    ],
-  },
-  {
-    label: "finance",
-    items: [
-      { to: "/invoices", icon: Receipt, label: "invoices" },
-      { to: "/memberships", icon: Crown, label: "memberships" },
-      { to: "/coupons", icon: Ticket, label: "coupons" },
-      { to: "/loyalty", icon: Sparkles, label: "loyalty" },
-    ],
-  },
-  {
-    label: "management",
-    items: [
-      { to: "/docs", icon: BookOpen, label: "docs" },
-    ],
-  },
-];
+import { MODULES, MODULE_GROUPS } from "@/lib/modules";
+import { useLayout } from "@/lib/layout";
 
 export function Sidebar() {
   const t = useT();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const hidden = useLayout((s) => s.hiddenItems);
+  const groups = MODULE_GROUPS.map((label) => ({
+    label,
+    items: MODULES.filter((m) => m.group === label && !hidden.includes(m.id)),
+  })).filter((g) => g.items.length > 0);
 
   return (
     <aside className="w-64 border-e border-border bg-sidebar flex flex-col shrink-0 sticky top-0 h-screen">
