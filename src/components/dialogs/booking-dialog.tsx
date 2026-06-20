@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
 import { useData } from "@/lib/store";
+import { createBooking } from "@/lib/bookings.functions";
 import { Modal, Field, inputCls, ModalActions } from "@/components/ui/modal";
 
 export function BookingDialog({
@@ -14,7 +16,7 @@ export function BookingDialog({
   onClose: () => void;
 }) {
   const qc = useQueryClient();
-  const addBooking = useData((s) => s.addBooking);
+  const createBookingFn = useServerFn(createBooking);
   const customers = useData((s) => s.customers).filter((c) => c.branchId === branchId);
   const employees = useData((s) => s.employees).filter((c) => c.branchId === branchId);
   const services = useData((s) => s.services).filter((c) => c.branchId === branchId);
@@ -35,34 +37,27 @@ export function BookingDialog({
     if (!service) { setErr("Pick a service"); setSaving(false); return; }
     const start = new Date(`${date}T${time}:00`);
     const end = new Date(start.getTime() + service.durationMin * 60_000);
-    const { data, error } = await supabase
-      .from("bookings")
-      .insert({
-        branch_id: branchId,
-        customer_id: customerId,
-        employee_id: employeeId,
-        service_id: serviceId,
-        start_at: start.toISOString(),
-        end_at: end.toISOString(),
-        status: "confirmed",
-        price: service.price,
-      })
-      .select()
-      .single();
-    if (error) { setErr(error.message); setSaving(false); return; }
-    addBooking({
-      branchId, customerId, employeeId, serviceId,
-      start: start.toISOString(), end: end.toISOString(),
-      status: "confirmed", price: service.price,
-    });
-    if (data?.id) {
-      useData.setState((s) => {
-        const bookings = [...s.bookings];
-        bookings[bookings.length - 1] = { ...bookings[bookings.length - 1], id: data.id };
-        return { bookings };
+    try {
+      await createBookingFn({
+        data: {
+          branchId,
+          customerId,
+          employeeId,
+          serviceId,
+          startAt: start.toISOString(),
+          endAt: end.toISOString(),
+          price: service.price,
+        },
       });
+    } catch (error) {
+      const message = error instanceof Error && error.message ? error.message : "Slot taken";
+      setErr(message);
+      toast.error(message);
+      setSaving(false);
+      await qc.invalidateQueries({ queryKey: ["hydrate"] });
+      return;
     }
-    qc.invalidateQueries({ queryKey: ["hydrate"] });
+    await qc.invalidateQueries({ queryKey: ["hydrate"] });
     setSaving(false);
     onClose();
   }
