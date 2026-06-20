@@ -10,6 +10,10 @@ import {
   UserCog,
   ClipboardList,
   BarChart3,
+  Crown,
+  Ticket,
+  Receipt,
+  Sparkles,
 } from "lucide-react";
 import { useT, type DictKey } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -33,6 +37,15 @@ const groups: { label: DictKey; items: { to: string; icon: React.ComponentType<{
       { to: "/branches", icon: Store, label: "branches" },
       { to: "/reports", icon: BarChart3, label: "reports" },
       { to: "/settings", icon: Settings, label: "settings" },
+    ],
+  },
+  {
+    label: "finance",
+    items: [
+      { to: "/invoices", icon: Receipt, label: "invoices" },
+      { to: "/memberships", icon: Crown, label: "memberships" },
+      { to: "/coupons", icon: Ticket, label: "coupons" },
+      { to: "/loyalty", icon: Sparkles, label: "loyalty" },
     ],
   },
 ];
