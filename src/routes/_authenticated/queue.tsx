@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
 import { useCurrentBranch, useData } from "@/lib/store";
+import { supabase } from "@/integrations/supabase/client";
 import { useT } from "@/lib/i18n";
 import { minutesSince } from "@/lib/format";
 import { ArrowRight, CheckCircle2, X } from "lucide-react";
@@ -28,6 +29,15 @@ function Page() {
   const customers = useData((s) => s.customers);
   const updateQueue = useData((s) => s.updateQueue);
   const removeQueue = useData((s) => s.removeQueue);
+
+  const startServing = async (id: string) => {
+    updateQueue(id, { status: "inProgress" });
+    await supabase.from("queue_items").update({ status: "in_progress" }).eq("id", id);
+  };
+  const completeOrCancel = async (id: string) => {
+    removeQueue(id);
+    await supabase.from("queue_items").delete().eq("id", id);
+  };
 
   const waiting = queue.filter((q) => q.status === "waiting" || q.status === "called");
   const inProgress = queue.filter((q) => q.status === "inProgress");
@@ -63,7 +73,7 @@ function Page() {
                       </div>
                     </div>
                     <button
-                      onClick={() => removeQueue(q.id)}
+                      onClick={() => completeOrCancel(q.id)}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-success/10 text-success border border-success/30 rounded-md text-[10px] font-bold uppercase tracking-widest"
                     >
                       <CheckCircle2 className="size-3" />
@@ -107,14 +117,14 @@ function Page() {
                     </div>
                     <div className="flex items-center gap-1.5">
                       <button
-                        onClick={() => updateQueue(q.id, { status: "inProgress" })}
+                        onClick={() => startServing(q.id)}
                         className="p-2 rounded-md border border-border hover:border-primary hover:text-primary transition-colors"
                         title="Start"
                       >
                         <ArrowRight className="size-3.5" />
                       </button>
                       <button
-                        onClick={() => removeQueue(q.id)}
+                        onClick={() => completeOrCancel(q.id)}
                         className="p-2 rounded-md border border-border hover:border-destructive hover:text-destructive transition-colors"
                         title="Cancel"
                       >
