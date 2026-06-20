@@ -13,6 +13,17 @@ export const checkSetupStatus = createServerFn({ method: "GET" }).handler(async 
   return { hasAdmin: (count ?? 0) > 0 };
 });
 
+// Convenience boolean wrapper used by route guards.
+export const isSetupComplete = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { count, error } = await supabaseAdmin
+    .from("user_roles")
+    .select("*", { count: "exact", head: true })
+    .eq("role", "super_admin");
+  if (error) throw new Error(error.message);
+  return (count ?? 0) > 0;
+});
+
 // Public bootstrap: create the very first super_admin user. Hard-gated server
 // side: returns { ok:false } if any super_admin already exists, so it cannot
 // be abused to grant admin after setup.
