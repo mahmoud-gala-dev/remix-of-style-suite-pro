@@ -4,6 +4,18 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { getProfileLayoutPrefs, saveProfileLayoutPrefs } from "@/lib/profile-prefs.functions";
 import { snapshotLayout, useLayout, type LayoutSnapshot } from "@/lib/layout";
 
+function readLegacyLocalLayout(): LayoutSnapshot | null {
+  try {
+    const raw = window.localStorage.getItem("vanguard.layout");
+    if (!raw) return null;
+    const state = JSON.parse(raw)?.state;
+    if (!state) return null;
+    return snapshotLayout(state);
+  } catch {
+    return null;
+  }
+}
+
 export function useProfilePrefs() {
   const loaded = useRef(false);
   const [ready, setReady] = useState(false);
@@ -24,7 +36,8 @@ export function useProfilePrefs() {
   useEffect(() => {
     if (!query.data || loaded.current) return;
     loaded.current = true;
-    if (query.data.layout) applyProfileLayout(query.data.layout);
+    const initialLayout = query.data.layout ?? readLegacyLocalLayout();
+    if (initialLayout) applyProfileLayout(initialLayout);
     setReady(true);
   }, [applyProfileLayout, query.data]);
 
