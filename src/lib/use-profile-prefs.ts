@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getProfileLayoutPrefs, saveProfileLayoutPrefs } from "@/lib/profile-prefs.functions";
-import { snapshotLayout, useLayout } from "@/lib/layout";
+import { snapshotLayout, useLayout, type LayoutSnapshot } from "@/lib/layout";
 
 export function useProfilePrefs() {
   const loaded = useRef(false);
@@ -17,7 +17,7 @@ export function useProfilePrefs() {
   });
 
   const saveMutation = useMutation({
-    mutationFn: (layout: Parameters<typeof saveProfileLayoutPrefs>[0]["data"]) => saveLayout({ data: layout }),
+    mutationFn: (layout: LayoutSnapshot) => saveLayout({ data: layout }),
   });
 
   useEffect(() => {
