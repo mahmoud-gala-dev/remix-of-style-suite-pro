@@ -6,7 +6,7 @@ import { useI18n, useT } from "@/lib/i18n";
 import { fmtTime } from "@/lib/format";
 import { useMemo } from "react";
 
-export const Route = createFileRoute("/calendar")({
+export const Route = createFileRoute("/_authenticated/calendar")({
   ssr: false,
   head: () => ({ meta: [{ title: "Calendar" }] }),
   component: () => (

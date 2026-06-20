@@ -6,7 +6,7 @@ import { useI18n, useT } from "@/lib/i18n";
 import { Clock, MapPin, Phone, Plus, Store } from "lucide-react";
 import { motion } from "framer-motion";
 
-export const Route = createFileRoute("/branches")({
+export const Route = createFileRoute("/_authenticated/branches")({
   ssr: false,
   head: () => ({ meta: [{ title: "Branches" }] }),
   component: () => (

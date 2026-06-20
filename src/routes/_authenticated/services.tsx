@@ -6,7 +6,7 @@ import { useI18n, useT } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
 import { Clock, Plus, Users } from "lucide-react";
 
-export const Route = createFileRoute("/services")({
+export const Route = createFileRoute("/_authenticated/services")({
   ssr: false,
   head: () => ({ meta: [{ title: "Services" }] }),
   component: () => (

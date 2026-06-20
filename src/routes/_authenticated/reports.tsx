@@ -6,7 +6,7 @@ import { useT } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-export const Route = createFileRoute("/reports")({
+export const Route = createFileRoute("/_authenticated/reports")({
   ssr: false,
   head: () => ({ meta: [{ title: "Reports" }] }),
   component: () => (

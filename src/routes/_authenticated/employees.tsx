@@ -6,7 +6,7 @@ import { useI18n, useT } from "@/lib/i18n";
 import { initials } from "@/lib/format";
 import { Phone, Plus, Star } from "lucide-react";
 
-export const Route = createFileRoute("/employees")({
+export const Route = createFileRoute("/_authenticated/employees")({
   ssr: false,
   head: () => ({ meta: [{ title: "Employees" }] }),
   component: () => (
