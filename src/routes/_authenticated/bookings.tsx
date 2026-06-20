@@ -12,6 +12,17 @@ import { Plus, Download, Check, X, Trash2, Play } from "lucide-react";
 import { useState } from "react";
 import { BookingDialog } from "@/components/dialogs/booking-dialog";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   ContextMenu,
   ContextMenuTrigger,
   ContextMenuContent,
@@ -158,17 +169,23 @@ function Page() {
                       <X className="size-3.5 me-2" /> No-show
                     </ContextMenuItem>
                     <ContextMenuSeparator />
-                    <ContextMenuItem
-                      onSelect={() => {
-                        toast("Delete this booking?", {
-                          action: { label: "Delete", onClick: () => { removeBooking(b.id); toast.success("Deleted"); } },
-                          cancel: { label: "Cancel", onClick: () => {} },
-                        });
-                      }}
-                      className="text-red-500 focus:text-red-500"
-                    >
-                      <Trash2 className="size-3.5 me-2" /> Delete
-                    </ContextMenuItem>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <ContextMenuItem onSelect={(e) => e.preventDefault()} className="text-red-500 focus:text-red-500">
+                          <Trash2 className="size-3.5 me-2" /> Delete
+                        </ContextMenuItem>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete this booking?</AlertDialogTitle>
+                          <AlertDialogDescription>This removes the booking from this device's current list.</AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => { removeBooking(b.id); toast.success("Deleted"); }}>Delete</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </ContextMenuContent>
                 </ContextMenu>
               );
