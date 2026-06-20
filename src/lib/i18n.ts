@@ -18,6 +18,11 @@ export const dict = {
   settings: { en: "Settings", ar: "الإعدادات" },
   management: { en: "Management", ar: "الإدارة" },
   operations: { en: "Operations", ar: "العمليات" },
+  finance: { en: "Finance", ar: "المالية" },
+  memberships: { en: "Memberships", ar: "الاشتراكات" },
+  coupons: { en: "Coupons", ar: "الكوبونات" },
+  invoices: { en: "Invoices", ar: "الفواتير" },
+  loyalty: { en: "Loyalty", ar: "الولاء" },
   // generic
   search: { en: "Search", ar: "بحث" },
   add: { en: "Add", ar: "إضافة" },

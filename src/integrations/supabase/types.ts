@@ -133,6 +133,120 @@ export type Database = {
         }
         Relationships: []
       }
+      coupons: {
+        Row: {
+          active: boolean
+          branch_id: string | null
+          code: string
+          created_at: string
+          id: string
+          kind: string
+          max_uses: number | null
+          updated_at: string
+          used_count: number
+          valid_from: string
+          valid_until: string | null
+          value: number
+        }
+        Insert: {
+          active?: boolean
+          branch_id?: string | null
+          code: string
+          created_at?: string
+          id?: string
+          kind?: string
+          max_uses?: number | null
+          updated_at?: string
+          used_count?: number
+          valid_from?: string
+          valid_until?: string | null
+          value?: number
+        }
+        Update: {
+          active?: boolean
+          branch_id?: string | null
+          code?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          max_uses?: number | null
+          updated_at?: string
+          used_count?: number
+          valid_from?: string
+          valid_until?: string | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupons_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_memberships: {
+        Row: {
+          branch_id: string | null
+          created_at: string
+          customer_id: string
+          expires_at: string
+          id: string
+          plan_id: string
+          remaining_visits: number
+          started_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          branch_id?: string | null
+          created_at?: string
+          customer_id: string
+          expires_at?: string
+          id?: string
+          plan_id: string
+          remaining_visits?: number
+          started_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string | null
+          created_at?: string
+          customer_id?: string
+          expires_at?: string
+          id?: string
+          plan_id?: string
+          remaining_visits?: number
+          started_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_memberships_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_memberships_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_memberships_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "membership_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customers: {
         Row: {
           auth_user_id: string | null
@@ -253,6 +367,293 @@ export type Database = {
             columns: ["branch_id"]
             isOneToOne: false
             referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoice_items: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          invoice_id: string
+          qty: number
+          service_id: string | null
+          total: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          invoice_id: string
+          qty?: number
+          service_id?: string | null
+          total?: number
+          unit_price?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          invoice_id?: string
+          qty?: number
+          service_id?: string | null
+          total?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_items_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          booking_id: string | null
+          branch_id: string | null
+          coupon_id: string | null
+          created_at: string
+          customer_id: string | null
+          discount: number
+          id: string
+          issued_at: string
+          notes: string | null
+          number: string
+          status: string
+          subtotal: number
+          tax: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          booking_id?: string | null
+          branch_id?: string | null
+          coupon_id?: string | null
+          created_at?: string
+          customer_id?: string | null
+          discount?: number
+          id?: string
+          issued_at?: string
+          notes?: string | null
+          number?: string
+          status?: string
+          subtotal?: number
+          tax?: number
+          total?: number
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string | null
+          branch_id?: string | null
+          coupon_id?: string | null
+          created_at?: string
+          customer_id?: string | null
+          discount?: number
+          id?: string
+          issued_at?: string
+          notes?: string | null
+          number?: string
+          status?: string
+          subtotal?: number
+          tax?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      membership_plans: {
+        Row: {
+          active: boolean
+          branch_id: string | null
+          created_at: string
+          discount_pct: number
+          id: string
+          included_services: Json
+          name_ar: string
+          name_en: string
+          price: number
+          tier: string
+          updated_at: string
+          validity_days: number
+          visits: number
+        }
+        Insert: {
+          active?: boolean
+          branch_id?: string | null
+          created_at?: string
+          discount_pct?: number
+          id?: string
+          included_services?: Json
+          name_ar: string
+          name_en: string
+          price?: number
+          tier?: string
+          updated_at?: string
+          validity_days?: number
+          visits?: number
+        }
+        Update: {
+          active?: boolean
+          branch_id?: string | null
+          created_at?: string
+          discount_pct?: number
+          id?: string
+          included_services?: Json
+          name_ar?: string
+          name_en?: string
+          price?: number
+          tier?: string
+          updated_at?: string
+          validity_days?: number
+          visits?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membership_plans_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount: number
+          branch_id: string | null
+          created_at: string
+          id: string
+          invoice_id: string | null
+          method: string
+          notes: string | null
+          paid_at: string
+        }
+        Insert: {
+          amount?: number
+          branch_id?: string | null
+          created_at?: string
+          id?: string
+          invoice_id?: string | null
+          method?: string
+          notes?: string | null
+          paid_at?: string
+        }
+        Update: {
+          amount?: number
+          branch_id?: string | null
+          created_at?: string
+          id?: string
+          invoice_id?: string | null
+          method?: string
+          notes?: string | null
+          paid_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      points_transactions: {
+        Row: {
+          booking_id: string | null
+          branch_id: string | null
+          created_at: string
+          customer_id: string
+          delta: number
+          id: string
+          reason: string
+        }
+        Insert: {
+          booking_id?: string | null
+          branch_id?: string | null
+          created_at?: string
+          customer_id: string
+          delta: number
+          id?: string
+          reason?: string
+        }
+        Update: {
+          booking_id?: string | null
+          branch_id?: string | null
+          created_at?: string
+          customer_id?: string
+          delta?: number
+          id?: string
+          reason?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "points_transactions_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "points_transactions_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "points_transactions_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
             referencedColumns: ["id"]
           },
         ]

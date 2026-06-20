@@ -169,3 +169,9 @@ html[dir="rtl"] body {
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
+@media print {
+  body * { visibility: hidden !important; }
+  #printable-invoice, #printable-invoice * { visibility: visible !important; }
+  #printable-invoice { position: absolute; inset: 0; background: white; }
+}
