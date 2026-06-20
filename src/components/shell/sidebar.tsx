@@ -2,15 +2,22 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useT } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { MODULES, MODULE_GROUPS } from "@/lib/modules";
-import { useLayout } from "@/lib/layout";
+import { useLayout, ADMIN_ONLY_MODULES } from "@/lib/layout";
+import { useRole } from "@/lib/use-role";
 
 export function Sidebar() {
   const t = useT();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const hidden = useLayout((s) => s.hiddenItems);
+  const { role, isAdmin } = useRole();
+  const hidden = useLayout((s) => s.hiddenItems[role]);
   const groups = MODULE_GROUPS.map((label) => ({
     label,
-    items: MODULES.filter((m) => m.group === label && !hidden.includes(m.id)),
+    items: MODULES.filter(
+      (m) =>
+        m.group === label &&
+        !hidden.includes(m.id) &&
+        (isAdmin || !ADMIN_ONLY_MODULES.has(m.id)),
+    ),
   })).filter((g) => g.items.length > 0);
 
   return (
