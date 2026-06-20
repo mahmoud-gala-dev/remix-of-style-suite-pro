@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
 import { useCurrentBranch, useData } from "@/lib/store";
@@ -21,6 +23,18 @@ export const Route = createFileRoute("/_authenticated/queue")({
 function Page() {
   const t = useT();
   const branch = useCurrentBranch();
+  const qc = useQueryClient();
+  useEffect(() => {
+    const ch = supabase
+      .channel("realtime:queue_items")
+      .on("postgres_changes", { event: "*", schema: "public", table: "queue_items" }, () => {
+        qc.invalidateQueries({ queryKey: ["hydrate"] });
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
+  }, [qc]);
   const allQueue = useData((s) => s.queue);
   const queue = allQueue
     .filter((q) => q.branchId === branch.id)
