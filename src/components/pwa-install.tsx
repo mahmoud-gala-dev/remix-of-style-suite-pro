@@ -23,9 +23,6 @@ export function PwaInstall() {
       setOpen(true);
     };
     window.addEventListener("beforeinstallprompt", handler);
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => {});
-    }
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
