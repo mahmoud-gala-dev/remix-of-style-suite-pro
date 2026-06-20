@@ -1,9 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
 import { useT, useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { useData } from "@/lib/store";
+import { claimSuperAdmin, seedDemoData } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   ssr: false,
@@ -22,6 +26,28 @@ function Page() {
   const themeMode = useTheme((s) => s.mode);
   const setTheme = useTheme((s) => s.set);
   const reset = useData((s) => s.reset);
+  const router = useRouter();
+  const qc = useQueryClient();
+  const [msg, setMsg] = useState<string | null>(null);
+  const claim = useServerFn(claimSuperAdmin);
+  const seed = useServerFn(seedDemoData);
+
+  const claimMut = useMutation({
+    mutationFn: () => claim(),
+    onSuccess: (r) => {
+      setMsg(r.ok ? (r.alreadyOwner ? "You are already super-admin." : "Super-admin granted.") : "Already claimed by another user.");
+    },
+    onError: (e: Error) => setMsg(e.message),
+  });
+  const seedMut = useMutation({
+    mutationFn: () => seed(),
+    onSuccess: async (r) => {
+      setMsg(r.skipped ? "Branches already exist — skipped." : "Demo data loaded.");
+      await qc.invalidateQueries({ queryKey: ["hydrate"] });
+      router.invalidate();
+    },
+    onError: (e: Error) => setMsg(e.message),
+  });
 
   return (
     <div className="p-8 max-w-3xl mx-auto space-y-6">
@@ -64,16 +90,33 @@ function Page() {
       <Surface>
         <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-4">Data</h3>
         <p className="text-xs text-dim mb-3">
-          All data is stored locally in your browser. Reset to seed sample data.
+          First-time setup: claim super-admin, then load demo data into Lovable Cloud.
         </p>
-        <button
-          onClick={() => {
-            if (confirm("Reset all data to defaults?")) reset();
-          }}
-          className="px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest border border-destructive/40 text-destructive hover:bg-destructive/10"
-        >
-          Reset data
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => claimMut.mutate()}
+            disabled={claimMut.isPending}
+            className="px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest border border-primary/40 text-primary hover:bg-primary/10 disabled:opacity-50"
+          >
+            {claimMut.isPending ? "…" : "Claim super-admin"}
+          </button>
+          <button
+            onClick={() => seedMut.mutate()}
+            disabled={seedMut.isPending}
+            className="px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest border border-primary/40 text-primary hover:bg-primary/10 disabled:opacity-50"
+          >
+            {seedMut.isPending ? "…" : "Load demo data"}
+          </button>
+          <button
+            onClick={() => {
+              if (confirm("Reset local store to seed?")) reset();
+            }}
+            className="px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest border border-destructive/40 text-destructive hover:bg-destructive/10"
+          >
+            Reset local
+          </button>
+        </div>
+        {msg && <p className="text-xs text-dim mt-3">{msg}</p>}
       </Surface>
     </div>
   );
