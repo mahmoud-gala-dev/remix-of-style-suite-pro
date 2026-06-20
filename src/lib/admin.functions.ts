@@ -19,7 +19,7 @@ export const claimSuperAdmin = createServerFn({ method: "POST" })
         .eq("user_id", context.userId)
         .eq("role", "super_admin")
         .maybeSingle();
-      if (!mine) return { ok: false, reason: "already_claimed" as const };
+      if (!mine) throw new Error("Setup is already claimed by another super-admin.");
       return { ok: true, alreadyOwner: true };
     }
     const { error: insErr } = await supabaseAdmin
