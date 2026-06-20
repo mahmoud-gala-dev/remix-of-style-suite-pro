@@ -14,6 +14,7 @@ import {
   Ticket,
   Receipt,
   Sparkles,
+  BookOpen,
 } from "lucide-react";
 import { useT, type DictKey } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -46,6 +47,12 @@ const groups: { label: DictKey; items: { to: string; icon: React.ComponentType<{
       { to: "/memberships", icon: Crown, label: "memberships" },
       { to: "/coupons", icon: Ticket, label: "coupons" },
       { to: "/loyalty", icon: Sparkles, label: "loyalty" },
+    ],
+  },
+  {
+    label: "management",
+    items: [
+      { to: "/docs", icon: BookOpen, label: "docs" },
     ],
   },
 ];
