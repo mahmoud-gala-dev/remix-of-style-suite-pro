@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 export type Lang = "en" | "ar";
 
@@ -97,10 +98,21 @@ type I18nState = {
   setLang: (l: Lang) => void;
 };
 
-export const useI18n = create<I18nState>()((set) => ({
-  lang: "en",
-  setLang: (lang) => set({ lang }),
-}));
+export const useI18n = create<I18nState>()(
+  persist(
+    (set) => ({
+      lang: "en" as Lang,
+      setLang: (lang) => set({ lang }),
+    }),
+    {
+      name: "vanguard.lang",
+      storage: createJSONStorage(() =>
+        typeof window !== "undefined" ? localStorage : (undefined as never),
+      ),
+      skipHydration: typeof window === "undefined",
+    },
+  ),
+);
 
 export function useT() {
   const lang = useI18n((s) => s.lang);
