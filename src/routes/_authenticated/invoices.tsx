@@ -83,7 +83,7 @@ function Page() {
               <Th>Customer</Th>
               <Th>Total</Th>
               <Th>Status</Th>
-              <Th></Th>
+              <Th>{" "}</Th>
             </tr>
           </thead>
           <tbody>

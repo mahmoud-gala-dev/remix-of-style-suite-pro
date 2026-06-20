@@ -18,6 +18,7 @@ import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedQueueRouteImport } from './routes/_authenticated/queue'
 import { Route as AuthenticatedMembershipsRouteImport } from './routes/_authenticated/memberships'
 import { Route as AuthenticatedLoyaltyRouteImport } from './routes/_authenticated/loyalty'
+import { Route as AuthenticatedInvoicesRouteImport } from './routes/_authenticated/invoices'
 import { Route as AuthenticatedEmployeesRouteImport } from './routes/_authenticated/employees'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
 import { Route as AuthenticatedCouponsRouteImport } from './routes/_authenticated/coupons'
@@ -70,6 +71,11 @@ const AuthenticatedLoyaltyRoute = AuthenticatedLoyaltyRouteImport.update({
   path: '/loyalty',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedInvoicesRoute = AuthenticatedInvoicesRouteImport.update({
+  id: '/invoices',
+  path: '/invoices',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedEmployeesRoute = AuthenticatedEmployeesRouteImport.update({
   id: '/employees',
   path: '/employees',
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/coupons': typeof AuthenticatedCouponsRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/employees': typeof AuthenticatedEmployeesRoute
+  '/invoices': typeof AuthenticatedInvoicesRoute
   '/loyalty': typeof AuthenticatedLoyaltyRoute
   '/memberships': typeof AuthenticatedMembershipsRoute
   '/queue': typeof AuthenticatedQueueRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/coupons': typeof AuthenticatedCouponsRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/employees': typeof AuthenticatedEmployeesRoute
+  '/invoices': typeof AuthenticatedInvoicesRoute
   '/loyalty': typeof AuthenticatedLoyaltyRoute
   '/memberships': typeof AuthenticatedMembershipsRoute
   '/queue': typeof AuthenticatedQueueRoute
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/_authenticated/coupons': typeof AuthenticatedCouponsRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
   '/_authenticated/employees': typeof AuthenticatedEmployeesRoute
+  '/_authenticated/invoices': typeof AuthenticatedInvoicesRoute
   '/_authenticated/loyalty': typeof AuthenticatedLoyaltyRoute
   '/_authenticated/memberships': typeof AuthenticatedMembershipsRoute
   '/_authenticated/queue': typeof AuthenticatedQueueRoute
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/coupons'
     | '/customers'
     | '/employees'
+    | '/invoices'
     | '/loyalty'
     | '/memberships'
     | '/queue'
@@ -177,6 +187,7 @@ export interface FileRouteTypes {
     | '/coupons'
     | '/customers'
     | '/employees'
+    | '/invoices'
     | '/loyalty'
     | '/memberships'
     | '/queue'
@@ -194,6 +205,7 @@ export interface FileRouteTypes {
     | '/_authenticated/coupons'
     | '/_authenticated/customers'
     | '/_authenticated/employees'
+    | '/_authenticated/invoices'
     | '/_authenticated/loyalty'
     | '/_authenticated/memberships'
     | '/_authenticated/queue'
@@ -273,6 +285,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLoyaltyRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/invoices': {
+      id: '/_authenticated/invoices'
+      path: '/invoices'
+      fullPath: '/invoices'
+      preLoaderRoute: typeof AuthenticatedInvoicesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/employees': {
       id: '/_authenticated/employees'
       path: '/employees'
@@ -325,6 +344,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCouponsRoute: typeof AuthenticatedCouponsRoute
   AuthenticatedCustomersRoute: typeof AuthenticatedCustomersRoute
   AuthenticatedEmployeesRoute: typeof AuthenticatedEmployeesRoute
+  AuthenticatedInvoicesRoute: typeof AuthenticatedInvoicesRoute
   AuthenticatedLoyaltyRoute: typeof AuthenticatedLoyaltyRoute
   AuthenticatedMembershipsRoute: typeof AuthenticatedMembershipsRoute
   AuthenticatedQueueRoute: typeof AuthenticatedQueueRoute
@@ -341,6 +361,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCouponsRoute: AuthenticatedCouponsRoute,
   AuthenticatedCustomersRoute: AuthenticatedCustomersRoute,
   AuthenticatedEmployeesRoute: AuthenticatedEmployeesRoute,
+  AuthenticatedInvoicesRoute: AuthenticatedInvoicesRoute,
   AuthenticatedLoyaltyRoute: AuthenticatedLoyaltyRoute,
   AuthenticatedMembershipsRoute: AuthenticatedMembershipsRoute,
   AuthenticatedQueueRoute: AuthenticatedQueueRoute,
