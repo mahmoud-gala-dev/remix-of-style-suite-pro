@@ -1,6 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
+import { createHmac } from "crypto";
+
+function signPayload(secret: string, body: string): string {
+  return "sha256=" + createHmac("sha256", secret).update(body).digest("hex");
+}
 
 async function assertAdmin(ctx: any) {
   const { data } = await ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "admin" });
@@ -65,16 +70,21 @@ export const emitWebhookEvent = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ event: z.string(), payload: z.record(z.string(), z.any()) }).parse(d))
   .handler(async ({ data, context }) => {
     const { data: hooks } = await context.supabase
-      .from("webhooks").select("id,url").eq("event", data.event).eq("enabled", true);
+      .from("webhooks").select("id,url,secret").eq("event", data.event).eq("enabled", true);
     if (!hooks?.length) return { sent: 0 };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await Promise.all(hooks.map(async (h) => {
       let status = 0; let body = "";
+      const requestBody = JSON.stringify({ event: data.event, payload: data.payload, ts: new Date().toISOString() });
+      const signature = h.secret ? signPayload(h.secret, requestBody) : "";
       try {
         const res = await fetch(h.url, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ event: data.event, payload: data.payload, ts: new Date().toISOString() }),
+          headers: {
+            "Content-Type": "application/json",
+            ...(signature ? { "X-Vanguard-Signature": signature } : {}),
+          },
+          body: requestBody,
         });
         status = res.status;
         body = (await res.text()).slice(0, 500);
@@ -108,14 +118,19 @@ export const retryFailedWebhooks = createServerFn({ method: "POST" })
     for (const row of rows) {
       if (!row.webhook_id) continue;
       const { data: hook } = await supabaseAdmin
-        .from("webhooks").select("url, enabled").eq("id", row.webhook_id).maybeSingle();
+        .from("webhooks").select("url, enabled, secret").eq("id", row.webhook_id).maybeSingle();
       if (!hook?.enabled) continue;
       let status = 0; let body = "";
+      const requestBody = JSON.stringify({ event: row.event, payload: row.payload, ts: new Date().toISOString(), retry: true });
+      const signature = hook.secret ? signPayload(hook.secret, requestBody) : "";
       try {
         const res = await fetch(hook.url, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ event: row.event, payload: row.payload, ts: new Date().toISOString(), retry: true }),
+          headers: {
+            "Content-Type": "application/json",
+            ...(signature ? { "X-Vanguard-Signature": signature } : {}),
+          },
+          body: requestBody,
         });
         status = res.status;
         body = (await res.text()).slice(0, 500);

@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
 import { DataState } from "@/components/shell/data-state";
+import { Button } from "@/components/ui/button";
 import { getAuditLog } from "@/lib/audit.functions";
 
 export const Route = createFileRoute("/_authenticated/audit")({
@@ -19,38 +20,64 @@ export const Route = createFileRoute("/_authenticated/audit")({
 
 function Page() {
   const [table, setTable] = useState("");
+  const [action, setAction] = useState("");
+  const [actor, setActor] = useState("");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [limit, setLimit] = useState(100);
   const fetchLog = useServerFn(getAuditLog);
-  const q = useQuery({
-    queryKey: ["audit", table, from, to, limit],
-    queryFn: () =>
-      fetchLog({ data: { table: table || undefined, from: from || undefined, to: to || undefined, limit } }),
-    refetchInterval: 5000,
+  const q = useInfiniteQuery({
+    queryKey: ["audit", table, action, actor, from, to, limit],
+    initialPageParam: undefined as string | undefined,
+    queryFn: ({ pageParam }) =>
+      fetchLog({
+        data: {
+          table: table || undefined,
+          action: action || undefined,
+          actor: actor.trim() || undefined,
+          from: from || undefined,
+          to: to || undefined,
+          limit,
+          cursor: pageParam,
+        },
+      }),
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
   });
+  const rows = q.data?.pages.flatMap((p) => p.rows) ?? [];
 
   return (
     <div className="p-8 max-w-[1400px] mx-auto space-y-6">
       <PageHeader title="Audit Log" subtitle="Sensitive changes across roles, bookings, and invoices" />
       <Surface>
-        <div className="grid gap-3 sm:grid-cols-4 mb-4">
+        <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6 mb-4">
           <select value={table} onChange={(e) => setTable(e.target.value)} className="rounded-md border border-border bg-background px-3 py-2 text-sm">
             <option value="">All tables</option>
             <option value="user_roles">user_roles</option>
             <option value="bookings">bookings</option>
             <option value="invoices">invoices</option>
           </select>
+          <select value={action} onChange={(e) => setAction(e.target.value)} className="rounded-md border border-border bg-background px-3 py-2 text-sm">
+            <option value="">All actions</option>
+            <option value="INSERT">INSERT</option>
+            <option value="UPDATE">UPDATE</option>
+            <option value="DELETE">DELETE</option>
+          </select>
+          <input
+            value={actor}
+            onChange={(e) => setActor(e.target.value)}
+            placeholder="Actor user id"
+            className="rounded-md border border-border bg-background px-3 py-2 text-sm font-mono"
+          />
           <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="rounded-md border border-border bg-background px-3 py-2 text-sm" />
           <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="rounded-md border border-border bg-background px-3 py-2 text-sm" />
           <select value={limit} onChange={(e) => setLimit(Number(e.target.value))} className="rounded-md border border-border bg-background px-3 py-2 text-sm">
-            {[50, 100, 200, 500].map((n) => <option key={n} value={n}>{n} rows</option>)}
+            {[50, 100, 200, 500].map((n) => <option key={n} value={n}>{n} / page</option>)}
           </select>
         </div>
         <DataState
           loading={q.isLoading}
           error={q.error}
-          empty={!q.isLoading && (q.data?.rows.length ?? 0) === 0}
+          empty={!q.isLoading && rows.length === 0}
           emptyTitle="No audit events for this filter"
           retry={() => q.refetch()}
         >
@@ -67,7 +94,7 @@ function Page() {
                 </tr>
               </thead>
               <tbody>
-                {q.data?.rows.map((r) => (
+                {rows.map((r) => (
                   <tr key={r.id} className="border-b border-border/50 align-top">
                     <td className="py-2 pr-3 whitespace-nowrap">{new Date(r.at).toLocaleString()}</td>
                     <td className="py-2 pr-3">{r.table_name}</td>
@@ -81,6 +108,14 @@ function Page() {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="mt-4 flex items-center justify-between">
+            <span className="text-[11px] text-dim">{rows.length} loaded</span>
+            {q.hasNextPage && (
+              <Button variant="outline" size="sm" onClick={() => q.fetchNextPage()} disabled={q.isFetchingNextPage}>
+                {q.isFetchingNextPage ? "Loading…" : "Load more"}
+              </Button>
+            )}
           </div>
         </DataState>
       </Surface>

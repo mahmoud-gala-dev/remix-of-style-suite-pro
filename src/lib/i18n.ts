@@ -120,6 +120,26 @@ export const dict = {
   tenantName: { en: "Tenant name", ar: "اسم المستأجر" },
   noTenants: { en: "No tenants yet", ar: "لا يوجد مستأجرون" },
   deleteTenantConfirm: { en: "Delete this tenant?", ar: "حذف هذا المستأجر؟" },
+  // settings labels
+  data: { en: "Data", ar: "البيانات" },
+  footer: { en: "Footer", ar: "التذييل" },
+  footerItems: { en: "Footer items", ar: "عناصر التذييل" },
+  navigationLayout: { en: "Navigation Layout", ar: "تخطيط التنقل" },
+  visibleModules: { en: "Visible modules", ar: "الوحدات الظاهرة" },
+  configuringRole: { en: "Configuring role", ar: "ضبط الدور" },
+  shellMode: { en: "Shell mode", ar: "وضع الواجهة" },
+  sideMenu: { en: "Side menu", ar: "قائمة جانبية" },
+  topToolbar: { en: "Top toolbar", ar: "شريط علوي" },
+  visible: { en: "Visible", ar: "ظاهر" },
+  hidden: { en: "Hidden", ar: "مخفي" },
+  adminOnlyHidden: { en: "Admin-only modules are always hidden for the User role.", ar: "الوحدات الإدارية تبقى مخفية لدور المستخدم." },
+  claimSuperAdmin: { en: "Claim super-admin", ar: "المطالبة بسوبر-أدمن" },
+  loadDemoData: { en: "Load demo data", ar: "تحميل بيانات تجريبية" },
+  resetLocal: { en: "Reset local", ar: "إعادة المحلي" },
+  resetLocalConfirm: { en: "Reset local store?", ar: "إعادة المخزن المحلي؟" },
+  resetLocalDescription: { en: "This restores local demo state on this device only.", ar: "يستعيد البيانات التجريبية المحلية على هذا الجهاز فقط." },
+  reset: { en: "Reset", ar: "إعادة" },
+  dataIntro: { en: "First-time setup: claim super-admin, then load demo data.", ar: "إعداد أولي: طالب بالسوبر-أدمن ثم حمّل البيانات التجريبية." },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;

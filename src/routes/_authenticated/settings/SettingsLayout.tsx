@@ -14,33 +14,33 @@ export function SettingsLayout() {
   return (
     <>
       <Surface>
-        <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-4">Navigation Layout</h3>
+        <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-4">{t("navigationLayout")}</h3>
         <div className="space-y-5">
           {isAdmin && (
             <div>
-              <div className="text-[11px] uppercase tracking-wider text-dim mb-2">Configuring role</div>
+              <div className="text-[11px] uppercase tracking-wider text-dim mb-2">{t("configuringRole")}</div>
               <div className="flex gap-2">
                 {(["admin", "user"] as const).map((r) => (
                   <button key={r} onClick={() => setRoleTab(r)} className={`px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-widest border ${roleTab === r ? "bg-primary text-primary-foreground border-primary" : "border-border text-dim"}`}>{r}</button>
                 ))}
               </div>
-              <p className="mt-2 text-[11px] text-dim">Admin-only modules are always hidden for the User role.</p>
+              <p className="mt-2 text-[11px] text-dim">{t("adminOnlyHidden")}</p>
             </div>
           )}
 
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-dim mb-2">Shell mode</div>
+            <div className="text-[11px] uppercase tracking-wider text-dim mb-2">{t("shellMode")}</div>
             <div className="flex gap-2">
               {(["sidebar", "topbar"] as const).map((m) => (
                 <button key={m} onClick={() => layout.setMode(m)} className={`px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest border ${layout.mode === m ? "bg-primary text-primary-foreground border-primary" : "border-border text-dim"}`}>
-                  {m === "sidebar" ? "Side menu" : "Top toolbar"}
+                  {m === "sidebar" ? t("sideMenu") : t("topToolbar")}
                 </button>
               ))}
             </div>
           </div>
 
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-dim mb-2">Visible modules</div>
+            <div className="text-[11px] uppercase tracking-wider text-dim mb-2">{t("visibleModules")}</div>
             <div className="space-y-3">
               {MODULE_GROUPS.map((g) => (
                 <div key={g}>
@@ -67,13 +67,13 @@ export function SettingsLayout() {
 
       <Surface>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">Footer</h3>
+          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">{t("footer")}</h3>
           <label className="inline-flex items-center gap-2 cursor-pointer">
-            <span className="text-xs text-dim">{layout.footerEnabled ? "Visible" : "Hidden"}</span>
+            <span className="text-xs text-dim">{layout.footerEnabled ? t("visible") : t("hidden")}</span>
             <input type="checkbox" checked={layout.footerEnabled} onChange={(e) => layout.setFooterEnabled(e.target.checked)} className="size-4 accent-primary" />
           </label>
         </div>
-        <div className="text-[11px] uppercase tracking-wider text-dim mb-2">Footer items</div>
+        <div className="text-[11px] uppercase tracking-wider text-dim mb-2">{t("footerItems")}</div>
         <div className="flex flex-wrap gap-1.5">
           {MODULES.map((m) => {
             const adminOnly = ADMIN_ONLY_MODULES.has(m.id);
