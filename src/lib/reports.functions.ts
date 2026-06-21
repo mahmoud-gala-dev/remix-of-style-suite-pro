@@ -142,3 +142,22 @@ export const exportReportsCsv = createServerFn({ method: "GET" })
     for (const r of rows ?? []) lines.push(header.map((k) => csvEscape((r as Record<string, unknown>)[k])).join(","));
     return { csv: lines.join("\n"), filename: `bookings_${data.from}_${data.to}.csv` };
   });
+
+// Prompt 24: rows export for xlsx/PDF — returns booking rows as JSON.
+export const exportReportsRows = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => inputSchema.parse(data))
+  .handler(async ({ data, context }) => {
+    const from = new Date(`${data.from}T00:00:00.000Z`);
+    const toExclusive = addDays(new Date(`${data.to}T00:00:00.000Z`), 1);
+    let q = context.supabase
+      .from("bookings")
+      .select("id,branch_id,service_id,employee_id,customer_id,start_at,end_at,status,price")
+      .gte("start_at", from.toISOString())
+      .lt("start_at", toExclusive.toISOString())
+      .order("start_at", { ascending: true });
+    if (data.branchId) q = q.eq("branch_id", data.branchId);
+    const { data: rows, error } = await q;
+    if (error) throw new Error(error.message);
+    return { rows: rows ?? [], filename: `bookings_${data.from}_${data.to}` };
+  });
