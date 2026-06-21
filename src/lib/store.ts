@@ -22,6 +22,9 @@ type DataState = {
   currentBranchId: string;
   setCurrentBranch: (id: string) => void;
 
+  currentTenantId: string | null;
+  setCurrentTenant: (id: string | null) => void;
+
   branches: Branch[];
   addBranch: (b: Omit<Branch, "id">) => void;
   updateBranch: (id: string, patch: Partial<Branch>) => void;
@@ -58,6 +61,9 @@ type DataState = {
 export const useData = create<DataState>()((set, get) => ({
   currentBranchId: seedBranches[0].id,
   setCurrentBranch: (id) => set({ currentBranchId: id }),
+
+  currentTenantId: null,
+  setCurrentTenant: (id) => set({ currentTenantId: id }),
 
   branches: seedBranches,
   addBranch: (b) => set({ branches: [...get().branches, { ...b, id: rid() }] }),
