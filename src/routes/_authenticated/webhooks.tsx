@@ -8,8 +8,9 @@ import { PageHeader, Surface } from "@/components/shell/page";
 import { DataState } from "@/components/shell/data-state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { listWebhooks, upsertWebhook, deleteWebhook } from "@/lib/webhooks.functions";
+import { listWebhooks, upsertWebhook, deleteWebhook, listDeliveries, retryFailedWebhooks } from "@/lib/webhooks.functions";
 import { useT } from "@/lib/i18n";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/_authenticated/webhooks")({
   ssr: false,
@@ -26,8 +27,11 @@ function Page() {
   const fetchHooks = useServerFn(listWebhooks);
   const saveHook = useServerFn(upsertWebhook);
   const delHook = useServerFn(deleteWebhook);
+  const fetchDeliveries = useServerFn(listDeliveries);
+  const retryNow = useServerFn(retryFailedWebhooks);
   const qc = useQueryClient();
   const q = useQuery({ queryKey: ["webhooks"], queryFn: () => fetchHooks() });
+  const dq = useQuery({ queryKey: ["webhook-deliveries"], queryFn: () => fetchDeliveries() });
   const [event, setEvent] = useState("booking.created");
   const [url, setUrl] = useState("");
 
@@ -40,11 +44,22 @@ function Page() {
     mutationFn: (id: string) => delHook({ data: { id } }),
     onSuccess: () => { toast.success(t("removed")); qc.invalidateQueries({ queryKey: ["webhooks"] }); },
   });
+  const retry = useMutation({
+    mutationFn: () => retryNow(),
+    onSuccess: () => { toast.success(t("retrySuccess")); qc.invalidateQueries({ queryKey: ["webhook-deliveries"] }); },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   return (
     <div className="p-8 max-w-[1200px] mx-auto space-y-6">
       <PageHeader title={t("webhooks")} subtitle={t("webhooksSubtitle")} />
-      <Surface>
+      <Tabs defaultValue="hooks" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="hooks">{t("webhooks")}</TabsTrigger>
+          <TabsTrigger value="deliveries">{t("deliveries")}</TabsTrigger>
+        </TabsList>
+        <TabsContent value="hooks" className="space-y-6">
+          <Surface>
         <div className="flex flex-wrap gap-2 items-end">
           <label className="space-y-1.5 text-xs">
             <span className="text-dim">{t("event")}</span>
@@ -63,8 +78,8 @@ function Page() {
           </label>
           <Button onClick={() => add.mutate()} disabled={!url || add.isPending}>{t("add")}</Button>
         </div>
-      </Surface>
-      <Surface>
+          </Surface>
+          <Surface>
         <DataState loading={q.isLoading} error={q.error}
           empty={!q.isLoading && (q.data?.length ?? 0) === 0}
           emptyTitle={t("noWebhooks")} retry={() => q.refetch()}>
@@ -86,7 +101,46 @@ function Page() {
             </tbody>
           </table>
         </DataState>
-      </Surface>
+          </Surface>
+        </TabsContent>
+        <TabsContent value="deliveries" className="space-y-4">
+          <Surface>
+            <div className="flex justify-end mb-3">
+              <Button size="sm" onClick={() => retry.mutate()} disabled={retry.isPending}>
+                {t("retryNow")}
+              </Button>
+            </div>
+            <DataState loading={dq.isLoading} error={dq.error}
+              empty={!dq.isLoading && (dq.data?.length ?? 0) === 0}
+              emptyTitle={t("noDeliveries")} retry={() => dq.refetch()}>
+              <table className="w-full text-sm">
+                <thead className="text-xs text-dim text-left">
+                  <tr>
+                    <th className="py-2">{t("event")}</th>
+                    <th>{t("status")}</th>
+                    <th>{t("attempts")}</th>
+                    <th>{t("date")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dq.data?.map((d: any) => (
+                    <tr key={d.id} className="border-t border-border/40">
+                      <td className="py-2 font-mono text-xs">{d.event}</td>
+                      <td>
+                        <span className={d.failed ? "text-destructive" : d.status >= 200 && d.status < 400 ? "text-primary" : "text-dim"}>
+                          {d.failed ? t("failed") : d.status || "—"}
+                        </span>
+                      </td>
+                      <td className="font-mono text-xs">{d.attempts}</td>
+                      <td className="text-xs text-dim">{new Date(d.created_at).toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </DataState>
+          </Surface>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
