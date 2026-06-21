@@ -998,27 +998,36 @@ export type Database = {
       }
       webhook_deliveries: {
         Row: {
+          attempts: number
           created_at: string
           event: string
+          failed: boolean
           id: string
+          next_retry_at: string | null
           payload: Json
           response: string | null
           status: number | null
           webhook_id: string | null
         }
         Insert: {
+          attempts?: number
           created_at?: string
           event: string
+          failed?: boolean
           id?: string
+          next_retry_at?: string | null
           payload: Json
           response?: string | null
           status?: number | null
           webhook_id?: string | null
         }
         Update: {
+          attempts?: number
           created_at?: string
           event?: string
+          failed?: boolean
           id?: string
+          next_retry_at?: string | null
           payload?: Json
           response?: string | null
           status?: number | null
