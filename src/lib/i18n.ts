@@ -90,6 +90,27 @@ export const dict = {
   // misc
   high: { en: "High traffic", ar: "ازدحام مرتفع" },
   noData: { en: "No data yet", ar: "لا توجد بيانات" },
+  // webhooks
+  webhooks: { en: "Webhooks", ar: "ويب هوكس" },
+  webhooksSubtitle: { en: "Send events to Zapier, n8n, or any HTTPS URL", ar: "أرسل الأحداث إلى Zapier أو n8n أو أي رابط HTTPS" },
+  event: { en: "Event", ar: "الحدث" },
+  url: { en: "URL", ar: "الرابط" },
+  enabled: { en: "Enabled", ar: "مفعّل" },
+  disabled: { en: "Disabled", ar: "معطّل" },
+  noWebhooks: { en: "No webhooks configured", ar: "لا توجد ويب هوكس مهيّأة" },
+  webhookAdded: { en: "Webhook added", ar: "تمت إضافة الويب هوك" },
+  removed: { en: "Removed", ar: "تم الحذف" },
+  failed: { en: "Failed", ar: "فشل" },
+  // tenants
+  tenants: { en: "Tenants", ar: "المستأجرون" },
+  tenant: { en: "Tenant", ar: "المستأجر" },
+  allTenants: { en: "All tenants", ar: "كل المستأجرين" },
+  switchTenant: { en: "Switch tenant", ar: "تبديل المستأجر" },
+  // settings extras
+  generalSettings: { en: "General settings", ar: "الإعدادات العامة" },
+  defaultTaxPct: { en: "Default tax %", ar: "ضريبة افتراضية %" },
+  refreshInterval: { en: "Refresh interval (s)", ar: "فاصل التحديث (ث)" },
+  bookingOtpRequired: { en: "Require OTP for public booking", ar: "اشتراط OTP للحجز العام" },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;
