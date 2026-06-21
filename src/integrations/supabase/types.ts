@@ -960,7 +960,25 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      mv_daily_revenue: {
+        Row: {
+          branch_id: string | null
+          day: string | null
+          invoice_count: number | null
+          total_discount: number | null
+          total_revenue: number | null
+          total_tax: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       check_rate_limit: {
@@ -975,6 +993,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      refresh_mv_daily_revenue: { Args: never; Returns: undefined }
       request_otp: { Args: { p_phone: string }; Returns: string }
       user_has_branch: {
         Args: { _bid: string; _uid: string }
