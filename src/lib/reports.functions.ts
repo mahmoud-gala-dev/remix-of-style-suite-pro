@@ -204,3 +204,77 @@ export const getReportsCompare = createServerFn({ method: "GET" })
       range: { from: data.from, to: data.to, prev_from: prevFrom.toISOString().slice(0, 10), prev_to: prevTo.toISOString().slice(0, 10) },
     };
   });
+
+// P6 — Server-rendered PDF summary. Returns a base64 PDF so the client can
+// trigger a download without a separate streaming endpoint.
+export const exportReportsPdf = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => inputSchema.parse(data))
+  .handler(async ({ data, context }) => {
+    const from = new Date(`${data.from}T00:00:00.000Z`);
+    const toExclusive = addDays(new Date(`${data.to}T00:00:00.000Z`), 1);
+    let q = context.supabase
+      .from("bookings")
+      .select("branch_id,service_id,status,price,start_at")
+      .gte("start_at", from.toISOString())
+      .lt("start_at", toExclusive.toISOString());
+    if (data.branchId) q = q.eq("branch_id", data.branchId);
+    const { data: rows, error } = await q;
+    if (error) throw new Error(error.message);
+    const [branchesRes, servicesRes] = await Promise.all([
+      context.supabase.from("branches").select("id,name_en"),
+      context.supabase.from("services").select("id,name_en"),
+    ]);
+    const branchMap = new Map((branchesRes.data ?? []).map((b) => [b.id, b.name_en]));
+    const serviceMap = new Map((servicesRes.data ?? []).map((s) => [s.id, s.name_en]));
+    const all = rows ?? [];
+    const revenue = all.filter((r) => revenueStatuses.has(r.status)).reduce((s, r) => s + Number(r.price), 0);
+
+    const serviceCounts = new Map<string, { count: number; revenue: number }>();
+    for (const r of all) {
+      const cur = serviceCounts.get(r.service_id) ?? { count: 0, revenue: 0 };
+      cur.count += 1;
+      if (revenueStatuses.has(r.status)) cur.revenue += Number(r.price);
+      serviceCounts.set(r.service_id, cur);
+    }
+    const topServices = [...serviceCounts.entries()]
+      .map(([id, v]) => ({ name: serviceMap.get(id) ?? "—", ...v }))
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 10);
+
+    const { PDFDocument, StandardFonts, rgb } = await import("pdf-lib");
+    const pdf = await PDFDocument.create();
+    const page = pdf.addPage([595, 842]); // A4
+    const font = await pdf.embedFont(StandardFonts.Helvetica);
+    const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
+    const ink = rgb(0.07, 0.07, 0.08);
+    const dim = rgb(0.4, 0.4, 0.45);
+    let y = 800;
+    page.drawText("Vanguard Salon OS — Report", { x: 40, y, size: 18, font: bold, color: ink });
+    y -= 24;
+    const branchLabel = data.branchId ? branchMap.get(data.branchId) ?? "Selected branch" : "All branches";
+    page.drawText(`Period: ${data.from} → ${data.to}    Branch: ${branchLabel}`, {
+      x: 40, y, size: 10, font, color: dim,
+    });
+    y -= 30;
+    page.drawText("Totals", { x: 40, y, size: 12, font: bold, color: ink }); y -= 16;
+    page.drawText(`Bookings: ${all.length}`, { x: 40, y, size: 10, font, color: ink }); y -= 14;
+    page.drawText(`Revenue:  ${revenue.toFixed(2)}`, { x: 40, y, size: 10, font, color: ink }); y -= 24;
+
+    page.drawText("Top services", { x: 40, y, size: 12, font: bold, color: ink }); y -= 16;
+    page.drawText("Service", { x: 40, y, size: 9, font: bold, color: dim });
+    page.drawText("Bookings", { x: 360, y, size: 9, font: bold, color: dim });
+    page.drawText("Revenue", { x: 470, y, size: 9, font: bold, color: dim });
+    y -= 12;
+    for (const s of topServices) {
+      if (y < 60) break;
+      const name = s.name.length > 55 ? `${s.name.slice(0, 52)}…` : s.name;
+      page.drawText(name, { x: 40, y, size: 10, font, color: ink });
+      page.drawText(String(s.count), { x: 360, y, size: 10, font, color: ink });
+      page.drawText(s.revenue.toFixed(2), { x: 470, y, size: 10, font, color: ink });
+      y -= 14;
+    }
+
+    const bytes = await pdf.saveAsBase64();
+    return { base64: bytes, filename: `vanguard_report_${data.from}_${data.to}.pdf` };
+  });
