@@ -15,6 +15,7 @@ import { Route as BookRouteImport } from './routes/book'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as MyTokenRouteImport } from './routes/my.$token'
 import { Route as AuthenticatedWebhooksRouteImport } from './routes/_authenticated/webhooks'
 import { Route as AuthenticatedTenantsRouteImport } from './routes/_authenticated/tenants'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
@@ -65,6 +66,11 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const MyTokenRoute = MyTokenRouteImport.update({
+  id: '/my/$token',
+  path: '/my/$token',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedWebhooksRoute = AuthenticatedWebhooksRouteImport.update({
   id: '/webhooks',
@@ -199,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/tenants': typeof AuthenticatedTenantsRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
+  '/my/$token': typeof MyTokenRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
@@ -226,6 +233,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/tenants': typeof AuthenticatedTenantsRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
+  '/my/$token': typeof MyTokenRoute
   '/': typeof AuthenticatedIndexRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
@@ -256,6 +264,7 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/tenants': typeof AuthenticatedTenantsRoute
   '/_authenticated/webhooks': typeof AuthenticatedWebhooksRoute
+  '/my/$token': typeof MyTokenRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
@@ -287,6 +296,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tenants'
     | '/webhooks'
+    | '/my/$token'
     | '/api/public/healthcheck'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
@@ -314,6 +324,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tenants'
     | '/webhooks'
+    | '/my/$token'
     | '/'
     | '/api/public/healthcheck'
     | '/api/public/cron/process-webhooks'
@@ -343,6 +354,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/_authenticated/tenants'
     | '/_authenticated/webhooks'
+    | '/my/$token'
     | '/_authenticated/'
     | '/api/public/healthcheck'
     | '/api/public/cron/process-webhooks'
@@ -355,6 +367,7 @@ export interface RootRouteChildren {
   BookRoute: typeof BookRoute
   SetupRoute: typeof SetupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  MyTokenRoute: typeof MyTokenRoute
   ApiPublicHealthcheckRoute: typeof ApiPublicHealthcheckRoute
   ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
   ApiPublicCronRetryWebhooksRoute: typeof ApiPublicCronRetryWebhooksRoute
@@ -403,6 +416,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/my/$token': {
+      id: '/my/$token'
+      path: '/my/$token'
+      fullPath: '/my/$token'
+      preLoaderRoute: typeof MyTokenRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/webhooks': {
       id: '/_authenticated/webhooks'
@@ -607,6 +627,7 @@ const rootRouteChildren: RootRouteChildren = {
   BookRoute: BookRoute,
   SetupRoute: SetupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  MyTokenRoute: MyTokenRoute,
   ApiPublicHealthcheckRoute: ApiPublicHealthcheckRoute,
   ApiPublicCronProcessWebhooksRoute: ApiPublicCronProcessWebhooksRoute,
   ApiPublicCronRetryWebhooksRoute: ApiPublicCronRetryWebhooksRoute,
