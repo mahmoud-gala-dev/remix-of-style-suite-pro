@@ -278,3 +278,19 @@ function Metric({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
+
+function CompareMetric({ label, current, previous, delta }: { label: string; current: string; previous: string; delta: number }) {
+  const up = delta > 0;
+  const flat = delta === 0;
+  const color = flat ? "text-dim" : up ? "text-primary" : "text-destructive";
+  return (
+    <div className="rounded-md border border-border bg-surface-2/30 p-3">
+      <div className="text-[10px] uppercase tracking-widest text-dim">{label}</div>
+      <div className="mt-1 flex items-baseline justify-between gap-2">
+        <div className="font-display text-2xl">{current}</div>
+        <div className={`text-xs font-mono ${color}`}>{flat ? "—" : `${up ? "+" : ""}${delta}%`}</div>
+      </div>
+      <div className="text-[10px] text-dim mt-1">prev {previous}</div>
+    </div>
+  );
+}
