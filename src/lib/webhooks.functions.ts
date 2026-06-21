@@ -46,6 +46,19 @@ export const deleteWebhook = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const listDeliveries = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { data, error } = await context.supabase
+      .from("webhook_deliveries")
+      .select("id, webhook_id, event, status, attempts, failed, response, created_at, next_retry_at")
+      .order("created_at", { ascending: false })
+      .limit(100);
+    if (error) throw error;
+    return data ?? [];
+  });
+
 // Emit an event to all enabled webhooks for that event. Fire-and-forget via no-cors-style POST.
 export const emitWebhookEvent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
