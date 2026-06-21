@@ -5,7 +5,7 @@ import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
 import { useT } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
-import { getReportsSummary, exportReportsCsv, exportReportsRows } from "@/lib/reports.functions";
+import { getReportsSummary, exportReportsCsv, exportReportsRows, getReportsCompare } from "@/lib/reports.functions";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
@@ -50,9 +50,14 @@ function Page() {
   const fetchReports = useServerFn(getReportsSummary);
   const fetchCsv = useServerFn(exportReportsCsv);
   const fetchRows = useServerFn(exportReportsRows);
+  const fetchCompare = useServerFn(getReportsCompare);
   const { data, isFetching } = useQuery({
     queryKey: ["reports", from, to, branchId],
     queryFn: () => fetchReports({ data: { from, to, branchId: branchId === "all" ? null : branchId } }),
+  });
+  const compareQ = useQuery({
+    queryKey: ["reports-compare", from, to, branchId],
+    queryFn: () => fetchCompare({ data: { from, to, branchId: branchId === "all" ? null : branchId } }),
   });
 
   const onExport = async () => {
@@ -141,6 +146,28 @@ function Page() {
         </div>
         {isFetching && <p className="mt-3 text-xs text-dim">Refreshing…</p>}
       </Surface>
+
+      {compareQ.data && (
+        <Surface>
+          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-4">
+            Compare vs previous period ({compareQ.data.range.prev_from} → {compareQ.data.range.prev_to})
+          </h3>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <CompareMetric
+              label="Revenue"
+              current={fmtMoney(compareQ.data.current.revenue)}
+              previous={fmtMoney(compareQ.data.previous.revenue)}
+              delta={compareQ.data.delta.revenue}
+            />
+            <CompareMetric
+              label="Bookings"
+              current={String(compareQ.data.current.bookings)}
+              previous={String(compareQ.data.previous.bookings)}
+              delta={compareQ.data.delta.bookings}
+            />
+          </div>
+        </Surface>
+      )}
 
       <Surface>
         <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-6">
@@ -248,6 +275,22 @@ function Metric({ label, value }: { label: string; value: string }) {
     <div className="rounded-md border border-border bg-surface-2/30 p-3">
       <div className="text-[10px] uppercase tracking-widest text-dim">{label}</div>
       <div className="mt-1 font-display text-2xl">{value}</div>
+    </div>
+  );
+}
+
+function CompareMetric({ label, current, previous, delta }: { label: string; current: string; previous: string; delta: number }) {
+  const up = delta > 0;
+  const flat = delta === 0;
+  const color = flat ? "text-dim" : up ? "text-primary" : "text-destructive";
+  return (
+    <div className="rounded-md border border-border bg-surface-2/30 p-3">
+      <div className="text-[10px] uppercase tracking-widest text-dim">{label}</div>
+      <div className="mt-1 flex items-baseline justify-between gap-2">
+        <div className="font-display text-2xl">{current}</div>
+        <div className={`text-xs font-mono ${color}`}>{flat ? "—" : `${up ? "+" : ""}${delta}%`}</div>
+      </div>
+      <div className="text-[10px] text-dim mt-1">prev {previous}</div>
     </div>
   );
 }

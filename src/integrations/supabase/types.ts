@@ -922,6 +922,50 @@ export type Database = {
           },
         ]
       }
+      subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string
+          current_period_start: string
+          id: string
+          max_bookings_per_month: number
+          status: string
+          tenant_id: string
+          tier: Database["public"]["Enums"]["billing_tier"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string
+          current_period_start?: string
+          id?: string
+          max_bookings_per_month?: number
+          status?: string
+          tenant_id: string
+          tier?: Database["public"]["Enums"]["billing_tier"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string
+          current_period_start?: string
+          id?: string
+          max_bookings_per_month?: number
+          status?: string
+          tenant_id?: string
+          tier?: Database["public"]["Enums"]["billing_tier"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenants: {
         Row: {
           created_at: string
@@ -1103,6 +1147,10 @@ export type Database = {
         Args: { p_email: string; p_ip: string }
         Returns: undefined
       }
+      count_tenant_bookings_this_period: {
+        Args: { _tenant_id: string }
+        Returns: number
+      }
       current_user_tenants: { Args: never; Returns: string[] }
       has_any_staff_role: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
@@ -1125,6 +1173,7 @@ export type Database = {
     }
     Enums: {
       app_role: "super_admin" | "admin" | "reception" | "staff" | "customer"
+      billing_tier: "free" | "pro" | "enterprise"
       booking_status:
         | "pending"
         | "confirmed"
@@ -1268,6 +1317,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["super_admin", "admin", "reception", "staff", "customer"],
+      billing_tier: ["free", "pro", "enterprise"],
       booking_status: [
         "pending",
         "confirmed",
