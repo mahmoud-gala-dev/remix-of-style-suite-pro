@@ -160,7 +160,7 @@ export const sendTestPing = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
-    rateLimit(`sendTestPing:${context.userId}`, { capacity: 10, refillPerMin: 10 });
+    await rateLimit(`sendTestPing:${context.userId}`, { capacity: 10, refillPerMin: 10 });
     const { data: hook, error } = await context.supabase
       .from("webhooks").select("id,url,event,secret").eq("id", data.id).maybeSingle();
     if (error) throw error;

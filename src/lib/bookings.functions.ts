@@ -43,7 +43,7 @@ export const createBooking = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // P74 — rate-limit by phone (anon endpoint).
-    rateLimit(`createBooking:${data.customerPhone ?? data.customerId ?? "anon"}`, { capacity: 10, refillPerMin: 10 });
+    await rateLimit(`createBooking:${data.customerPhone ?? data.customerId ?? "anon"}`, { capacity: 10, refillPerMin: 10 });
 
     // OTP gate (configurable via app_settings.booking_otp_required).
     const { data: setting } = await supabaseAdmin
