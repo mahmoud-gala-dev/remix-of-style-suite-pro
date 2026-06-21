@@ -21,6 +21,7 @@ import "@fontsource/ibm-plex-sans-arabic/600.css";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
+import { useI18n } from "@/lib/i18n";
 
 function NotFoundComponent() {
   return (
@@ -122,6 +123,12 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const lang = useI18n((s) => s.lang);
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  }, [lang]);
 
   return (
     <QueryClientProvider client={queryClient}>
