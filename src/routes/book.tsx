@@ -21,6 +21,7 @@ import { fmtMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { PwaInstall } from "@/components/pwa-install";
 import { createBooking, getPublicBookingCatalog } from "@/lib/bookings.functions";
+import { getBookingOtpEnabled, requestOtp, verifyOtp } from "@/lib/otp.functions";
 import type { Booking, Branch, Employee, Service } from "@/types/domain";
 
 export const Route = createFileRoute("/book")({
@@ -48,7 +49,12 @@ const ANY_EMPLOYEE = "__any__";
 function BookPage() {
   const fetchCatalog = useServerFn(getPublicBookingCatalog);
   const createBookingFn = useServerFn(createBooking);
+  const fetchOtpEnabled = useServerFn(getBookingOtpEnabled);
+  const sendOtp = useServerFn(requestOtp);
+  const checkOtp = useServerFn(verifyOtp);
   const catalog = useQuery({ queryKey: ["public-booking-catalog"], queryFn: () => fetchCatalog() });
+  const otpSetting = useQuery({ queryKey: ["booking-otp-enabled"], queryFn: () => fetchOtpEnabled() });
+  const otpRequired = otpSetting.data?.enabled ?? false;
   const branches = catalog.data?.branches ?? [];
   const services = catalog.data?.services ?? [];
   const employees = catalog.data?.employees ?? [];
@@ -69,6 +75,10 @@ function BookPage() {
   const [phone, setPhone] = useState("");
   const [confirmedId, setConfirmedId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [otpBusy, setOtpBusy] = useState(false);
 
   const branch = branches.find((b) => b.id === branchId) ?? null;
   const service = services.find((s) => s.id === serviceId) ?? null;
@@ -105,7 +115,7 @@ function BookPage() {
     (step === 1 && serviceId) ||
     step === 2 ||
     (step === 3 && time) ||
-    (step === 4 && name.trim().length > 1 && phone.trim().length > 5 && !submitting);
+    (step === 4 && name.trim().length > 1 && phone.trim().length > 5 && !submitting && (!otpRequired || otpVerified));
 
   function next() {
     if (step < 5) setStep((s) => (s + 1) as Step);
@@ -135,6 +145,7 @@ function BookPage() {
           startAt: start.toISOString(),
           endAt: end.toISOString(),
           price: service.price,
+          ...(otpRequired ? { otpCode: otpCode.trim() } : {}),
         },
       });
       setConfirmedId(res.id);
@@ -147,6 +158,31 @@ function BookPage() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  async function onSendOtp() {
+    if (phone.trim().length < 6) { toast.error("Enter a valid phone first"); return; }
+    setOtpBusy(true);
+    try {
+      const r = await sendOtp({ data: { phone: phone.trim() } });
+      setOtpSent(true);
+      // Dev convenience: SMS provider not wired yet, surface code in toast.
+      toast.success(`OTP sent. (dev code: ${r.code})`);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to send OTP");
+    } finally { setOtpBusy(false); }
+  }
+
+  async function onVerifyOtp() {
+    if (otpCode.trim().length !== 6) return;
+    setOtpBusy(true);
+    try {
+      const r = await checkOtp({ data: { phone: phone.trim(), code: otpCode.trim() } });
+      if (r.ok) { setOtpVerified(true); toast.success("Phone verified"); }
+      else toast.error("Invalid or expired code");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Verification failed");
+    } finally { setOtpBusy(false); }
   }
 
   const steps = [
