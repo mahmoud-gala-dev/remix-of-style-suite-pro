@@ -164,5 +164,5 @@ export const createBooking = createServerFn({ method: "POST" })
         }));
       }
     } catch { /* swallow — webhook failure must not break booking */ }
-    return { ok: true as const, id: row.id };
+    return { ok: true as const, id: row.id, manageToken: row.manage_token as string };
   });
