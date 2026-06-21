@@ -176,6 +176,18 @@ export const dict = {
   valuesSaveOnBlur: { en: "Values save on blur.", ar: "تُحفظ القيم عند مغادرة الحقل." },
   // network
   offline: { en: "You are offline. Changes will not sync until reconnected.", ar: "أنت غير متصل بالإنترنت. لن تتم المزامنة حتى تعود." },
+  // 2FA
+  twoFactorAuth: { en: "Two-Factor Authentication", ar: "المصادقة الثنائية" },
+  twoFADescription: { en: "Add a one-time code from your authenticator app on top of your password.", ar: "أضف رمزًا لمرة واحدة من تطبيق المصادقة فوق كلمة المرور." },
+  twoFAEnable: { en: "Enable 2FA", ar: "تفعيل المصادقة الثنائية" },
+  twoFAEnabled: { en: "2FA Enabled", ar: "تم تفعيل المصادقة الثنائية" },
+  twoFADisabled: { en: "2FA Disabled", ar: "تم تعطيل المصادقة الثنائية" },
+  twoFAScanQR: { en: "Scan this QR with Google Authenticator / 1Password / Authy, then enter the 6-digit code.", ar: "امسح هذا الرمز بتطبيق المصادقة، ثم أدخل الكود المكون من 6 أرقام." },
+  twoFAEnterCode: { en: "Enter 6-digit code", ar: "أدخل الكود (6 أرقام)" },
+  twoFACurrentCode: { en: "Current 6-digit code", ar: "الكود الحالي (6 أرقام)" },
+  twoFAVerify: { en: "Verify", ar: "تحقق" },
+  twoFAInvalidCode: { en: "Invalid code. Try again.", ar: "كود غير صالح. حاول مرة أخرى." },
+  disable: { en: "Disable", ar: "تعطيل" },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;

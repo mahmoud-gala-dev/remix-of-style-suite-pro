@@ -1017,6 +1017,30 @@ export type Database = {
         }
         Relationships: []
       }
+      user_2fa: {
+        Row: {
+          enabled: boolean
+          enrolled_at: string
+          last_verified_at: string | null
+          secret: string
+          user_id: string
+        }
+        Insert: {
+          enabled?: boolean
+          enrolled_at?: string
+          last_verified_at?: string | null
+          secret: string
+          user_id: string
+        }
+        Update: {
+          enabled?: boolean
+          enrolled_at?: string
+          last_verified_at?: string | null
+          secret?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_branches: {
         Row: {
           branch_id: string

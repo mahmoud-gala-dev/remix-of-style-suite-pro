@@ -1,17 +1,18 @@
 import { defineConfig, devices } from "@playwright/test";
 
-// Run with: bun add -D @playwright/test && bunx playwright install chromium && bunx playwright test
 export default defineConfig({
   testDir: "./tests/e2e",
-  timeout: 30_000,
-  fullyParallel: true,
-  retries: 0,
+  timeout: 60_000,
+  expect: { timeout: 10_000 },
+  fullyParallel: false,
+  retries: process.env.CI ? 1 : 0,
+  reporter: "list",
   use: {
     baseURL: process.env.E2E_BASE_URL ?? "http://localhost:8080",
-    trace: "retain-on-failure",
+    headless: true,
     viewport: { width: 1280, height: 800 },
+    trace: "retain-on-failure",
+    screenshot: "only-on-failure",
   },
-  projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-  ],
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 });
