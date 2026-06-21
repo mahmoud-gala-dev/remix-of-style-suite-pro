@@ -104,7 +104,16 @@ export function Topbar() {
           <Search className="size-3.5 absolute start-3 text-dim" />
           <input
             placeholder={t("search") + "…"}
-            className="bg-surface border border-border rounded-md ps-8 pe-3 py-1.5 text-xs w-72 outline-none focus:border-primary/50 transition-colors"
+            readOnly
+            aria-label={t("search")}
+            onFocus={(e) => {
+              e.currentTarget.blur();
+              window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }));
+            }}
+            onClick={() =>
+              window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }))
+            }
+            className="bg-surface border border-border rounded-md ps-8 pe-3 py-1.5 text-xs w-72 outline-none focus:border-primary/50 transition-colors cursor-pointer"
           />
           <kbd className="absolute end-2 text-[9px] font-mono text-dim border border-border rounded px-1 py-0.5">⌘K</kbd>
         </div>
