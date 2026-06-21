@@ -8,6 +8,7 @@ import { Plus, Sparkles } from "lucide-react";
 import { Modal, Field, inputCls, ModalActions } from "@/components/ui/modal";
 import { useCurrentBranch, useData } from "@/lib/store";
 import { useT } from "@/lib/i18n";
+import { DataState } from "@/components/shell/data-state";
 
 type Txn = {
   id: string; customer_id: string; delta: number; reason: string; created_at: string;
@@ -81,6 +82,13 @@ function Page() {
         </Surface>
 
         <Surface padded={false} className="lg:col-span-2 overflow-hidden">
+          <DataState
+            loading={q.isLoading}
+            error={q.error}
+            empty={!q.isLoading && txns.length === 0}
+            emptyTitle={t("noData")}
+            retry={() => q.refetch()}
+          >
           <table className="w-full text-sm">
             <thead className="text-[10px] uppercase tracking-widest text-dim">
               <tr>
@@ -104,11 +112,9 @@ function Page() {
                   </tr>
                 );
               })}
-              {txns.length === 0 && (
-                <tr><td colSpan={4} className="p-12 text-center text-sm text-dim">{t("noData")}</td></tr>
-              )}
             </tbody>
           </table>
+          </DataState>
         </Surface>
       </div>
 

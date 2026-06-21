@@ -8,6 +8,7 @@ import { Plus, Ticket } from "lucide-react";
 import { Modal, Field, inputCls, ModalActions } from "@/components/ui/modal";
 import { useCurrentBranch } from "@/lib/store";
 import { useT } from "@/lib/i18n";
+import { DataState } from "@/components/shell/data-state";
 
 type Coupon = {
   id: string; code: string; kind: "percent" | "fixed"; value: number;
@@ -51,6 +52,13 @@ function Page() {
         }
       />
 
+      <DataState
+        loading={q.isLoading}
+        error={q.error}
+        empty={!q.isLoading && list.length === 0}
+        emptyTitle={t("noData")}
+        retry={() => q.refetch()}
+      >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {list.map((c) => (
           <Surface key={c.id} className="hover:border-primary/40 transition-colors">
@@ -73,12 +81,8 @@ function Page() {
             </div>
           </Surface>
         ))}
-        {list.length === 0 && (
-          <Surface className="col-span-full">
-            <p className="text-center text-sm text-dim py-8">{t("noData")}</p>
-          </Surface>
-        )}
       </div>
+      </DataState>
 
       <CouponDialog open={open} onClose={() => setOpen(false)} branchId={branch.id} onCreated={() => qc.invalidateQueries({ queryKey: ["coupons"] })} />
     </div>
