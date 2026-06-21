@@ -23,6 +23,9 @@ import { ADMIN_ONLY_MODULES, type RoleKind } from "@/lib/layout";
 import { useRole } from "@/lib/use-role";
 import { useData } from "@/lib/store";
 import { claimSuperAdmin, seedDemoData } from "@/lib/admin.functions";
+import { getBookingOtpEnabled, setBookingOtpEnabled } from "@/lib/otp.functions";
+import { useServerFn as useServerFn2 } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/settings")({
@@ -50,6 +53,14 @@ function Page() {
   const [msg, setMsg] = useState<string | null>(null);
   const claim = useServerFn(claimSuperAdmin);
   const seed = useServerFn(seedDemoData);
+  const fetchOtp = useServerFn2(getBookingOtpEnabled);
+  const setOtp = useServerFn2(setBookingOtpEnabled);
+  const otpQ = useQuery({ queryKey: ["booking-otp-enabled"], queryFn: () => fetchOtp() });
+  const otpMut = useMutation({
+    mutationFn: (enabled: boolean) => setOtp({ data: { enabled } }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["booking-otp-enabled"] }); toast.success("Saved"); },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   const claimMut = useMutation({
     mutationFn: () => claim(),
@@ -105,6 +116,27 @@ function Page() {
           ))}
         </div>
       </Surface>
+
+      {isAdmin && (
+        <Surface>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">Public booking — OTP</h3>
+            <label className="inline-flex items-center gap-2 cursor-pointer">
+              <span className="text-xs text-dim">{otpQ.data?.enabled ? "Required" : "Disabled"}</span>
+              <input
+                type="checkbox"
+                checked={Boolean(otpQ.data?.enabled)}
+                disabled={otpMut.isPending || otpQ.isLoading}
+                onChange={(e) => otpMut.mutate(e.target.checked)}
+                className="size-4 accent-primary"
+              />
+            </label>
+          </div>
+          <p className="text-xs text-dim">
+            When enabled, guests must verify their phone with a 6-digit code before a booking is accepted.
+          </p>
+        </Surface>
+      )}
 
       <Surface>
         <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-4">Navigation Layout</h3>
