@@ -174,6 +174,8 @@ export const dict = {
   saved: { en: "Saved", ar: "تم الحفظ" },
   otpHelp: { en: "When enabled, guests must verify their phone with a 6-digit code before a booking is accepted.", ar: "عند التفعيل، يجب على الزوار التحقق من هاتفهم بكود من 6 أرقام قبل قبول الحجز." },
   valuesSaveOnBlur: { en: "Values save on blur.", ar: "تُحفظ القيم عند مغادرة الحقل." },
+  // network
+  offline: { en: "You are offline. Changes will not sync until reconnected.", ar: "أنت غير متصل بالإنترنت. لن تتم المزامنة حتى تعود." },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;

@@ -36,9 +36,11 @@ const securityHeadersMiddleware = createMiddleware().server(async ({ next }) => 
     ].join("; ");
     r.headers.set("Content-Security-Policy", csp);
     r.headers.set("X-Frame-Options", "DENY");
-    r.headers.set("Referrer-Policy", "strict-origin");
+    r.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
     r.headers.set("X-Content-Type-Options", "nosniff");
-    r.headers.set("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+    r.headers.set("Permissions-Policy", "geolocation=(), microphone=(), camera=(), payment=(), usb=()");
+    r.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
+    r.headers.set("Cross-Origin-Opener-Policy", "same-origin");
   }
   return res;
 });

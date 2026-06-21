@@ -108,15 +108,15 @@ function Page() {
   } as const;
 
   return (
-    <div className="p-8 max-w-[1600px] mx-auto space-y-6">
+    <div data-print-root className="p-8 max-w-[1600px] mx-auto space-y-6">
       <PageHeader
         title={t("reports")}
         subtitle="Cross-branch performance from database"
         actions={
-          <div className="flex gap-2">
+          <div className="flex gap-2" data-no-print>
             <Button variant="outline" size="sm" onClick={onExport}>Export CSV</Button>
             <Button variant="outline" size="sm" onClick={onExportXlsx}>Export Excel</Button>
-            <Button variant="outline" size="sm" onClick={() => window.print()}>Export PDF</Button>
+            <Button variant="outline" size="sm" onClick={() => window.print()}>Print / PDF</Button>
           </div>
         }
       />
