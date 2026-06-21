@@ -151,3 +151,38 @@ export const retryFailedWebhooks = createServerFn({ method: "POST" })
     }
     return { retried, failed };
   });
+
+// P68 — Send a one-off test ping to a single webhook (records delivery).
+export const sendTestPing = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { data: hook, error } = await context.supabase
+      .from("webhooks").select("id,url,event,secret").eq("id", data.id).maybeSingle();
+    if (error) throw error;
+    if (!hook) throw new Response("Not found", { status: 404 });
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const payload = { test: true, at: new Date().toISOString() };
+    const requestBody = JSON.stringify({ event: hook.event, payload, ts: payload.at, test: true });
+    const signature = hook.secret ? signPayload(hook.secret, requestBody) : "";
+    let status = 0; let body = "";
+    try {
+      const res = await fetch(hook.url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(signature ? { "X-Vanguard-Signature": signature } : {}),
+        },
+        body: requestBody,
+      });
+      status = res.status;
+      body = (await res.text()).slice(0, 500);
+    } catch (e) {
+      body = e instanceof Error ? e.message : String(e);
+    }
+    await supabaseAdmin.from("webhook_deliveries").insert({
+      webhook_id: hook.id, event: hook.event, payload, status, response: body,
+    });
+    return { status, body };
+  });

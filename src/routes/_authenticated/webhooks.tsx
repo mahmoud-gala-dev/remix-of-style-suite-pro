@@ -8,7 +8,7 @@ import { PageHeader, Surface } from "@/components/shell/page";
 import { DataState } from "@/components/shell/data-state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { listWebhooks, upsertWebhook, deleteWebhook, listDeliveries, retryFailedWebhooks } from "@/lib/webhooks.functions";
+import { listWebhooks, upsertWebhook, deleteWebhook, listDeliveries, retryFailedWebhooks, sendTestPing } from "@/lib/webhooks.functions";
 import { useT } from "@/lib/i18n";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
@@ -29,6 +29,7 @@ function Page() {
   const delHook = useServerFn(deleteWebhook);
   const fetchDeliveries = useServerFn(listDeliveries);
   const retryNow = useServerFn(retryFailedWebhooks);
+  const ping = useServerFn(sendTestPing);
   const qc = useQueryClient();
   const q = useQuery({ queryKey: ["webhooks"], queryFn: () => fetchHooks() });
   const dq = useQuery({ queryKey: ["webhook-deliveries"], queryFn: () => fetchDeliveries() });
@@ -47,6 +48,15 @@ function Page() {
   const retry = useMutation({
     mutationFn: () => retryNow(),
     onSuccess: () => { toast.success(t("retrySuccess")); qc.invalidateQueries({ queryKey: ["webhook-deliveries"] }); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const pingHook = useMutation({
+    mutationFn: (id: string) => ping({ data: { id } }),
+    onSuccess: (r: { status: number }) => {
+      const ok = r.status >= 200 && r.status < 400;
+      ok ? toast.success(`Ping ${r.status}`) : toast.error(`Ping ${r.status || "failed"}`);
+      qc.invalidateQueries({ queryKey: ["webhook-deliveries"] });
+    },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -94,6 +104,7 @@ function Page() {
                   <td className="truncate max-w-[420px]">{h.url}</td>
                   <td>{h.enabled ? t("enabled") : t("disabled")}</td>
                   <td className="text-right">
+                    <Button size="sm" variant="ghost" onClick={() => pingHook.mutate(h.id)} disabled={pingHook.isPending}>Test</Button>
                     <Button size="sm" variant="ghost" onClick={() => remove.mutate(h.id)}>{t("delete")}</Button>
                   </td>
                 </tr>
