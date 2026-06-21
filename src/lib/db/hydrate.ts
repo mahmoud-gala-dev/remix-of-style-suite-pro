@@ -45,6 +45,7 @@ async function fetchAll() {
   }
   const branches: Branch[] = (br.data ?? []).map((r) => ({
     id: r.id,
+    tenantId: (r as { tenant_id?: string | null }).tenant_id ?? null,
     nameEn: r.name_en,
     nameAr: r.name_ar,
     address: r.address ?? "",

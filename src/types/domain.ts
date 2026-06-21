@@ -2,6 +2,7 @@ export type ID = string;
 
 export type Branch = {
   id: ID;
+  tenantId?: ID | null;
   nameEn: string;
   nameAr: string;
   address: string;
