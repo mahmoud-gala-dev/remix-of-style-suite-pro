@@ -18,7 +18,32 @@ const errorMiddleware = createMiddleware().server(async ({ next }) => {
   }
 });
 
+// P46 — security headers (CSP, X-Frame-Options, Referrer-Policy, etc.)
+const securityHeadersMiddleware = createMiddleware().server(async ({ next }) => {
+  const res = await next();
+  const r = res as unknown as Response;
+  if (r && typeof r === "object" && "headers" in r && r.headers?.set) {
+    const csp = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: blob: https:",
+      "font-src 'self' data:",
+      "connect-src 'self' https: wss:",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+    ].join("; ");
+    r.headers.set("Content-Security-Policy", csp);
+    r.headers.set("X-Frame-Options", "DENY");
+    r.headers.set("Referrer-Policy", "strict-origin");
+    r.headers.set("X-Content-Type-Options", "nosniff");
+    r.headers.set("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+  }
+  return res;
+});
+
 export const startInstance = createStart(() => ({
   functionMiddleware: [attachSupabaseAuth],
-  requestMiddleware: [errorMiddleware],
+  requestMiddleware: [errorMiddleware, securityHeadersMiddleware],
 }));
