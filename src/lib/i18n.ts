@@ -140,6 +140,40 @@ export const dict = {
   resetLocalDescription: { en: "This restores local demo state on this device only.", ar: "يستعيد البيانات التجريبية المحلية على هذا الجهاز فقط." },
   reset: { en: "Reset", ar: "إعادة" },
   dataIntro: { en: "First-time setup: claim super-admin, then load demo data.", ar: "إعداد أولي: طالب بالسوبر-أدمن ثم حمّل البيانات التجريبية." },
+  // billing
+  billing: { en: "Billing", ar: "الفوترة" },
+  selectTenantBilling: { en: "Select a tenant to view billing.", ar: "اختر مستأجراً لعرض الفوترة." },
+  loading: { en: "Loading…", ar: "جارٍ التحميل…" },
+  noSubscription: { en: "No subscription", ar: "لا يوجد اشتراك" },
+  bookingsThisPeriod: { en: "Bookings this period", ar: "حجوزات هذه الفترة" },
+  planLimitReached: { en: "Plan limit reached. Upgrade to keep creating bookings.", ar: "تم بلوغ حد الباقة. قم بالترقية لمواصلة إنشاء الحجوزات." },
+  remaining: { en: "remaining", ar: "متبقٍ" },
+  // notifications
+  notifications: { en: "Notifications", ar: "الإشعارات" },
+  provider: { en: "Provider", ar: "المزوّد" },
+  providerOff: { en: "Off (no emails sent)", ar: "إيقاف (بدون إرسال بريد)" },
+  providerLovable: { en: "Lovable Emails (built-in, requires scaffolding)", ar: "بريد Lovable (مدمج، يتطلب إعداد)" },
+  providerResend: { en: "Resend (requires connector)", ar: "Resend (يتطلب رابطاً)" },
+  providersOffByDefault: { en: "Both providers are OFF by default. Switch on to enable customer email notifications.", ar: "كلا المزوّدين مغلق افتراضياً. فعّل أحدهما لتشغيل إشعارات العملاء." },
+  fromEmail: { en: "From email", ar: "البريد المُرسِل" },
+  notifyOnBookingCreated: { en: "Send confirmation when a booking is created", ar: "إرسال تأكيد عند إنشاء حجز" },
+  notificationsUpdated: { en: "Notifications updated", ar: "تم تحديث الإشعارات" },
+  saving: { en: "Saving…", ar: "جارٍ الحفظ…" },
+  // data extras
+  exportTenantData: { en: "Export tenant data", ar: "تصدير بيانات المستأجر" },
+  exportTenantDataTooltip: { en: "Download a CSV bundle of all tenant data (GDPR)", ar: "تنزيل حزمة CSV لكل بيانات المستأجر (GDPR)" },
+  tenantDataExported: { en: "Tenant data exported", ar: "تم تصدير بيانات المستأجر" },
+  noTenantSelected: { en: "No tenant selected", ar: "لم يتم اختيار مستأجر" },
+  localStoreReset: { en: "Local store reset", ar: "تمت إعادة المخزن المحلي" },
+  superAdminGranted: { en: "Super-admin granted.", ar: "تم منح السوبر-أدمن." },
+  alreadySuperAdmin: { en: "You are already super-admin.", ar: "أنت سوبر-أدمن بالفعل." },
+  alreadyClaimedByOther: { en: "Already claimed by another user.", ar: "تمت المطالبة بها من مستخدم آخر." },
+  demoDataLoaded: { en: "Demo data loaded.", ar: "تم تحميل البيانات التجريبية." },
+  branchesExistSkipped: { en: "Branches already exist — skipped.", ar: "الفروع موجودة بالفعل — تم التخطي." },
+  // general extras
+  saved: { en: "Saved", ar: "تم الحفظ" },
+  otpHelp: { en: "When enabled, guests must verify their phone with a 6-digit code before a booking is accepted.", ar: "عند التفعيل، يجب على الزوار التحقق من هاتفهم بكود من 6 أرقام قبل قبول الحجز." },
+  valuesSaveOnBlur: { en: "Values save on blur.", ar: "تُحفظ القيم عند مغادرة الحقل." },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;
