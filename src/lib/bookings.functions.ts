@@ -11,6 +11,7 @@ const schema = z.object({
   startAt: z.string().datetime(),
   endAt: z.string().datetime(),
   price: z.number().nonnegative(),
+  otpCode: z.string().trim().length(6).optional(),
 });
 
 export const getPublicBookingCatalog = createServerFn({ method: "GET" }).handler(async () => {
@@ -40,6 +41,20 @@ export const createBooking = createServerFn({ method: "POST" })
   .inputValidator((d) => schema.parse(d))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // OTP gate (configurable via app_settings.booking_otp_required).
+    const { data: setting } = await supabaseAdmin
+      .from("app_settings").select("value").eq("key", "booking_otp_required").maybeSingle();
+    if (setting?.value === true) {
+      if (!data.customerPhone || !data.otpCode) {
+        throw new Response("OTP required", { status: 401 });
+      }
+      const { data: ok, error: otpErr } = await supabaseAdmin.rpc("verify_otp", {
+        p_phone: data.customerPhone, p_code: data.otpCode,
+      });
+      if (otpErr) throw new Error(otpErr.message);
+      if (!ok) throw new Response("Invalid or expired OTP", { status: 401 });
+    }
 
     const { data: service, error: serviceErr } = await supabaseAdmin
       .from("services")
