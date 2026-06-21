@@ -28,6 +28,8 @@ import { Route as AuthenticatedCouponsRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticated/branches'
 import { Route as AuthenticatedBookingsRouteImport } from './routes/_authenticated/bookings'
+import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
+import { Route as AuthenticatedAccessRouteImport } from './routes/_authenticated/access'
 
 const SetupRoute = SetupRouteImport.update({
   id: '/setup',
@@ -124,12 +126,24 @@ const AuthenticatedBookingsRoute = AuthenticatedBookingsRouteImport.update({
   path: '/bookings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAuditRoute = AuthenticatedAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAccessRoute = AuthenticatedAccessRouteImport.update({
+  id: '/access',
+  path: '/access',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/setup': typeof SetupRoute
+  '/access': typeof AuthenticatedAccessRoute
+  '/audit': typeof AuthenticatedAuditRoute
   '/bookings': typeof AuthenticatedBookingsRoute
   '/branches': typeof AuthenticatedBranchesRoute
   '/calendar': typeof AuthenticatedCalendarRoute
@@ -149,6 +163,8 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/setup': typeof SetupRoute
+  '/access': typeof AuthenticatedAccessRoute
+  '/audit': typeof AuthenticatedAuditRoute
   '/bookings': typeof AuthenticatedBookingsRoute
   '/branches': typeof AuthenticatedBranchesRoute
   '/calendar': typeof AuthenticatedCalendarRoute
@@ -171,6 +187,8 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/setup': typeof SetupRoute
+  '/_authenticated/access': typeof AuthenticatedAccessRoute
+  '/_authenticated/audit': typeof AuthenticatedAuditRoute
   '/_authenticated/bookings': typeof AuthenticatedBookingsRoute
   '/_authenticated/branches': typeof AuthenticatedBranchesRoute
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
@@ -194,6 +212,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/book'
     | '/setup'
+    | '/access'
+    | '/audit'
     | '/bookings'
     | '/branches'
     | '/calendar'
@@ -213,6 +233,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/book'
     | '/setup'
+    | '/access'
+    | '/audit'
     | '/bookings'
     | '/branches'
     | '/calendar'
@@ -234,6 +256,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/book'
     | '/setup'
+    | '/_authenticated/access'
+    | '/_authenticated/audit'
     | '/_authenticated/bookings'
     | '/_authenticated/branches'
     | '/_authenticated/calendar'
@@ -393,10 +417,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBookingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/audit': {
+      id: '/_authenticated/audit'
+      path: '/audit'
+      fullPath: '/audit'
+      preLoaderRoute: typeof AuthenticatedAuditRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/access': {
+      id: '/_authenticated/access'
+      path: '/access'
+      fullPath: '/access'
+      preLoaderRoute: typeof AuthenticatedAccessRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAccessRoute: typeof AuthenticatedAccessRoute
+  AuthenticatedAuditRoute: typeof AuthenticatedAuditRoute
   AuthenticatedBookingsRoute: typeof AuthenticatedBookingsRoute
   AuthenticatedBranchesRoute: typeof AuthenticatedBranchesRoute
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
@@ -415,6 +455,8 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAccessRoute: AuthenticatedAccessRoute,
+  AuthenticatedAuditRoute: AuthenticatedAuditRoute,
   AuthenticatedBookingsRoute: AuthenticatedBookingsRoute,
   AuthenticatedBranchesRoute: AuthenticatedBranchesRoute,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,

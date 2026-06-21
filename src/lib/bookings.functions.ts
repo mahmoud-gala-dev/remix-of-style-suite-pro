@@ -111,6 +111,11 @@ export const createBooking = createServerFn({ method: "POST" })
       })
       .select("id")
       .single();
-    if (error) throw new Error(error.message);
+    if (error) {
+      // 23P01 = exclusion_violation from no_overlap constraint.
+      const code = (error as { code?: string }).code;
+      if (code === "23P01") throw new Response("Time slot already taken", { status: 409 });
+      throw new Error(error.message);
+    }
     return { ok: true as const, id: row.id };
   });
