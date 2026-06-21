@@ -193,7 +193,19 @@ function Page() {
             })}
             {bookings.length === 0 && (
               <tr>
-                <td colSpan={7} className="p-12 text-center text-sm text-dim">{t("noData")}</td>
+                <td colSpan={7} className="p-0">
+                  <EmptyState
+                    icon={Calendar}
+                    title={t("noData")}
+                    description={t("bookings") + " — " + t("add")}
+                    action={
+                      <button onClick={() => setOpen(true)} className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest bg-primary text-primary-foreground">
+                        <Plus className="size-3.5" /> {t("newBooking")}
+                      </button>
+                    }
+                    className="border-0 rounded-none"
+                  />
+                </td>
               </tr>
             )}
           </tbody>
