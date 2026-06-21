@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
       audit_log: {
         Row: {
           action: string
@@ -41,6 +59,27 @@ export type Database = {
           id?: string
           row_id?: string | null
           table_name?: string
+        }
+        Relationships: []
+      }
+      auth_attempts: {
+        Row: {
+          attempted_at: string
+          email: string | null
+          id: number
+          ip: string | null
+        }
+        Insert: {
+          attempted_at?: string
+          email?: string | null
+          id?: number
+          ip?: string | null
+        }
+        Update: {
+          attempted_at?: string
+          email?: string | null
+          id?: number
+          ip?: string | null
         }
         Relationships: []
       }
@@ -588,6 +627,33 @@ export type Database = {
           },
         ]
       }
+      otp_codes: {
+        Row: {
+          code_hash: string
+          created_at: string
+          expires_at: string
+          id: string
+          phone: string
+          used: boolean
+        }
+        Insert: {
+          code_hash: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          phone: string
+          used?: boolean
+        }
+        Update: {
+          code_hash?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          phone?: string
+          used?: boolean
+        }
+        Relationships: []
+      }
       payments: {
         Row: {
           amount: number
@@ -897,6 +963,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_rate_limit: {
+        Args: { p_email: string; p_ip: string }
+        Returns: undefined
+      }
       has_any_staff_role: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
@@ -905,8 +975,13 @@ export type Database = {
         }
         Returns: boolean
       }
+      request_otp: { Args: { p_phone: string }; Returns: string }
       user_has_branch: {
         Args: { _bid: string; _uid: string }
+        Returns: boolean
+      }
+      verify_otp: {
+        Args: { p_code: string; p_phone: string }
         Returns: boolean
       }
     }

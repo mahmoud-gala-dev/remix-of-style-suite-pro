@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { checkSetupStatus } from "@/lib/setup.functions";
+import { checkAuthRateLimit } from "@/lib/auth.functions";
+import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -37,6 +39,7 @@ function AuthPage() {
   const navigate = useNavigate();
   const [tab, setTab] = useState<"signin" | "signup">("signin");
   const [busy, setBusy] = useState(false);
+  const rateLimit = useServerFn(checkAuthRateLimit);
   // Rate limit: 5 failed attempts per minute, in-memory per tab.
   const attempts = useRef<number[]>([]);
   const checkRate = () => {
@@ -65,6 +68,12 @@ function AuthPage() {
   const onSignIn = signin.handleSubmit(async (values) => {
     if (!checkRate()) return;
     setBusy(true);
+    try { await rateLimit({ data: { email: values.email } }); }
+    catch (e) {
+      setBusy(false);
+      toast.error(e instanceof Error ? e.message : "Too many attempts");
+      return;
+    }
     const { error } = await supabase.auth.signInWithPassword(values);
     setBusy(false);
     if (error) {
@@ -79,6 +88,12 @@ function AuthPage() {
   const onSignUp = signup.handleSubmit(async (values) => {
     if (!checkRate()) return;
     setBusy(true);
+    try { await rateLimit({ data: { email: values.email } }); }
+    catch (e) {
+      setBusy(false);
+      toast.error(e instanceof Error ? e.message : "Too many attempts");
+      return;
+    }
     const { error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
