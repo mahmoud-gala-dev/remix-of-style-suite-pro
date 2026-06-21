@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { SkeletonList } from "@/components/ui/skeleton-list";
 
 type Props = {
   loading?: boolean;
@@ -18,13 +20,7 @@ export function DataState({ loading, error, empty, emptyTitle = "No data yet", e
   if (loading) {
     return (
       <div className="space-y-3" aria-busy="true">
-        {skeleton ?? (
-          <>
-            <div className="h-8 w-1/3 animate-pulse rounded bg-muted" />
-            <div className="h-24 animate-pulse rounded bg-muted" />
-            <div className="h-24 animate-pulse rounded bg-muted" />
-          </>
-        )}
+        {skeleton ?? <SkeletonList rows={5} />}
       </div>
     );
   }
@@ -42,12 +38,7 @@ export function DataState({ loading, error, empty, emptyTitle = "No data yet", e
     );
   }
   if (empty) {
-    return (
-      <div className="rounded-xl border border-border bg-surface p-10 text-center">
-        <p className="text-sm font-medium text-foreground">{emptyTitle}</p>
-        {emptyDescription && <p className="mt-1 text-xs text-dim">{emptyDescription}</p>}
-      </div>
-    );
+    return <EmptyState title={emptyTitle} description={emptyDescription} />;
   }
   return <>{children}</>;
 }
