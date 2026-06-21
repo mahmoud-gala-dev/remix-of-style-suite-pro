@@ -1,4 +1,4 @@
-import { Bell, ChevronDown, LogOut, Moon, Search, Sun } from "lucide-react";
+import { Bell, ChevronDown, LogOut, Monitor, Moon, Search, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -137,9 +137,10 @@ export function Topbar() {
         <button
           onClick={toggleTheme}
           className="size-8 grid place-items-center border border-border rounded-full text-dim hover:text-foreground transition-colors"
-          aria-label="Toggle theme"
+          aria-label={`Theme: ${themeMode}`}
+          title={`Theme: ${themeMode}`}
         >
-          {themeMode === "dark" ? <Moon className="size-3.5" /> : <Sun className="size-3.5" />}
+          {themeMode === "dark" ? <Moon className="size-3.5" /> : themeMode === "light" ? <Sun className="size-3.5" /> : <Monitor className="size-3.5" />}
         </button>
 
         <button className="size-8 grid place-items-center border border-border rounded-full text-dim hover:text-foreground transition-colors">
