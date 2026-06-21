@@ -29,7 +29,7 @@ export function SettingsGeneral() {
   });
   const otpMut = useMutation({
     mutationFn: (enabled: boolean) => setOtp({ data: { enabled } }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["booking-otp-enabled"] }); toast.success("Saved"); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["booking-otp-enabled"] }); toast.success(t("saved")); },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -66,7 +66,7 @@ export function SettingsGeneral() {
               <input type="checkbox" checked={Boolean(otpQ.data?.enabled)} disabled={otpMut.isPending || otpQ.isLoading} onChange={(e) => otpMut.mutate(e.target.checked)} className="size-4 accent-primary" />
             </label>
           </div>
-          <p className="text-xs text-dim">When enabled, guests must verify their phone with a 6-digit code before a booking is accepted.</p>
+          <p className="text-xs text-dim">{t("otpHelp")}</p>
         </Surface>
       )}
 
@@ -83,7 +83,7 @@ export function SettingsGeneral() {
               <input type="number" min={5} max={600} step={5} defaultValue={Number(settingsQ.data?.refresh_interval ?? 30)} onBlur={(e) => { const v = Number(e.target.value); if (!Number.isNaN(v)) settingMut.mutate({ key: "refresh_interval", value: v }); }} className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm" />
             </label>
           </div>
-          <p className="text-xs text-dim mt-3">Values save on blur.</p>
+          <p className="text-xs text-dim mt-3">{t("valuesSaveOnBlur")}</p>
         </Surface>
       )}
     </>

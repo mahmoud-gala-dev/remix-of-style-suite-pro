@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Surface } from "@/components/shell/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useT } from "@/lib/i18n";
 import {
   getNotificationSettings,
   updateNotificationSettings,
@@ -12,6 +13,7 @@ import {
 } from "@/lib/notifications.functions";
 
 export function SettingsNotifications() {
+  const t = useT();
   const fetchCfg = useServerFn(getNotificationSettings);
   const saveCfg = useServerFn(updateNotificationSettings);
   const qc = useQueryClient();
@@ -33,7 +35,7 @@ export function SettingsNotifications() {
       provider, from_email: fromEmail, notify_booking_created: notifyBooking,
     } }),
     onSuccess: () => {
-      toast.success("Notifications updated");
+      toast.success(t("notificationsUpdated"));
       qc.invalidateQueries({ queryKey: ["notification-settings"] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -41,25 +43,25 @@ export function SettingsNotifications() {
 
   return (
     <Surface>
-      <h3 className="text-sm font-bold uppercase tracking-widest mb-4">Notifications</h3>
+      <h3 className="text-sm font-bold uppercase tracking-widest mb-4">{t("notifications")}</h3>
       <div className="space-y-4">
         <div>
-          <label className="block text-xs text-dim mb-1.5">Provider</label>
+          <label className="block text-xs text-dim mb-1.5">{t("provider")}</label>
           <select
             value={provider}
             onChange={(e) => setProvider(e.target.value as NotificationProvider)}
             className="h-9 w-full rounded-md border bg-bg-2 px-3 text-sm"
           >
-            <option value="off">Off (no emails sent)</option>
-            <option value="lovable">Lovable Emails (built-in, requires scaffolding)</option>
-            <option value="resend">Resend (requires connector)</option>
+            <option value="off">{t("providerOff")}</option>
+            <option value="lovable">{t("providerLovable")}</option>
+            <option value="resend">{t("providerResend")}</option>
           </select>
           <p className="text-[10px] text-dim mt-1">
-            Both providers are OFF by default. Switch on to enable customer email notifications.
+            {t("providersOffByDefault")}
           </p>
         </div>
         <div>
-          <label className="block text-xs text-dim mb-1.5">From email</label>
+          <label className="block text-xs text-dim mb-1.5">{t("fromEmail")}</label>
           <Input
             type="email"
             placeholder="bookings@example.com"
@@ -73,10 +75,10 @@ export function SettingsNotifications() {
             checked={notifyBooking}
             onChange={(e) => setNotifyBooking(e.target.checked)}
           />
-          Send confirmation when a booking is created
+          {t("notifyOnBookingCreated")}
         </label>
         <Button onClick={() => save.mutate()} disabled={save.isPending}>
-          {save.isPending ? "Saving…" : "Save"}
+          {save.isPending ? t("saving") : t("save")}
         </Button>
       </div>
     </Surface>
