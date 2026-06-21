@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { rateLimitByIp } from "@/lib/rate-limit";
 
 // P24 — lightweight health probe for uptime monitors.
 // Pings DB to confirm app + database are both reachable. No PII, no auth.
 export const Route = createFileRoute("/api/public/healthcheck")({
   server: {
     handlers: {
-      GET: async () => {
+      GET: async ({ request }) => {
+        rateLimitByIp(request, "healthcheck", { capacity: 30, refillPerMin: 30 });
         const started = Date.now();
         let db: "ok" | "fail" = "ok";
         try {
