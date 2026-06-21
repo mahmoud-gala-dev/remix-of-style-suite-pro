@@ -127,7 +127,7 @@ export const createBooking = createServerFn({ method: "POST" })
         status: "confirmed",
         price: Number(service.price),
       })
-      .select("id")
+      .select("id,manage_token")
       .single();
     if (error) {
       // 23P01 = exclusion_violation from no_overlap constraint.
@@ -164,5 +164,5 @@ export const createBooking = createServerFn({ method: "POST" })
         }));
       }
     } catch { /* swallow — webhook failure must not break booking */ }
-    return { ok: true as const, id: row.id };
+    return { ok: true as const, id: row.id, manageToken: row.manage_token as string };
   });
