@@ -45,7 +45,8 @@ async function initSentry() {
   const dsn = (import.meta as any).env?.VITE_SENTRY_DSN as string | undefined;
   if (!dsn || typeof window === "undefined") return;
   try {
-    const Sentry: any = await import(/* @vite-ignore */ "@sentry/browser").catch(() => null);
+    // @ts-ignore — optional peer dep, only loaded if installed
+    const Sentry: any = await import(/* @vite-ignore */ ("@sentry/browser" as any)).catch(() => null);
     if (!Sentry) return;
     Sentry.init({ dsn, tracesSampleRate: 0.1 });
     _sentry = { captureException: (e, ctx) => Sentry.captureException(e, { extra: ctx as any }) };
