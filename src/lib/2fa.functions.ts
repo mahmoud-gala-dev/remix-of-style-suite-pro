@@ -33,8 +33,7 @@ export const verify2FA = createServerFn({ method: "POST" })
     if (!row) throw new Error("not_enrolled");
     const otp = new OTP({ strategy: "totp" });
     const result = await otp.verify({ secret: row.secret, token: data.code, epochTolerance: 30 });
-    const ok = (result as { valid?: boolean }).valid !== false && !!result;
-    if (!ok) throw new Error("invalid_code");
+    if (!result.valid) throw new Error("invalid_code");
     await context.supabase
       .from("user_2fa")
       .update({ enabled: true, last_verified_at: new Date().toISOString() })
@@ -68,7 +67,7 @@ export const disable2FA = createServerFn({ method: "POST" })
     if (!row) throw new Error("not_enrolled");
     const otp = new OTP({ strategy: "totp" });
     const result = await otp.verify({ secret: row.secret, token: data.code, epochTolerance: 30 });
-    if (!result) throw new Error("invalid_code");
+    if (!result.valid) throw new Error("invalid_code");
     const { error: delErr } = await context.supabase.from("user_2fa").delete().eq("user_id", context.userId);
     if (delErr) throw new Error(delErr.message);
     return { ok: true as const };
