@@ -1,12 +1,18 @@
 import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, Bell, ShieldAlert } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AlertTriangle, Bell, ShieldAlert, X } from "lucide-react";
 import { Surface } from "@/components/shell/page";
-import { getAlerts } from "@/lib/alerts.functions";
+import { dismissAlert, getAlerts } from "@/lib/alerts.functions";
 
 export function AlertsWidget() {
   const fetchAlerts = useServerFn(getAlerts);
+  const dismiss = useServerFn(dismissAlert);
+  const qc = useQueryClient();
   const q = useQuery({ queryKey: ["alerts"], queryFn: () => fetchAlerts(), refetchInterval: 60_000 });
+  const m = useMutation({
+    mutationFn: (alertKey: string) => dismiss({ data: { alertKey } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["alerts"] }),
+  });
   const alerts = q.data ?? [];
   if (q.isLoading || alerts.length === 0) {
     return (
@@ -26,12 +32,21 @@ export function AlertsWidget() {
           const Icon = a.severity === "error" ? ShieldAlert : AlertTriangle;
           const color = a.severity === "error" ? "text-destructive" : "text-amber-500";
           return (
-            <li key={a.id} className="flex items-start gap-2 text-xs">
+            <li key={a.id} className="group flex items-start gap-2 text-xs">
               <Icon className={`size-3.5 mt-0.5 ${color}`} />
-              <div>
+              <div className="flex-1 min-w-0">
                 <div className="font-medium">{a.title}</div>
                 <div className="text-dim">{a.detail}</div>
               </div>
+              <button
+                onClick={() => m.mutate(a.id)}
+                disabled={m.isPending}
+                className="opacity-0 group-hover:opacity-100 transition-opacity text-dim hover:text-foreground"
+                title="Dismiss"
+                aria-label="Dismiss alert"
+              >
+                <X className="size-3.5" />
+              </button>
             </li>
           );
         })}
