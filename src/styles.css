@@ -2,6 +2,15 @@
 @source "../src";
 @import "tw-animate-css";
 
+/* P32: print-friendly styles for PDF export via window.print() */
+@media print {
+  body { background: white !important; color: black !important; }
+  aside, nav, header button, [data-no-print] { display: none !important; }
+  .print-area, main { box-shadow: none !important; border: none !important; }
+  * { color: black !important; background: white !important; }
+  @page { margin: 1cm; }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 /* Midnight neo-industrial design system */

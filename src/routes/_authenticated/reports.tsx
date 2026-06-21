@@ -111,6 +111,7 @@ function Page() {
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={onExport}>Export CSV</Button>
             <Button variant="outline" size="sm" onClick={onExportXlsx}>Export Excel</Button>
+            <Button variant="outline" size="sm" onClick={() => window.print()}>Export PDF</Button>
           </div>
         }
       />
