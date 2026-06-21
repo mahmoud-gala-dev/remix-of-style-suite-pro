@@ -145,8 +145,10 @@ export type Database = {
           employee_id: string
           end_at: string
           id: string
+          manage_token: string
           notes: string | null
           price: number
+          reminder_sent_at: string | null
           service_id: string
           start_at: string
           status: Database["public"]["Enums"]["booking_status"]
@@ -159,8 +161,10 @@ export type Database = {
           employee_id: string
           end_at: string
           id?: string
+          manage_token?: string
           notes?: string | null
           price?: number
+          reminder_sent_at?: string | null
           service_id: string
           start_at: string
           status?: Database["public"]["Enums"]["booking_status"]
@@ -173,8 +177,10 @@ export type Database = {
           employee_id?: string
           end_at?: string
           id?: string
+          manage_token?: string
           notes?: string | null
           price?: number
+          reminder_sent_at?: string | null
           service_id?: string
           start_at?: string
           status?: Database["public"]["Enums"]["booking_status"]
@@ -1135,6 +1141,60 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      waitlist: {
+        Row: {
+          branch_id: string
+          created_at: string
+          customer_name: string
+          customer_phone: string
+          id: string
+          notes: string | null
+          notified_at: string | null
+          preferred_date: string | null
+          service_id: string | null
+          status: string
+        }
+        Insert: {
+          branch_id: string
+          created_at?: string
+          customer_name: string
+          customer_phone: string
+          id?: string
+          notes?: string | null
+          notified_at?: string | null
+          preferred_date?: string | null
+          service_id?: string | null
+          status?: string
+        }
+        Update: {
+          branch_id?: string
+          created_at?: string
+          customer_name?: string
+          customer_phone?: string
+          id?: string
+          notes?: string | null
+          notified_at?: string | null
+          preferred_date?: string | null
+          service_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "waitlist_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "waitlist_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       webhook_deliveries: {
         Row: {
