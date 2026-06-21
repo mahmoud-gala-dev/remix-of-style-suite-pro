@@ -19,7 +19,7 @@ import "@fontsource/ibm-plex-sans-arabic/400.css";
 import "@fontsource/ibm-plex-sans-arabic/600.css";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
+import { reportLovableError, initGlobalErrorReporting } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { useI18n } from "@/lib/i18n";
 
@@ -129,6 +129,7 @@ function RootComponent() {
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
   }, [lang]);
+  useEffect(() => { initGlobalErrorReporting(); }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
