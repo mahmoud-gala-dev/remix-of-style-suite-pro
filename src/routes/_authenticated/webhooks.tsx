@@ -9,6 +9,7 @@ import { DataState } from "@/components/shell/data-state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { listWebhooks, upsertWebhook, deleteWebhook } from "@/lib/webhooks.functions";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authenticated/webhooks")({
   ssr: false,
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/_authenticated/webhooks")({
 });
 
 function Page() {
+  const t = useT();
   const fetchHooks = useServerFn(listWebhooks);
   const saveHook = useServerFn(upsertWebhook);
   const delHook = useServerFn(deleteWebhook);
@@ -31,21 +33,21 @@ function Page() {
 
   const add = useMutation({
     mutationFn: () => saveHook({ data: { event, url, enabled: true } }),
-    onSuccess: () => { toast.success("Webhook added"); setUrl(""); qc.invalidateQueries({ queryKey: ["webhooks"] }); },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed"),
+    onSuccess: () => { toast.success(t("webhookAdded")); setUrl(""); qc.invalidateQueries({ queryKey: ["webhooks"] }); },
+    onError: (e) => toast.error(e instanceof Error ? e.message : t("failed")),
   });
   const remove = useMutation({
     mutationFn: (id: string) => delHook({ data: { id } }),
-    onSuccess: () => { toast.success("Removed"); qc.invalidateQueries({ queryKey: ["webhooks"] }); },
+    onSuccess: () => { toast.success(t("removed")); qc.invalidateQueries({ queryKey: ["webhooks"] }); },
   });
 
   return (
     <div className="p-8 max-w-[1200px] mx-auto space-y-6">
-      <PageHeader title="Webhooks" subtitle="Send events to Zapier, n8n, or any HTTPS URL" />
+      <PageHeader title={t("webhooks")} subtitle={t("webhooksSubtitle")} />
       <Surface>
         <div className="flex flex-wrap gap-2 items-end">
           <label className="space-y-1.5 text-xs">
-            <span className="text-dim">Event</span>
+            <span className="text-dim">{t("event")}</span>
             <select className="h-9 rounded-md border bg-bg-2 px-3 text-sm"
               value={event} onChange={(e) => setEvent(e.target.value)}>
               <option value="booking.created">booking.created</option>
@@ -55,29 +57,29 @@ function Page() {
             </select>
           </label>
           <label className="space-y-1.5 text-xs flex-1 min-w-[280px]">
-            <span className="text-dim">URL</span>
+            <span className="text-dim">{t("url")}</span>
             <Input value={url} onChange={(e) => setUrl(e.target.value)}
               placeholder="https://hooks.zapier.com/..." />
           </label>
-          <Button onClick={() => add.mutate()} disabled={!url || add.isPending}>Add</Button>
+          <Button onClick={() => add.mutate()} disabled={!url || add.isPending}>{t("add")}</Button>
         </div>
       </Surface>
       <Surface>
         <DataState loading={q.isLoading} error={q.error}
           empty={!q.isLoading && (q.data?.length ?? 0) === 0}
-          emptyTitle="No webhooks configured" retry={() => q.refetch()}>
+          emptyTitle={t("noWebhooks")} retry={() => q.refetch()}>
           <table className="w-full text-sm">
             <thead className="text-xs text-dim text-left">
-              <tr><th className="py-2">Event</th><th>URL</th><th>Status</th><th></th></tr>
+              <tr><th className="py-2">{t("event")}</th><th>{t("url")}</th><th>{t("status")}</th><th></th></tr>
             </thead>
             <tbody>
               {q.data?.map((h: any) => (
                 <tr key={h.id} className="border-t border-border/40">
                   <td className="py-2 font-mono text-xs">{h.event}</td>
                   <td className="truncate max-w-[420px]">{h.url}</td>
-                  <td>{h.enabled ? "Enabled" : "Disabled"}</td>
+                  <td>{h.enabled ? t("enabled") : t("disabled")}</td>
                   <td className="text-right">
-                    <Button size="sm" variant="ghost" onClick={() => remove.mutate(h.id)}>Delete</Button>
+                    <Button size="sm" variant="ghost" onClick={() => remove.mutate(h.id)}>{t("delete")}</Button>
                   </td>
                 </tr>
               ))}
