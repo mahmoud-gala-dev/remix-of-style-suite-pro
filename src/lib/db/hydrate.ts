@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useData } from "@/lib/store";
+import { useServerFn } from "@tanstack/react-start";
+import { getAppSettings } from "@/lib/settings.functions";
 import type {
   Booking,
   BookingStatus,
@@ -119,10 +121,19 @@ async function fetchAll() {
 }
 
 export function useHydrate() {
+  const fetchSettings = useServerFn(getAppSettings);
+  const settings = useQuery({
+    queryKey: ["app-settings"],
+    queryFn: () => fetchSettings(),
+    staleTime: 60_000,
+  });
+  const refetchIntervalMs = Math.max(5, Number(settings.data?.refresh_interval ?? 30)) * 1000;
+
   const query = useQuery({
     queryKey: ["hydrate"],
     queryFn: fetchAll,
     staleTime: 60_000,
+    refetchInterval: refetchIntervalMs,
   });
 
   useEffect(() => {
