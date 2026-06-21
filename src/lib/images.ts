@@ -24,8 +24,9 @@ export function optimizedImageUrl(
       width: t.width,
       height: t.height,
       quality: t.quality ?? 75,
-      format: t.format ?? "webp",
       resize: t.resize ?? "cover",
+      // Supabase types narrow format to "origin"; runtime accepts webp/avif.
+      format: (t.format ?? "webp") as "origin",
     },
   });
   return data.publicUrl;
@@ -43,8 +44,8 @@ export async function signedOptimizedImageUrl(
       width: t.width,
       height: t.height,
       quality: t.quality ?? 75,
-      format: t.format ?? "webp",
       resize: t.resize ?? "cover",
+      format: (t.format ?? "webp") as "origin",
     },
   });
   if (error || !data) return null;
