@@ -11,6 +11,7 @@ import { PwaInstall } from "@/components/pwa-install";
 import { BottomNav } from "@/components/shell/bottom-nav";
 import { useGlobalShortcuts } from "@/hooks/use-shortcuts";
 import { ShortcutsHelp } from "@/components/shell/shortcuts-help";
+import { OfflineBanner } from "@/components/shell/offline-banner";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const lang = useI18n((s) => s.lang);
@@ -42,6 +43,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   if (shellMode === "topbar") {
     return (
       <div className="min-h-screen bg-background text-foreground flex flex-col">
+        <OfflineBanner />
         <TopNav />
         <Topbar />
         <main className="flex-1 overflow-y-auto pb-16 md:pb-0">{children}</main>
@@ -56,6 +58,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex">
+      <OfflineBanner />
       <div className="hidden md:block">
         <Sidebar />
       </div>
