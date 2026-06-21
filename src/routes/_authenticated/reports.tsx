@@ -5,7 +5,7 @@ import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
 import { useT } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
-import { getReportsSummary, exportReportsCsv } from "@/lib/reports.functions";
+import { getReportsSummary, exportReportsCsv, exportReportsRows } from "@/lib/reports.functions";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
@@ -49,6 +49,7 @@ function Page() {
   const [branchId, setBranchId] = useState<string>("all");
   const fetchReports = useServerFn(getReportsSummary);
   const fetchCsv = useServerFn(exportReportsCsv);
+  const fetchRows = useServerFn(exportReportsRows);
   const { data, isFetching } = useQuery({
     queryKey: ["reports", from, to, branchId],
     queryFn: () => fetchReports({ data: { from, to, branchId: branchId === "all" ? null : branchId } }),
@@ -57,13 +58,26 @@ function Page() {
   const onExport = async () => {
     try {
       const res = await fetchCsv({ data: { from, to, branchId: branchId === "all" ? null : branchId } });
-      const blob = new Blob([res.csv], { type: "text/csv;charset=utf-8" });
+      const blob = new Blob(["\ufeff" + res.csv], { type: "text/csv;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
       a.download = res.filename;
       a.click();
       URL.revokeObjectURL(url);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Export failed");
+    }
+  };
+
+  const onExportXlsx = async () => {
+    try {
+      const res = await fetchRows({ data: { from, to, branchId: branchId === "all" ? null : branchId } });
+      const XLSX = await import("xlsx");
+      const ws = XLSX.utils.json_to_sheet(res.rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Bookings");
+      XLSX.writeFile(wb, `${res.filename}.xlsx`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Export failed");
     }
@@ -93,7 +107,12 @@ function Page() {
       <PageHeader
         title={t("reports")}
         subtitle="Cross-branch performance from database"
-        actions={<Button variant="outline" size="sm" onClick={onExport}>Export CSV</Button>}
+        actions={
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={onExport}>Export CSV</Button>
+            <Button variant="outline" size="sm" onClick={onExportXlsx}>Export Excel</Button>
+          </div>
+        }
       />
 
       <Surface>
