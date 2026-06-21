@@ -81,7 +81,7 @@ function AuthPage() {
     try { await rateLimit({ data: { email: values.email } }); }
     catch (e) {
       setBusy(false);
-      toast.error(e instanceof Error ? e.message : "Too many attempts");
+      toast.error(errT(e instanceof Error ? e : "rate_limited"));
       return;
     }
     const { error } = await supabase.auth.signInWithPassword(values);
@@ -114,7 +114,7 @@ function AuthPage() {
     try { await rateLimit({ data: { email: values.email } }); }
     catch (e) {
       setBusy(false);
-      toast.error(e instanceof Error ? e.message : "Too many attempts");
+      toast.error(errT(e instanceof Error ? e : "rate_limited"));
       return;
     }
     const { error } = await supabase.auth.signUp({
