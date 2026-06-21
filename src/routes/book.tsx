@@ -403,6 +403,32 @@ function BookPage() {
                   />
                 </div>
 
+                {otpRequired && (
+                  <div className="mt-4 rounded-md border border-border/60 bg-muted/20 p-3 space-y-2">
+                    <div className="text-xs font-medium text-foreground">
+                      {lang === "ar" ? "تحقق من رقم الجوال" : "Verify phone number"}
+                    </div>
+                    {!otpSent ? (
+                      <button type="button" onClick={onSendOtp} disabled={otpBusy}
+                        className="rounded-md border border-primary/40 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/10 disabled:opacity-50">
+                        {otpBusy ? "…" : (lang === "ar" ? "أرسل الكود" : "Send code")}
+                      </button>
+                    ) : otpVerified ? (
+                      <p className="text-xs text-emerald-500">{lang === "ar" ? "✓ تم التحقق" : "✓ Verified"}</p>
+                    ) : (
+                      <div className="flex gap-2">
+                        <input value={otpCode} onChange={(e) => setOtpCode(e.target.value.replace(/\D/g,"").slice(0,6))}
+                          placeholder="123456" inputMode="numeric"
+                          className="flex-1 rounded-md border border-border/60 bg-background px-3 py-2 text-sm tracking-widest font-mono" />
+                        <button type="button" onClick={onVerifyOtp} disabled={otpBusy || otpCode.length !== 6}
+                          className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground disabled:opacity-50">
+                          {lang === "ar" ? "تحقق" : "Verify"}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <Summary
                   lang={lang}
                   branch={branch}
