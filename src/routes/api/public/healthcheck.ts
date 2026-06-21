@@ -7,7 +7,7 @@ export const Route = createFileRoute("/api/public/healthcheck")({
   server: {
     handlers: {
       GET: async ({ request }) => {
-        rateLimitByIp(request, "healthcheck", { capacity: 30, refillPerMin: 30 });
+        await rateLimitByIp(request, "healthcheck", { capacity: 30, refillPerMin: 30 });
         const started = Date.now();
         let db: "ok" | "fail" = "ok";
         try {
