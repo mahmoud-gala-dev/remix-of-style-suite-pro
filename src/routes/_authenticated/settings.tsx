@@ -24,6 +24,7 @@ import { useRole } from "@/lib/use-role";
 import { useData } from "@/lib/store";
 import { claimSuperAdmin, seedDemoData } from "@/lib/admin.functions";
 import { getBookingOtpEnabled, setBookingOtpEnabled } from "@/lib/otp.functions";
+import { getAppSettings, setAppSetting } from "@/lib/settings.functions";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -55,6 +56,15 @@ function Page() {
   const fetchOtp = useServerFn(getBookingOtpEnabled);
   const setOtp = useServerFn(setBookingOtpEnabled);
   const otpQ = useQuery({ queryKey: ["booking-otp-enabled"], queryFn: () => fetchOtp() });
+  const fetchSettings = useServerFn(getAppSettings);
+  const saveSetting = useServerFn(setAppSetting);
+  const settingsQ = useQuery({ queryKey: ["app-settings"], queryFn: () => fetchSettings() });
+  const settingMut = useMutation({
+    mutationFn: (v: { key: "default_tax_pct" | "refresh_interval"; value: number }) =>
+      saveSetting({ data: v }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["app-settings"] }); toast.success(t("save")); },
+    onError: (e: Error) => toast.error(e.message),
+  });
   const otpMut = useMutation({
     mutationFn: (enabled: boolean) => setOtp({ data: { enabled } }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["booking-otp-enabled"] }); toast.success("Saved"); },
