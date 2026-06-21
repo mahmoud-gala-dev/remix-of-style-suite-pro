@@ -5,7 +5,8 @@ import { useData } from "@/lib/store";
 import { useT } from "@/lib/i18n";
 import { fmtDate, fmtMoney, initials } from "@/lib/format";
 import { useMemo, useRef, useState } from "react";
-import { Plus, Search, Download, Upload, Phone, MessageCircle, Pencil, Trash2, CalendarPlus, Sparkles } from "lucide-react";
+import { Plus, Search, Download, Upload, Phone, MessageCircle, Pencil, Trash2, CalendarPlus, Sparkles, Users } from "lucide-react";
+import { EmptyState } from "@/components/shell/empty-state";
 import { CustomerDialog } from "@/components/dialogs/customer-dialog";
 import {
   AlertDialog,
@@ -241,7 +242,19 @@ function Page() {
             ))}
             {list.length === 0 && (
               <tr>
-                <td colSpan={6} className="p-12 text-center text-sm text-dim">{t("noData")}</td>
+                <td colSpan={6} className="p-0">
+                  <EmptyState
+                    icon={Users}
+                    title={t("noData")}
+                    description={t("customers") + " — " + t("add")}
+                    action={
+                      <button onClick={() => setOpen(true)} className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest bg-primary text-primary-foreground">
+                        <Plus className="size-3.5" /> {t("add")}
+                      </button>
+                    }
+                    className="border-0 rounded-none"
+                  />
+                </td>
               </tr>
             )}
           </tbody>
