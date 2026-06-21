@@ -31,6 +31,7 @@ import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedBookingsRouteImport } from './routes/_authenticated/bookings'
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
 import { Route as AuthenticatedAccessRouteImport } from './routes/_authenticated/access'
+import { Route as ApiPublicCronRetryWebhooksRouteImport } from './routes/api/public/cron/retry-webhooks'
 
 const SetupRoute = SetupRouteImport.update({
   id: '/setup',
@@ -142,6 +143,12 @@ const AuthenticatedAccessRoute = AuthenticatedAccessRouteImport.update({
   path: '/access',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicCronRetryWebhooksRoute =
+  ApiPublicCronRetryWebhooksRouteImport.update({
+    id: '/api/public/cron/retry-webhooks',
+    path: '/api/public/cron/retry-webhooks',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -165,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
+  '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
@@ -188,6 +196,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
   '/': typeof AuthenticatedIndexRoute
+  '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -213,6 +222,7 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/webhooks': typeof AuthenticatedWebhooksRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -238,6 +248,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/settings'
     | '/webhooks'
+    | '/api/public/cron/retry-webhooks'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
@@ -261,6 +272,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/webhooks'
     | '/'
+    | '/api/public/cron/retry-webhooks'
   id:
     | '__root__'
     | '/_authenticated'
@@ -285,6 +297,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/_authenticated/webhooks'
     | '/_authenticated/'
+    | '/api/public/cron/retry-webhooks'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -292,6 +305,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BookRoute: typeof BookRoute
   SetupRoute: typeof SetupRoute
+  ApiPublicCronRetryWebhooksRoute: typeof ApiPublicCronRetryWebhooksRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -450,6 +464,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccessRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/cron/retry-webhooks': {
+      id: '/api/public/cron/retry-webhooks'
+      path: '/api/public/cron/retry-webhooks'
+      fullPath: '/api/public/cron/retry-webhooks'
+      preLoaderRoute: typeof ApiPublicCronRetryWebhooksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -503,6 +524,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BookRoute: BookRoute,
   SetupRoute: SetupRoute,
+  ApiPublicCronRetryWebhooksRoute: ApiPublicCronRetryWebhooksRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
