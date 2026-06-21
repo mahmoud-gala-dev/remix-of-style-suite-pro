@@ -1,11 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
+import { createHmac } from "crypto";
 
 function signPayload(secret: string, body: string): string {
-  // Lazy require so this only runs server-side.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { createHmac } = require("crypto") as typeof import("crypto");
   return "sha256=" + createHmac("sha256", secret).update(body).digest("hex");
 }
 
