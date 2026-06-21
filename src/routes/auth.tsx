@@ -8,11 +8,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { checkSetupStatus } from "@/lib/setup.functions";
 import { checkAuthRateLimit } from "@/lib/auth.functions";
+import { requires2FA, verify2FA } from "@/lib/2fa.functions";
+import { useErrT, useT } from "@/lib/i18n";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -40,6 +43,13 @@ function AuthPage() {
   const [tab, setTab] = useState<"signin" | "signup">("signin");
   const [busy, setBusy] = useState(false);
   const rateLimit = useServerFn(checkAuthRateLimit);
+  const check2FA = useServerFn(requires2FA);
+  const verifyCode = useServerFn(verify2FA);
+  const t = useT();
+  const errT = useErrT();
+  const [twoFAOpen, setTwoFAOpen] = useState(false);
+  const [twoFACode, setTwoFACode] = useState("");
+  const [twoFABusy, setTwoFABusy] = useState(false);
   // Rate limit: 5 failed attempts per minute, in-memory per tab.
   const attempts = useRef<number[]>([]);
   const checkRate = () => {
@@ -55,12 +65,12 @@ function AuthPage() {
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((evt, session) => {
-      if (session && (evt === "SIGNED_IN" || evt === "INITIAL_SESSION")) {
+      if (session && (evt === "SIGNED_IN" || evt === "INITIAL_SESSION") && !twoFAOpen) {
         navigate({ to: "/" });
       }
     });
     return () => sub.subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, twoFAOpen]);
 
   const signin = useForm<CredForm>({ resolver: zodResolver(credSchema), defaultValues: { email: "", password: "" } });
   const signup = useForm<CredForm>({ resolver: zodResolver(credSchema), defaultValues: { email: "", password: "" } });
@@ -71,18 +81,31 @@ function AuthPage() {
     try { await rateLimit({ data: { email: values.email } }); }
     catch (e) {
       setBusy(false);
-      toast.error(e instanceof Error ? e.message : "Too many attempts");
+      toast.error(errT(e instanceof Error ? e : "rate_limited"));
       return;
     }
     const { error } = await supabase.auth.signInWithPassword(values);
-    setBusy(false);
     if (error) {
+      setBusy(false);
       attempts.current.push(Date.now());
-      toast.error(error.message);
-    } else {
-      attempts.current = [];
-      navigate({ to: "/" });
+      toast.error(errT(error.message));
+      return;
     }
+    attempts.current = [];
+    // P2 — enforce 2FA for privileged roles
+    try {
+      const status = await check2FA();
+      if (status.required) {
+        setBusy(false);
+        setTwoFACode("");
+        setTwoFAOpen(true);
+        return;
+      }
+    } catch {
+      /* if the check fails, fall through and let the user in (network) */
+    }
+    setBusy(false);
+    navigate({ to: "/" });
   });
 
   const onSignUp = signup.handleSubmit(async (values) => {
@@ -91,7 +114,7 @@ function AuthPage() {
     try { await rateLimit({ data: { email: values.email } }); }
     catch (e) {
       setBusy(false);
-      toast.error(e instanceof Error ? e.message : "Too many attempts");
+      toast.error(errT(e instanceof Error ? e : "rate_limited"));
       return;
     }
     const { error } = await supabase.auth.signUp({
@@ -102,7 +125,7 @@ function AuthPage() {
     setBusy(false);
     if (error) {
       attempts.current.push(Date.now());
-      toast.error(error.message);
+      toast.error(errT(error.message));
     } else {
       attempts.current = [];
       toast.success("Account created — check your email if confirmation is required.");
@@ -114,8 +137,30 @@ function AuthPage() {
     const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (result.error) {
       setBusy(false);
-      toast.error(result.error.message ?? "Google sign-in failed");
+      toast.error(errT(result.error.message ?? "Google sign-in failed"));
     }
+  };
+
+  const onVerify2FA = async () => {
+    if (!/^\d{6}$/.test(twoFACode)) {
+      toast.error(errT("invalid_code"));
+      return;
+    }
+    setTwoFABusy(true);
+    try {
+      await verifyCode({ data: { code: twoFACode } });
+      setTwoFABusy(false);
+      setTwoFAOpen(false);
+      navigate({ to: "/" });
+    } catch (e) {
+      setTwoFABusy(false);
+      toast.error(errT(e));
+    }
+  };
+
+  const onCancel2FA = async () => {
+    setTwoFAOpen(false);
+    await supabase.auth.signOut();
   };
 
   return (
@@ -193,6 +238,35 @@ function AuthPage() {
           By continuing you agree to the salon's terms of service.
         </p>
       </div>
+
+      <Dialog open={twoFAOpen} onOpenChange={(open) => { if (!open) void onCancel2FA(); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("twoFactorAuth")}</DialogTitle>
+            <DialogDescription>{t("twoFAScanQR")}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Label htmlFor="tfa-code">{t("twoFACurrentCode")}</Label>
+            <Input
+              id="tfa-code"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              maxLength={6}
+              value={twoFACode}
+              onChange={(e) => setTwoFACode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              autoFocus
+            />
+            <div className="flex gap-2 justify-end">
+              <Button variant="outline" type="button" onClick={onCancel2FA} disabled={twoFABusy}>
+                {t("cancel")}
+              </Button>
+              <Button type="button" onClick={onVerify2FA} disabled={twoFABusy || twoFACode.length !== 6}>
+                {twoFABusy ? "…" : t("twoFAVerify")}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
