@@ -127,7 +127,7 @@ export const createBooking = createServerFn({ method: "POST" })
         status: "confirmed",
         price: Number(service.price),
       })
-      .select("id")
+      .select("id,manage_token")
       .single();
     if (error) {
       // 23P01 = exclusion_violation from no_overlap constraint.
