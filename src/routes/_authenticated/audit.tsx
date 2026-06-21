@@ -7,6 +7,7 @@ import { PageHeader, Surface } from "@/components/shell/page";
 import { DataState } from "@/components/shell/data-state";
 import { Button } from "@/components/ui/button";
 import { getAuditLog } from "@/lib/audit.functions";
+import { downloadCsv, toCsv } from "@/lib/csv";
 
 export const Route = createFileRoute("/_authenticated/audit")({
   ssr: false,
@@ -45,6 +46,30 @@ function Page() {
   });
   const rows = q.data?.pages.flatMap((p) => p.rows) ?? [];
 
+  const exportCsv = () => {
+    downloadCsv(
+      `audit-${Date.now()}.csv`,
+      toCsv(
+        rows.map((r) => ({
+          at: r.at,
+          table: r.table_name,
+          action: r.action,
+          actor: r.actor ?? "",
+          row_id: r.row_id ?? "",
+          diff: JSON.stringify(r.diff ?? {}),
+        })),
+        [
+          { key: "at", label: "When" },
+          { key: "table", label: "Table" },
+          { key: "action", label: "Action" },
+          { key: "actor", label: "Actor" },
+          { key: "row_id", label: "Row" },
+          { key: "diff", label: "Diff" },
+        ],
+      ),
+    );
+  };
+
   return (
     <div className="p-8 max-w-[1400px] mx-auto space-y-6">
       <PageHeader title="Audit Log" subtitle="Sensitive changes across roles, bookings, and invoices" />
@@ -73,6 +98,11 @@ function Page() {
           <select value={limit} onChange={(e) => setLimit(Number(e.target.value))} className="rounded-md border border-border bg-background px-3 py-2 text-sm">
             {[50, 100, 200, 500].map((n) => <option key={n} value={n}>{n} / page</option>)}
           </select>
+        </div>
+        <div className="mb-3 flex justify-end">
+          <Button size="sm" variant="outline" onClick={exportCsv} disabled={rows.length === 0}>
+            Export CSV
+          </Button>
         </div>
         <DataState
           loading={q.isLoading}
