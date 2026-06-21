@@ -1050,6 +1050,7 @@ export type Database = {
           enabled: boolean
           event: string
           id: string
+          secret: string
           updated_at: string
           url: string
         }
@@ -1059,6 +1060,7 @@ export type Database = {
           enabled?: boolean
           event: string
           id?: string
+          secret?: string
           updated_at?: string
           url: string
         }
@@ -1068,6 +1070,7 @@ export type Database = {
           enabled?: boolean
           event?: string
           id?: string
+          secret?: string
           updated_at?: string
           url?: string
         }
