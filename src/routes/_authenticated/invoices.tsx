@@ -10,6 +10,8 @@ import { useCurrentBranch, useData } from "@/lib/store";
 import { useT } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
 import { DataState } from "@/components/shell/data-state";
+import { useServerFn } from "@tanstack/react-start";
+import { emitWebhookEvent } from "@/lib/webhooks.functions";
 
 type Invoice = {
   id: string; number: string; customer_id: string | null; branch_id: string | null;
@@ -167,6 +169,7 @@ function InvoiceDialog({
   const [taxPct, setTaxPct] = useState(14);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const emitWebhook = useServerFn(emitWebhookEvent);
 
   const svc = services.find((s) => s.id === serviceId);
   const unitPrice = svc?.price ?? 0;
@@ -206,6 +209,12 @@ function InvoiceDialog({
       qty, unit_price: unitPrice, total: subtotal,
     });
     if (itemErr) { setErr(itemErr.message); setSaving(false); return; }
+
+    // P35 — fire-and-forget webhook
+    emitWebhook({ data: { event: "invoice.created", payload: {
+      id: inv.id, branch_id: branchId, customer_id: customerId,
+      subtotal, discount, tax, total, status: "unpaid",
+    } } }).catch(() => {});
 
     onCreated(); setSaving(false); onClose();
   }

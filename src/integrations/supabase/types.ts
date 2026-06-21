@@ -1091,6 +1091,7 @@ export type Database = {
         Args: { p_email: string; p_ip: string }
         Returns: undefined
       }
+      current_user_tenants: { Args: never; Returns: string[] }
       has_any_staff_role: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
