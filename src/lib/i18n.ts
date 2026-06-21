@@ -111,6 +111,11 @@ export const dict = {
   defaultTaxPct: { en: "Default tax %", ar: "ضريبة افتراضية %" },
   refreshInterval: { en: "Refresh interval (s)", ar: "فاصل التحديث (ث)" },
   bookingOtpRequired: { en: "Require OTP for public booking", ar: "اشتراط OTP للحجز العام" },
+  deliveries: { en: "Deliveries", ar: "التسليمات" },
+  attempts: { en: "Attempts", ar: "المحاولات" },
+  retryNow: { en: "Retry now", ar: "إعادة المحاولة الآن" },
+  retrySuccess: { en: "Retry triggered", ar: "تم تشغيل إعادة المحاولة" },
+  noDeliveries: { en: "No deliveries yet", ar: "لا توجد تسليمات" },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;
