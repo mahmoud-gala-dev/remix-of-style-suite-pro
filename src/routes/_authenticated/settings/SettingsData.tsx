@@ -22,13 +22,13 @@ export function SettingsData() {
   const currentTenantId = useData((s) => s.currentTenantId);
   const claimMut = useMutation({
     mutationFn: () => claim(),
-    onSuccess: (r) => setMsg(r.ok ? (r.alreadyOwner ? "You are already super-admin." : "Super-admin granted.") : "Already claimed by another user."),
+    onSuccess: (r) => setMsg(r.ok ? (r.alreadyOwner ? t("alreadySuperAdmin") : t("superAdminGranted")) : t("alreadyClaimedByOther")),
     onError: (e: Error) => setMsg(e.message),
   });
   const seedMut = useMutation({
     mutationFn: () => seed(),
     onSuccess: async (r) => {
-      setMsg(r.skipped ? "Branches already exist — skipped." : "Demo data loaded.");
+      setMsg(r.skipped ? t("branchesExistSkipped") : t("demoDataLoaded"));
       await qc.invalidateQueries({ queryKey: ["hydrate"] });
       router.invalidate();
     },
@@ -36,7 +36,7 @@ export function SettingsData() {
   });
   const exportMut = useMutation({
     mutationFn: async () => {
-      if (!currentTenantId) throw new Error("No tenant selected");
+      if (!currentTenantId) throw new Error(t("noTenantSelected"));
       return exportFn({ data: { tenantId: currentTenantId } });
     },
     onSuccess: (r) => {
@@ -45,7 +45,7 @@ export function SettingsData() {
       const a = document.createElement("a");
       a.href = url; a.download = r.filename; a.click();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
-      toast.success("Tenant data exported");
+      toast.success(t("tenantDataExported"));
     },
     onError: (e: Error) => setMsg(e.message),
   });
@@ -65,9 +65,9 @@ export function SettingsData() {
           onClick={() => exportMut.mutate()}
           disabled={exportMut.isPending || !currentTenantId}
           className="px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest border border-primary/40 text-primary hover:bg-primary/10 disabled:opacity-50"
-          title="Download a CSV bundle of all tenant data (GDPR)"
+          title={t("exportTenantDataTooltip")}
         >
-          {exportMut.isPending ? "…" : "Export tenant data"}
+          {exportMut.isPending ? "…" : t("exportTenantData")}
         </button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -80,7 +80,7 @@ export function SettingsData() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
-              <AlertDialogAction onClick={() => { reset(); toast.success("Local store reset"); }}>{t("reset")}</AlertDialogAction>
+            <AlertDialogAction onClick={() => { reset(); toast.success(t("localStoreReset")); }}>{t("reset")}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
