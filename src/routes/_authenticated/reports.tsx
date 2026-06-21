@@ -5,7 +5,9 @@ import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
 import { useT } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
-import { getReportsSummary } from "@/lib/reports.functions";
+import { getReportsSummary, exportReportsCsv } from "@/lib/reports.functions";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import {
   Area,
   AreaChart,
@@ -46,10 +48,26 @@ function Page() {
   const [to, setTo] = useState(today);
   const [branchId, setBranchId] = useState<string>("all");
   const fetchReports = useServerFn(getReportsSummary);
+  const fetchCsv = useServerFn(exportReportsCsv);
   const { data, isFetching } = useQuery({
     queryKey: ["reports", from, to, branchId],
     queryFn: () => fetchReports({ data: { from, to, branchId: branchId === "all" ? null : branchId } }),
   });
+
+  const onExport = async () => {
+    try {
+      const res = await fetchCsv({ data: { from, to, branchId: branchId === "all" ? null : branchId } });
+      const blob = new Blob([res.csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = res.filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Export failed");
+    }
+  };
 
   const report = data ?? {
     branches: [],
@@ -72,7 +90,11 @@ function Page() {
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto space-y-6">
-      <PageHeader title={t("reports")} subtitle="Cross-branch performance from database" />
+      <PageHeader
+        title={t("reports")}
+        subtitle="Cross-branch performance from database"
+        actions={<Button variant="outline" size="sm" onClick={onExport}>Export CSV</Button>}
+      />
 
       <Surface>
         <div className="grid gap-3 sm:grid-cols-4">
