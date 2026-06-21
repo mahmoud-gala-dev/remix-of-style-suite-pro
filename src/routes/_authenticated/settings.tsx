@@ -1,32 +1,10 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/shell/app-shell";
-import { PageHeader, Surface } from "@/components/shell/page";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { useT, useI18n } from "@/lib/i18n";
-import { useTheme } from "@/lib/theme";
-import { useLayout } from "@/lib/layout";
-import { MODULES, MODULE_GROUPS } from "@/lib/modules";
-import { ADMIN_ONLY_MODULES, type RoleKind } from "@/lib/layout";
-import { useRole } from "@/lib/use-role";
-import { useData } from "@/lib/store";
-import { claimSuperAdmin, seedDemoData } from "@/lib/admin.functions";
-import { getBookingOtpEnabled, setBookingOtpEnabled } from "@/lib/otp.functions";
-import { getAppSettings, setAppSetting } from "@/lib/settings.functions";
-import { useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { PageHeader } from "@/components/shell/page";
+import { useT } from "@/lib/i18n";
+import { SettingsGeneral } from "./settings/SettingsGeneral";
+import { SettingsLayout } from "./settings/SettingsLayout";
+import { SettingsData } from "./settings/SettingsData";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   ssr: false,
@@ -40,59 +18,15 @@ export const Route = createFileRoute("/_authenticated/settings")({
 
 function Page() {
   const t = useT();
-  const lang = useI18n((s) => s.lang);
-  const setLang = useI18n((s) => s.setLang);
-  const themeMode = useTheme((s) => s.mode);
-  const setTheme = useTheme((s) => s.set);
-  const layout = useLayout();
-  const { isAdmin } = useRole();
-  const [roleTab, setRoleTab] = useState<RoleKind>("user");
-  const reset = useData((s) => s.reset);
-  const router = useRouter();
-  const qc = useQueryClient();
-  const [msg, setMsg] = useState<string | null>(null);
-  const claim = useServerFn(claimSuperAdmin);
-  const seed = useServerFn(seedDemoData);
-  const fetchOtp = useServerFn(getBookingOtpEnabled);
-  const setOtp = useServerFn(setBookingOtpEnabled);
-  const otpQ = useQuery({ queryKey: ["booking-otp-enabled"], queryFn: () => fetchOtp() });
-  const fetchSettings = useServerFn(getAppSettings);
-  const saveSetting = useServerFn(setAppSetting);
-  const settingsQ = useQuery({ queryKey: ["app-settings"], queryFn: () => fetchSettings() });
-  const settingMut = useMutation({
-    mutationFn: (v: { key: "default_tax_pct" | "refresh_interval"; value: number }) =>
-      saveSetting({ data: v }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["app-settings"] }); toast.success(t("save")); },
-    onError: (e: Error) => toast.error(e.message),
-  });
-  const otpMut = useMutation({
-    mutationFn: (enabled: boolean) => setOtp({ data: { enabled } }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["booking-otp-enabled"] }); toast.success("Saved"); },
-    onError: (e: Error) => toast.error(e.message),
-  });
-
-  const claimMut = useMutation({
-    mutationFn: () => claim(),
-    onSuccess: (r) => {
-      setMsg(r.ok ? (r.alreadyOwner ? "You are already super-admin." : "Super-admin granted.") : "Already claimed by another user.");
-    },
-    onError: (e: Error) => setMsg(e.message),
-  });
-  const seedMut = useMutation({
-    mutationFn: () => seed(),
-    onSuccess: async (r) => {
-      setMsg(r.skipped ? "Branches already exist — skipped." : "Demo data loaded.");
-      await qc.invalidateQueries({ queryKey: ["hydrate"] });
-      router.invalidate();
-    },
-    onError: (e: Error) => setMsg(e.message),
-  });
-
   return (
     <div className="p-8 max-w-3xl mx-auto space-y-6">
       <PageHeader title={t("settings")} subtitle="Configure preferences and data." />
-
-      <Surface>
+      <SettingsGeneral />
+      <SettingsLayout />
+      <SettingsData />
+    </div>
+  );
+}
         <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-4">{t("language")}</h3>
         <div className="flex gap-2">
           {(["en", "ar"] as const).map((l) => (
