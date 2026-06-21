@@ -221,3 +221,36 @@ export function useT() {
 export function useDir(): "ltr" | "rtl" {
   return useI18n((s) => s.lang) === "ar" ? "rtl" : "ltr";
 }
+
+// P9 — i18n for server / Supabase error codes.
+// Map known error strings to translated, user-friendly messages.
+const errDict: Record<string, { en: string; ar: string }> = {
+  rate_limited: { en: "Too many attempts. Try again later.", ar: "محاولات كثيرة. حاول لاحقًا." },
+  invalid_credentials: { en: "Invalid email or password.", ar: "بريد أو كلمة مرور غير صحيحة." },
+  "Invalid login credentials": { en: "Invalid email or password.", ar: "بريد أو كلمة مرور غير صحيحة." },
+  email_not_confirmed: { en: "Please confirm your email first.", ar: "يرجى تأكيد بريدك أولًا." },
+  user_already_exists: { en: "An account with this email already exists.", ar: "يوجد حساب بهذا البريد بالفعل." },
+  weak_password: { en: "Password is too weak.", ar: "كلمة المرور ضعيفة." },
+  invalid_code: { en: "Invalid code. Try again.", ar: "كود غير صالح. حاول مرة أخرى." },
+  not_enrolled: { en: "Two-factor authentication is not enrolled.", ar: "المصادقة الثنائية غير مُفعّلة." },
+  network_error: { en: "Network error. Check your connection.", ar: "خطأ في الشبكة. تحقق من الاتصال." },
+  unauthorized: { en: "You are not authorized to perform this action.", ar: "ليست لديك صلاحية لتنفيذ هذا الإجراء." },
+  not_found: { en: "Item not found.", ar: "العنصر غير موجود." },
+};
+
+export function translateError(raw: unknown, lang: Lang = "en"): string {
+  const msg = raw instanceof Error ? raw.message : typeof raw === "string" ? raw : "";
+  if (!msg) return errDict.network_error[lang];
+  // exact key match
+  if (errDict[msg]) return errDict[msg][lang];
+  // scan known substrings
+  for (const key of Object.keys(errDict)) {
+    if (msg.toLowerCase().includes(key.toLowerCase())) return errDict[key][lang];
+  }
+  return msg;
+}
+
+export function useErrT() {
+  const lang = useI18n((s) => s.lang);
+  return (raw: unknown) => translateError(raw, lang);
+}
