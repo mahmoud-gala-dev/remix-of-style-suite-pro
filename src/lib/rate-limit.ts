@@ -13,7 +13,6 @@ export interface RateLimitOptions {
 }
 
 function localBucket(key: string, capacity: number, refillPerMin: number): void {
-  const capacity = opts.capacity ?? 60;
   const refillPerMs = refillPerMin / 60_000;
   const now = Date.now();
   const b = fallbackBuckets.get(key) ?? { tokens: capacity, updatedAt: now };
