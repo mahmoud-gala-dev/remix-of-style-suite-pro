@@ -14,6 +14,7 @@ import { Route as BookRouteImport } from './routes/book'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedWebhooksRouteImport } from './routes/_authenticated/webhooks'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedServicesRouteImport } from './routes/_authenticated/services'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
@@ -53,6 +54,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedWebhooksRoute = AuthenticatedWebhooksRouteImport.update({
+  id: '/webhooks',
+  path: '/webhooks',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
@@ -158,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/reports': typeof AuthenticatedReportsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/webhooks': typeof AuthenticatedWebhooksRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
@@ -179,6 +186,7 @@ export interface FileRoutesByTo {
   '/reports': typeof AuthenticatedReportsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/webhooks': typeof AuthenticatedWebhooksRoute
   '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesById {
@@ -203,6 +211,7 @@ export interface FileRoutesById {
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/services': typeof AuthenticatedServicesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/webhooks': typeof AuthenticatedWebhooksRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
@@ -228,6 +237,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/services'
     | '/settings'
+    | '/webhooks'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
@@ -249,6 +259,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/services'
     | '/settings'
+    | '/webhooks'
     | '/'
   id:
     | '__root__'
@@ -272,6 +283,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reports'
     | '/_authenticated/services'
     | '/_authenticated/settings'
+    | '/_authenticated/webhooks'
     | '/_authenticated/'
   fileRoutesById: FileRoutesById
 }
@@ -317,6 +329,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/webhooks': {
+      id: '/_authenticated/webhooks'
+      path: '/webhooks'
+      fullPath: '/webhooks'
+      preLoaderRoute: typeof AuthenticatedWebhooksRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
@@ -451,6 +470,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedServicesRoute: typeof AuthenticatedServicesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedWebhooksRoute: typeof AuthenticatedWebhooksRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
@@ -471,6 +491,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedServicesRoute: AuthenticatedServicesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedWebhooksRoute: AuthenticatedWebhooksRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 
