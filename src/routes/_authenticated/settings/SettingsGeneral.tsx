@@ -23,7 +23,10 @@ export function SettingsGeneral() {
   const saveSetting = useServerFn(setAppSetting);
   const settingsQ = useQuery({ queryKey: ["app-settings"], queryFn: () => fetchSettings() });
   const settingMut = useMutation({
-    mutationFn: (v: { key: "default_tax_pct" | "refresh_interval"; value: number }) => saveSetting({ data: v }),
+    mutationFn: (v: {
+      key: "default_tax_pct" | "refresh_interval" | "deposits_enabled" | "deposit_type" | "deposit_amount";
+      value: number | boolean | string;
+    }) => saveSetting({ data: v }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["app-settings"] }); toast.success(t("save")); },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -84,6 +87,53 @@ export function SettingsGeneral() {
             </label>
           </div>
           <p className="text-xs text-dim mt-3">{t("valuesSaveOnBlur")}</p>
+        </Surface>
+      )}
+
+      {isAdmin && (
+        <Surface>
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">Online Deposits (Stripe)</h3>
+              <p className="text-xs text-dim mt-1">عربون عبر Stripe — معطّل افتراضياً. فعّله بعد إضافة مفاتيح Stripe.</p>
+            </div>
+            <label className="inline-flex items-center gap-2 cursor-pointer">
+              <span className="text-xs text-dim">{settingsQ.data?.deposits_enabled ? t("active") : t("disabled")}</span>
+              <input
+                type="checkbox"
+                checked={Boolean(settingsQ.data?.deposits_enabled)}
+                disabled={settingMut.isPending || settingsQ.isLoading}
+                onChange={(e) => settingMut.mutate({ key: "deposits_enabled", value: e.target.checked })}
+                className="size-4 accent-primary"
+              />
+            </label>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="space-y-1.5 text-xs">
+              <span className="text-dim">Deposit Type</span>
+              <select
+                defaultValue={settingsQ.data?.deposit_type ?? "percent"}
+                disabled={!settingsQ.data?.deposits_enabled}
+                onChange={(e) => settingMut.mutate({ key: "deposit_type", value: e.target.value })}
+                className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm disabled:opacity-50"
+              >
+                <option value="percent">% of service</option>
+                <option value="fixed">Fixed amount</option>
+              </select>
+            </label>
+            <label className="space-y-1.5 text-xs">
+              <span className="text-dim">Deposit Amount</span>
+              <input
+                type="number"
+                min={0}
+                step={1}
+                defaultValue={Number(settingsQ.data?.deposit_amount ?? 20)}
+                disabled={!settingsQ.data?.deposits_enabled}
+                onBlur={(e) => { const v = Number(e.target.value); if (!Number.isNaN(v)) settingMut.mutate({ key: "deposit_amount", value: v }); }}
+                className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm disabled:opacity-50"
+              />
+            </label>
+          </div>
         </Surface>
       )}
     </>
