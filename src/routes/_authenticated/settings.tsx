@@ -24,7 +24,6 @@ import { useRole } from "@/lib/use-role";
 import { useData } from "@/lib/store";
 import { claimSuperAdmin, seedDemoData } from "@/lib/admin.functions";
 import { getBookingOtpEnabled, setBookingOtpEnabled } from "@/lib/otp.functions";
-import { useServerFn as useServerFn2 } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -53,8 +52,8 @@ function Page() {
   const [msg, setMsg] = useState<string | null>(null);
   const claim = useServerFn(claimSuperAdmin);
   const seed = useServerFn(seedDemoData);
-  const fetchOtp = useServerFn2(getBookingOtpEnabled);
-  const setOtp = useServerFn2(setBookingOtpEnabled);
+  const fetchOtp = useServerFn(getBookingOtpEnabled);
+  const setOtp = useServerFn(setBookingOtpEnabled);
   const otpQ = useQuery({ queryKey: ["booking-otp-enabled"], queryFn: () => fetchOtp() });
   const otpMut = useMutation({
     mutationFn: (enabled: boolean) => setOtp({ data: { enabled } }),
