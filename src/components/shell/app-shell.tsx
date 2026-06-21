@@ -43,10 +43,16 @@ export function AppShell({ children }: { children: ReactNode }) {
   if (shellMode === "topbar") {
     return (
       <div className="min-h-screen bg-background text-foreground flex flex-col">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:start-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground"
+        >
+          Skip to content
+        </a>
         <OfflineBanner />
         <TopNav />
         <Topbar />
-        <main className="flex-1 overflow-y-auto pb-16 md:pb-0">{children}</main>
+        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto pb-16 md:pb-0">{children}</main>
         <Footer />
         <CommandPalette />
         <PwaInstall />
@@ -58,11 +64,17 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:start-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground"
+      >
+        Skip to content
+      </a>
       <OfflineBanner />
       <div className="hidden md:block">
         <Sidebar />
       </div>
-      <main className="flex-1 flex flex-col min-w-0">
+      <main id="main-content" tabIndex={-1} className="flex-1 flex flex-col min-w-0">
         <Topbar />
         <div className="flex-1 overflow-y-auto pb-16 md:pb-0">{children}</div>
         <Footer />

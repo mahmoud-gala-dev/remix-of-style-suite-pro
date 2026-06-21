@@ -141,8 +141,9 @@ export const retryFailedWebhooks = createServerFn({ method: "POST" })
       const attempts = (row.attempts ?? 1) + 1;
       const ok = status >= 200 && status < 400;
       const isFailure = !ok;
-      const giveUp = isFailure && attempts >= 3;
-      const backoffMs = Math.pow(2, attempts) * 60_000; // 4m, 8m, ...
+      // P15: up to 5 attempts before DLQ
+      const giveUp = isFailure && attempts >= 5;
+      const backoffMs = Math.pow(2, attempts) * 60_000; // 4m, 8m, 16m, 32m
       await supabaseAdmin.from("webhook_deliveries").update({
         attempts, status, response: body,
         failed: giveUp,
