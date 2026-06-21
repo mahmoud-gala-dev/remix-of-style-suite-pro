@@ -3,6 +3,7 @@ import { Surface } from "@/components/shell/page";
 import { useT, useI18n } from "@/lib/i18n";
 import { fmtMoney, initials, minutesSince } from "@/lib/format";
 import type { Employee, Service, QueueItem } from "@/types/domain";
+import { AlertsWidget } from "@/components/shell/alerts-widget";
 
 type Props = {
   queue: QueueItem[];
@@ -16,6 +17,7 @@ export function DashboardSidebar({ queue, topEmployees, topServices, customerNam
   const lang = useI18n((s) => s.lang);
   return (
     <div className="space-y-4">
+      <AlertsWidget />
       <div className="flex items-center justify-between">
         <h2 className="font-display text-xl uppercase tracking-tight">{t("liveQueue")}</h2>
         <span className="size-2 bg-destructive rounded-full animate-pulse" />
