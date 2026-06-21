@@ -147,6 +147,28 @@ function Page() {
         {isFetching && <p className="mt-3 text-xs text-dim">Refreshing…</p>}
       </Surface>
 
+      {compareQ.data && (
+        <Surface>
+          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-4">
+            Compare vs previous period ({compareQ.data.range.prev_from} → {compareQ.data.range.prev_to})
+          </h3>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <CompareMetric
+              label="Revenue"
+              current={fmtMoney(compareQ.data.current.revenue)}
+              previous={fmtMoney(compareQ.data.previous.revenue)}
+              delta={compareQ.data.delta.revenue}
+            />
+            <CompareMetric
+              label="Bookings"
+              current={String(compareQ.data.current.bookings)}
+              previous={String(compareQ.data.previous.bookings)}
+              delta={compareQ.data.delta.bookings}
+            />
+          </div>
+        </Surface>
+      )}
+
       <Surface>
         <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-6">
           Revenue · selected period
