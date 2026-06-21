@@ -116,6 +116,10 @@ export const dict = {
   retryNow: { en: "Retry now", ar: "إعادة المحاولة الآن" },
   retrySuccess: { en: "Retry triggered", ar: "تم تشغيل إعادة المحاولة" },
   noDeliveries: { en: "No deliveries yet", ar: "لا توجد تسليمات" },
+  newTenant: { en: "New tenant", ar: "مستأجر جديد" },
+  tenantName: { en: "Tenant name", ar: "اسم المستأجر" },
+  noTenants: { en: "No tenants yet", ar: "لا يوجد مستأجرون" },
+  deleteTenantConfirm: { en: "Delete this tenant?", ar: "حذف هذا المستأجر؟" },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;
