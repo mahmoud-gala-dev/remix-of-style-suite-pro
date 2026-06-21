@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 import { createHmac } from "crypto";
+import { rateLimit } from "@/lib/rate-limit";
 
 function signPayload(secret: string, body: string): string {
   return "sha256=" + createHmac("sha256", secret).update(body).digest("hex");
@@ -158,6 +159,7 @@ export const sendTestPing = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
+    rateLimit(`sendTestPing:${context.userId}`, { capacity: 10, refillPerMin: 10 });
     const { data: hook, error } = await context.supabase
       .from("webhooks").select("id,url,event,secret").eq("id", data.id).maybeSingle();
     if (error) throw error;
