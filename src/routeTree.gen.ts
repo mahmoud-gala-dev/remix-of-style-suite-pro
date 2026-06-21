@@ -33,6 +33,7 @@ import { Route as AuthenticatedBookingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
 import { Route as AuthenticatedAccessRouteImport } from './routes/_authenticated/access'
 import { Route as ApiPublicCronRetryWebhooksRouteImport } from './routes/api/public/cron/retry-webhooks'
+import { Route as ApiPublicCronProcessWebhooksRouteImport } from './routes/api/public/cron/process-webhooks'
 
 const SetupRoute = SetupRouteImport.update({
   id: '/setup',
@@ -155,6 +156,12 @@ const ApiPublicCronRetryWebhooksRoute =
     path: '/api/public/cron/retry-webhooks',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronProcessWebhooksRoute =
+  ApiPublicCronProcessWebhooksRouteImport.update({
+    id: '/api/public/cron/process-webhooks',
+    path: '/api/public/cron/process-webhooks',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -179,6 +186,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/tenants': typeof AuthenticatedTenantsRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
+  '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
 }
 export interface FileRoutesByTo {
@@ -204,6 +212,7 @@ export interface FileRoutesByTo {
   '/tenants': typeof AuthenticatedTenantsRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
   '/': typeof AuthenticatedIndexRoute
+  '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
 }
 export interface FileRoutesById {
@@ -231,6 +240,7 @@ export interface FileRoutesById {
   '/_authenticated/tenants': typeof AuthenticatedTenantsRoute
   '/_authenticated/webhooks': typeof AuthenticatedWebhooksRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
 }
 export interface FileRouteTypes {
@@ -258,6 +268,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tenants'
     | '/webhooks'
+    | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -283,6 +294,7 @@ export interface FileRouteTypes {
     | '/tenants'
     | '/webhooks'
     | '/'
+    | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
   id:
     | '__root__'
@@ -309,6 +321,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tenants'
     | '/_authenticated/webhooks'
     | '/_authenticated/'
+    | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
   fileRoutesById: FileRoutesById
 }
@@ -317,6 +330,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BookRoute: typeof BookRoute
   SetupRoute: typeof SetupRoute
+  ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
   ApiPublicCronRetryWebhooksRoute: typeof ApiPublicCronRetryWebhooksRoute
 }
 
@@ -490,6 +504,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronRetryWebhooksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/process-webhooks': {
+      id: '/api/public/cron/process-webhooks'
+      path: '/api/public/cron/process-webhooks'
+      fullPath: '/api/public/cron/process-webhooks'
+      preLoaderRoute: typeof ApiPublicCronProcessWebhooksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -545,6 +566,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BookRoute: BookRoute,
   SetupRoute: SetupRoute,
+  ApiPublicCronProcessWebhooksRoute: ApiPublicCronProcessWebhooksRoute,
   ApiPublicCronRetryWebhooksRoute: ApiPublicCronRetryWebhooksRoute,
 }
 export const routeTree = rootRouteImport

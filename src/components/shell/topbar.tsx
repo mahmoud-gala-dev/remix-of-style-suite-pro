@@ -156,7 +156,11 @@ export function Topbar() {
           {themeMode === "dark" ? <Moon className="size-3.5" /> : themeMode === "light" ? <Sun className="size-3.5" /> : <Monitor className="size-3.5" />}
         </button>
 
-        <button className="size-8 grid place-items-center border border-border rounded-full text-dim hover:text-foreground transition-colors">
+        <button
+          aria-label="Notifications"
+          title="Notifications"
+          className="size-8 grid place-items-center border border-border rounded-full text-dim hover:text-foreground transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        >
           <Bell className="size-3.5" />
         </button>
 
