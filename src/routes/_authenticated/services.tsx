@@ -4,7 +4,8 @@ import { PageHeader, Surface } from "@/components/shell/page";
 import { useCurrentBranch, useData } from "@/lib/store";
 import { useI18n, useT } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
-import { Clock, Plus, Users } from "lucide-react";
+import { Clock, Plus, Users, Scissors } from "lucide-react";
+import { EmptyState } from "@/components/shell/empty-state";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -65,9 +66,18 @@ function Page() {
           </Surface>
         ))}
         {list.length === 0 && (
-          <Surface className="col-span-full">
-            <p className="text-center text-sm text-dim py-8">{t("noData")}</p>
-          </Surface>
+          <div className="col-span-full">
+            <EmptyState
+              icon={Scissors}
+              title={t("noData")}
+              description={t("services") + " — " + t("add")}
+              action={
+                <button onClick={() => setOpen(true)} className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest bg-primary text-primary-foreground">
+                  <Plus className="size-3.5" /> {t("add")}
+                </button>
+              }
+            />
+          </div>
         )}
       </div>
       {open && <AddServiceDialog branchId={branch.id} onClose={() => setOpen(false)} />}
