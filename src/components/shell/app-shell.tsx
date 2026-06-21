@@ -4,7 +4,7 @@ import { Topbar } from "./topbar";
 import { TopNav } from "./top-nav";
 import { Footer } from "./footer";
 import { useI18n } from "@/lib/i18n";
-import { useTheme } from "@/lib/theme";
+import { useTheme, resolveTheme } from "@/lib/theme";
 import { useLayout } from "@/lib/layout";
 import { CommandPalette } from "@/components/command-palette";
 import { PwaInstall } from "@/components/pwa-install";
@@ -23,8 +23,17 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const html = document.documentElement;
-    html.classList.toggle("dark", mode === "dark");
-    html.classList.toggle("light", mode === "light");
+    const apply = () => {
+      const resolved = resolveTheme(mode);
+      html.classList.toggle("dark", resolved === "dark");
+      html.classList.toggle("light", resolved === "light");
+    };
+    apply();
+    if (mode === "system" && typeof window !== "undefined") {
+      const mql = window.matchMedia("(prefers-color-scheme: dark)");
+      mql.addEventListener("change", apply);
+      return () => mql.removeEventListener("change", apply);
+    }
   }, [mode]);
 
   if (shellMode === "topbar") {
