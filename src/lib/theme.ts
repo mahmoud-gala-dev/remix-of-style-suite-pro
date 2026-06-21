@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-type ThemeMode = "dark" | "light";
+type ThemeMode = "dark" | "light" | "system";
 
 type ThemeState = {
   mode: ThemeMode;
@@ -13,7 +13,11 @@ export const useTheme = create<ThemeState>()(
   persist(
     (set, get) => ({
       mode: "dark",
-      toggle: () => set({ mode: get().mode === "dark" ? "light" : "dark" }),
+      toggle: () => {
+        const order: ThemeMode[] = ["light", "dark", "system"];
+        const i = order.indexOf(get().mode);
+        set({ mode: order[(i + 1) % order.length] });
+      },
       set: (mode) => set({ mode }),
     }),
     {
@@ -25,3 +29,9 @@ export const useTheme = create<ThemeState>()(
     },
   ),
 );
+
+export function resolveTheme(mode: ThemeMode): "dark" | "light" {
+  if (mode !== "system") return mode;
+  if (typeof window === "undefined") return "dark";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
