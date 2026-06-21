@@ -93,6 +93,7 @@ export const retryFailedWebhooks = createServerFn({ method: "POST" })
 
     let retried = 0; let failed = 0;
     for (const row of rows) {
+      if (!row.webhook_id) continue;
       const { data: hook } = await supabaseAdmin
         .from("webhooks").select("url, enabled").eq("id", row.webhook_id).maybeSingle();
       if (!hook?.enabled) continue;
