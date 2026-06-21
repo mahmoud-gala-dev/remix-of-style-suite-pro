@@ -25,7 +25,9 @@ const securityHeadersMiddleware = createMiddleware().server(async ({ next }) => 
   if (r && typeof r === "object" && "headers" in r && r.headers?.set) {
     const csp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      // 'unsafe-inline' kept for TanStack Start hydration scripts (no nonce plumbing yet).
+      // 'unsafe-eval' removed — not required at runtime.
+      "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https:",
       "font-src 'self' data:",

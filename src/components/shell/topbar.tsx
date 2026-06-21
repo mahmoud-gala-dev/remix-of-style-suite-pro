@@ -113,9 +113,11 @@ export function Topbar() {
       <div className="flex items-center gap-3">
         <span className="hidden lg:block text-[10px] font-mono text-dim">{now}</span>
 
-        <div className="flex bg-surface rounded-md border border-border p-0.5">
+        <div role="group" aria-label="Language" className="flex bg-surface rounded-md border border-border p-0.5">
           <button
             onClick={() => setLang("en")}
+            aria-pressed={lang === "en"}
+            aria-label="English"
             className={cn(
               "px-2.5 py-1 text-[10px] font-bold rounded-sm transition-colors",
               lang === "en" ? "bg-surface-2 text-foreground" : "text-dim",
@@ -125,6 +127,8 @@ export function Topbar() {
           </button>
           <button
             onClick={() => setLang("ar")}
+            aria-pressed={lang === "ar"}
+            aria-label="العربية"
             className={cn(
               "px-2.5 py-1 text-[10px] font-bold rounded-sm transition-colors",
               lang === "ar" ? "bg-surface-2 text-foreground" : "text-dim",
