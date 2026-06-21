@@ -14,7 +14,18 @@ export default defineConfig({
     server: { entry: "server" },
   },
   vite: {
-    build: { sourcemap: true },
+    build: {
+      sourcemap: true,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            recharts: ["recharts"],
+            framer: ["framer-motion"],
+            sentry: ["@sentry/browser"],
+          },
+        },
+      },
+    },
     plugins: [
       // Upload source maps to Sentry only when build-time creds are present.
       ...(process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT
