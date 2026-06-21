@@ -49,7 +49,6 @@ function Page() {
   const allRaw = useData((s) => s.customers);
   const removeCustomer = useData((s) => s.removeCustomer);
   const updateCustomer = useData((s) => s.updateCustomer);
-  const addCustomer = useData((s) => s.addCustomer);
   const all = useMemo(() => allRaw.filter((c) => c.branchId === branchId), [allRaw, branchId]);
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
