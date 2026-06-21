@@ -2,10 +2,10 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-async function requireAdmin(ctx: { supabase: { rpc: (n: string, a: unknown) => Promise<{ data: unknown }> }; userId: string }) {
-  const a = await ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "super_admin" });
+async function requireAdmin(context: { supabase: import("@supabase/supabase-js").SupabaseClient<import("@/integrations/supabase/types").Database>; userId: string }) {
+  const a = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "super_admin" });
   if (a.data) return;
-  const b = await ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "admin" });
+  const b = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
   if (!b.data) throw new Error("Forbidden: admin required");
 }
 
