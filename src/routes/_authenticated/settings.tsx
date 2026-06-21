@@ -5,6 +5,8 @@ import { useT } from "@/lib/i18n";
 import { SettingsGeneral } from "./settings/SettingsGeneral";
 import { SettingsLayout } from "./settings/SettingsLayout";
 import { SettingsData } from "./settings/SettingsData";
+import { SettingsNotifications } from "./settings/SettingsNotifications";
+import { SettingsBilling } from "./settings/SettingsBilling";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   ssr: false,
@@ -23,6 +25,8 @@ function Page() {
       <PageHeader title={t("settings")} subtitle="Configure preferences and data." />
       <SettingsGeneral />
       <SettingsLayout />
+      <SettingsNotifications />
+      <SettingsBilling />
       <SettingsData />
     </div>
   );
