@@ -86,6 +86,36 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_log_archive: {
+        Row: {
+          action: string
+          actor: string | null
+          at: string
+          diff: Json | null
+          id: string
+          row_id: string | null
+          table_name: string
+        }
+        Insert: {
+          action: string
+          actor?: string | null
+          at?: string
+          diff?: Json | null
+          id?: string
+          row_id?: string | null
+          table_name: string
+        }
+        Update: {
+          action?: string
+          actor?: string | null
+          at?: string
+          diff?: Json | null
+          id?: string
+          row_id?: string | null
+          table_name?: string
+        }
+        Relationships: []
+      }
       auth_attempts: {
         Row: {
           attempted_at: string
@@ -1189,8 +1219,56 @@ export type Database = {
           },
         ]
       }
+      webhook_deliveries_dlq: {
+        Row: {
+          attempts: number | null
+          created_at: string | null
+          event: string | null
+          failed: boolean | null
+          id: string | null
+          next_retry_at: string | null
+          payload: Json | null
+          response: string | null
+          status: number | null
+          webhook_id: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          created_at?: string | null
+          event?: string | null
+          failed?: boolean | null
+          id?: string | null
+          next_retry_at?: string | null
+          payload?: Json | null
+          response?: string | null
+          status?: number | null
+          webhook_id?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          created_at?: string | null
+          event?: string | null
+          failed?: boolean | null
+          id?: string | null
+          next_retry_at?: string | null
+          payload?: Json | null
+          response?: string | null
+          status?: number | null
+          webhook_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "webhook_deliveries_webhook_id_fkey"
+            columns: ["webhook_id"]
+            isOneToOne: false
+            referencedRelation: "webhooks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
+      archive_old_audit_logs: { Args: never; Returns: number }
       check_rate_limit: {
         Args: { p_email: string; p_ip: string }
         Returns: undefined
