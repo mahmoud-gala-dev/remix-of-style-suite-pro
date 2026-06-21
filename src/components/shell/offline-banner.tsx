@@ -24,7 +24,7 @@ export function OfflineBanner() {
       role="status"
       aria-live="polite"
       data-no-print
-      className="sticky top-0 z-[60] flex items-center justify-center gap-2 bg-destructive text-destructive-foreground px-4 py-1.5 text-xs font-medium tracking-wide"
+      className="fixed inset-x-0 top-0 z-[60] flex items-center justify-center gap-2 bg-destructive text-destructive-foreground px-4 py-1.5 text-xs font-medium tracking-wide shadow-md"
     >
       <WifiOff className="size-3.5" />
       <span>{t("offline", "You are offline. Changes will not sync until reconnected.")}</span>
