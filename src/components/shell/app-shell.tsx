@@ -9,11 +9,14 @@ import { useLayout } from "@/lib/layout";
 import { CommandPalette } from "@/components/command-palette";
 import { PwaInstall } from "@/components/pwa-install";
 import { BottomNav } from "@/components/shell/bottom-nav";
+import { useGlobalShortcuts } from "@/hooks/use-shortcuts";
+import { ShortcutsHelp } from "@/components/shell/shortcuts-help";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const lang = useI18n((s) => s.lang);
   const mode = useTheme((s) => s.mode);
   const shellMode = useLayout((s) => s.mode);
+  const { helpOpen, setHelpOpen } = useGlobalShortcuts();
 
   useEffect(() => {
     const html = document.documentElement;
@@ -46,6 +49,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <CommandPalette />
         <PwaInstall />
         <BottomNav />
+        <ShortcutsHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
       </div>
     );
   }
@@ -63,6 +67,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <CommandPalette />
       <PwaInstall />
       <BottomNav />
+      <ShortcutsHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
     </div>
   );
 }
