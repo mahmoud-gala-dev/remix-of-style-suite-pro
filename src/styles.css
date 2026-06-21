@@ -183,6 +183,8 @@ html[dir="rtl"] body {
 
 @media print {
   body * { visibility: hidden !important; }
-  #printable-invoice, #printable-invoice * { visibility: visible !important; }
-  #printable-invoice { position: absolute; inset: 0; background: white; }
+  #printable-invoice, #printable-invoice *,
+  [data-print-root], [data-print-root] * { visibility: visible !important; }
+  #printable-invoice, [data-print-root] { position: absolute; inset: 0; background: white; }
+  [data-no-print] { display: none !important; }
 }
