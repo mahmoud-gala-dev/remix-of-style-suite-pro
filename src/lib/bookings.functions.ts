@@ -132,5 +132,34 @@ export const createBooking = createServerFn({ method: "POST" })
       if (code === "23P01") throw new Response("Time slot already taken", { status: 409 });
       throw new Error(error.message);
     }
+    // P35 — fire webhooks for booking.created (fire-and-forget, never blocks).
+    try {
+      const { data: hooks } = await supabaseAdmin
+        .from("webhooks").select("id,url").eq("event", "booking.created").eq("enabled", true);
+      if (hooks?.length) {
+        const payload = {
+          id: row.id, branch_id: data.branchId, customer_id: customerId,
+          employee_id: data.employeeId, service_id: data.serviceId,
+          start_at: data.startAt, end_at: data.endAt, price: Number(service.price),
+        };
+        await Promise.all(hooks.map(async (h) => {
+          let status = 0; let body = "";
+          try {
+            const res = await fetch(h.url, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ event: "booking.created", payload, ts: new Date().toISOString() }),
+            });
+            status = res.status;
+            body = (await res.text()).slice(0, 500);
+          } catch (e) {
+            body = e instanceof Error ? e.message : String(e);
+          }
+          await supabaseAdmin.from("webhook_deliveries").insert({
+            webhook_id: h.id, event: "booking.created", payload, status, response: body,
+          });
+        }));
+      }
+    } catch { /* swallow — webhook failure must not break booking */ }
     return { ok: true as const, id: row.id };
   });
