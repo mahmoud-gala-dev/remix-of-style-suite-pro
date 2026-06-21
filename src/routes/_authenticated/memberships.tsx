@@ -9,6 +9,7 @@ import { Modal, Field, inputCls, ModalActions } from "@/components/ui/modal";
 import { fmtMoney } from "@/lib/format";
 import { useCurrentBranch, useData } from "@/lib/store";
 import { useI18n, useT } from "@/lib/i18n";
+import { DataState } from "@/components/shell/data-state";
 
 type Plan = {
   id: string;
@@ -84,6 +85,13 @@ function Page() {
         }
       />
 
+      <DataState
+        loading={plansQ.isLoading}
+        error={plansQ.error}
+        empty={!plansQ.isLoading && plans.length === 0}
+        emptyTitle={t("noData")}
+        retry={() => plansQ.refetch()}
+      >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {plans.map((p) => (
           <Surface key={p.id} className="hover:border-primary/40 transition-colors">
@@ -104,16 +112,19 @@ function Page() {
             </ul>
           </Surface>
         ))}
-        {plans.length === 0 && (
-          <Surface className="col-span-full">
-            <p className="text-center text-sm text-dim py-8">{t("noData")}</p>
-          </Surface>
-        )}
       </div>
+      </DataState>
 
       <div>
         <h3 className="font-display uppercase tracking-tight text-sm mb-3">Active members</h3>
         <Surface padded={false}>
+          <DataState
+            loading={membersQ.isLoading}
+            error={membersQ.error}
+            empty={!membersQ.isLoading && members.length === 0}
+            emptyTitle={t("noData")}
+            retry={() => membersQ.refetch()}
+          >
           <table className="w-full text-sm">
             <thead className="text-[10px] uppercase tracking-widest text-dim">
               <tr>
@@ -144,15 +155,9 @@ function Page() {
                   </tr>
                 );
               })}
-              {members.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="p-12 text-center text-sm text-dim">
-                    {t("noData")}
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
+          </DataState>
         </Surface>
       </div>
 

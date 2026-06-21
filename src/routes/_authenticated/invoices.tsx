@@ -9,6 +9,7 @@ import { Modal, Field, inputCls, ModalActions } from "@/components/ui/modal";
 import { useCurrentBranch, useData } from "@/lib/store";
 import { useT } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
+import { DataState } from "@/components/shell/data-state";
 
 type Invoice = {
   id: string; number: string; customer_id: string | null; branch_id: string | null;
@@ -75,6 +76,13 @@ function Page() {
       />
 
       <Surface padded={false}>
+        <DataState
+          loading={q.isLoading}
+          error={q.error}
+          empty={!q.isLoading && list.length === 0}
+          emptyTitle={t("noData")}
+          retry={() => q.refetch()}
+        >
         <table className="w-full text-sm">
           <thead className="text-[10px] uppercase tracking-widest text-dim">
             <tr>
@@ -119,11 +127,9 @@ function Page() {
                 </tr>
               );
             })}
-            {list.length === 0 && (
-              <tr><td colSpan={6} className="p-12 text-center text-sm text-dim">{t("noData")}</td></tr>
-            )}
           </tbody>
         </table>
+        </DataState>
       </Surface>
 
       <InvoiceDialog
