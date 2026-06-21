@@ -161,3 +161,46 @@ export const exportReportsRows = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     return { rows: rows ?? [], filename: `bookings_${data.from}_${data.to}` };
   });
+
+// P64 — compare current period with the immediately preceding equal-length period.
+export const getReportsCompare = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => inputSchema.parse(data))
+  .handler(async ({ data, context }) => {
+    const from = new Date(`${data.from}T00:00:00.000Z`);
+    const toExclusive = addDays(new Date(`${data.to}T00:00:00.000Z`), 1);
+    const lengthMs = toExclusive.getTime() - from.getTime();
+    const prevFrom = new Date(from.getTime() - lengthMs);
+    const prevTo = from;
+
+    async function totals(start: Date, end: Date) {
+      let q = context.supabase
+        .from("bookings")
+        .select("price,status")
+        .gte("start_at", start.toISOString())
+        .lt("start_at", end.toISOString());
+      if (data.branchId) q = q.eq("branch_id", data.branchId);
+      const { data: rows, error } = await q;
+      if (error) throw new Error(error.message);
+      const revenue = (rows ?? [])
+        .filter((r) => revenueStatuses.has(r.status))
+        .reduce((s, r) => s + Number(r.price), 0);
+      return { bookings: rows?.length ?? 0, revenue };
+    }
+
+    const [current, previous] = await Promise.all([
+      totals(from, toExclusive),
+      totals(prevFrom, prevTo),
+    ]);
+    const pct = (cur: number, prev: number) =>
+      prev === 0 ? (cur === 0 ? 0 : 100) : Math.round(((cur - prev) / prev) * 100);
+    return {
+      current,
+      previous,
+      delta: {
+        bookings: pct(current.bookings, previous.bookings),
+        revenue: pct(current.revenue, previous.revenue),
+      },
+      range: { from: data.from, to: data.to, prev_from: prevFrom.toISOString().slice(0, 10), prev_to: prevTo.toISOString().slice(0, 10) },
+    };
+  });
