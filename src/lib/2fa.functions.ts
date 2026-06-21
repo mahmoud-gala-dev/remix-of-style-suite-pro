@@ -53,6 +53,28 @@ export const get2FAStatus = createServerFn({ method: "GET" })
     return { enabled: !!data?.enabled, enrolledAt: data?.enrolled_at ?? null, lastVerifiedAt: data?.last_verified_at ?? null };
   });
 
+// P2 — Returns true when the signed-in user has a privileged role
+// (super_admin/admin) AND has 2FA enrolled+enabled. Used by /auth to
+// gate the session behind a TOTP code prompt after signInWithPassword.
+export const requires2FA = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data: roles, error: rErr } = await context.supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", context.userId);
+    if (rErr) throw new Error(rErr.message);
+    const privileged = (roles ?? []).some((r) => r.role === "super_admin" || r.role === "admin");
+    if (!privileged) return { required: false as const };
+    const { data: row, error } = await context.supabase
+      .from("user_2fa")
+      .select("enabled")
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return { required: !!row?.enabled };
+  });
+
 export const disable2FA = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ code: z.string().trim().length(6).regex(/^\d{6}$/) }).parse(d))
