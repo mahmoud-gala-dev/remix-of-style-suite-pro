@@ -5,7 +5,7 @@ import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
 import { useT } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
-import { getReportsSummary, exportReportsCsv, exportReportsRows, getReportsCompare } from "@/lib/reports.functions";
+import { getReportsSummary, exportReportsCsv, exportReportsRows, exportReportsPdf, getReportsCompare } from "@/lib/reports.functions";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
@@ -50,6 +50,7 @@ function Page() {
   const fetchReports = useServerFn(getReportsSummary);
   const fetchCsv = useServerFn(exportReportsCsv);
   const fetchRows = useServerFn(exportReportsRows);
+  const fetchPdf = useServerFn(exportReportsPdf);
   const fetchCompare = useServerFn(getReportsCompare);
   const { data, isFetching } = useQuery({
     queryKey: ["reports", from, to, branchId],
@@ -88,6 +89,24 @@ function Page() {
     }
   };
 
+  const onExportPdf = async () => {
+    try {
+      const res = await fetchPdf({ data: { from, to, branchId: branchId === "all" ? null : branchId } });
+      const bin = atob(res.base64);
+      const buf = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+      const blob = new Blob([buf], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = res.filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "PDF export failed");
+    }
+  };
+
   const report = data ?? {
     branches: [],
     byBranch: [],
@@ -116,7 +135,8 @@ function Page() {
           <div className="flex gap-2" data-no-print>
             <Button variant="outline" size="sm" onClick={onExport}>Export CSV</Button>
             <Button variant="outline" size="sm" onClick={onExportXlsx}>Export Excel</Button>
-            <Button variant="outline" size="sm" onClick={() => window.print()}>Print / PDF</Button>
+            <Button variant="outline" size="sm" onClick={onExportPdf}>Export PDF</Button>
+            <Button variant="outline" size="sm" onClick={() => window.print()}>Print</Button>
           </div>
         }
       />

@@ -29,6 +29,9 @@ import {
 import { downloadCsv, toCsv } from "@/lib/csv";
 import { parseCsvWithHeader } from "@/lib/csv-parse";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { useQueryClient } from "@tanstack/react-query";
+import { bulkImportCustomers } from "@/lib/customers.functions";
 
 export const Route = createFileRoute("/_authenticated/customers")({
   ssr: false,
@@ -46,36 +49,32 @@ function Page() {
   const allRaw = useData((s) => s.customers);
   const removeCustomer = useData((s) => s.removeCustomer);
   const updateCustomer = useData((s) => s.updateCustomer);
-  const addCustomer = useData((s) => s.addCustomer);
   const all = useMemo(() => allRaw.filter((c) => c.branchId === branchId), [allRaw, branchId]);
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const importFn = useServerFn(bulkImportCustomers);
+  const qc = useQueryClient();
 
   const handleImport = async (file: File) => {
     try {
       const text = await file.text();
       const rows = parseCsvWithHeader(text);
-      const existing = new Set(allRaw.map((c) => c.phone.replace(/\D/g, "")));
-      let added = 0; let skipped = 0;
-      for (const r of rows) {
-        const phone = (r.phone ?? r["phone number"] ?? "").trim();
-        const name = (r.name ?? r["full name"] ?? "").trim();
-        if (!phone || !name) { skipped++; continue; }
-        const norm = phone.replace(/\D/g, "");
-        if (existing.has(norm)) { skipped++; continue; }
-        existing.add(norm);
-        addCustomer({
-          branchId,
-          name,
-          phone,
-          email: r.email || "",
-          notes: r.notes || "",
-          lastVisit: null,
-        } as any);
-        added++;
+      const staged = rows
+        .map((r) => ({
+          name: (r.name ?? r["full name"] ?? "").trim(),
+          phone: (r.phone ?? r["phone number"] ?? "").trim(),
+          email: (r.email ?? "").trim(),
+          notes: (r.notes ?? "").trim(),
+        }))
+        .filter((r) => r.name && r.phone);
+      if (!staged.length) {
+        toast.error("No valid rows (need name + phone)");
+        return;
       }
-      toast.success(`Imported ${added}, skipped ${skipped}`);
+      const res = await importFn({ data: { branchId, rows: staged } });
+      await qc.invalidateQueries({ queryKey: ["hydrate"] });
+      toast.success(`Imported ${res.added}, skipped ${res.skipped} of ${res.total}`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Import failed");
     }
