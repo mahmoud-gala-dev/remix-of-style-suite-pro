@@ -32,3 +32,15 @@ export function rateLimit(key: string, opts: RateLimitOptions = {}): void {
   }
   buckets.set(key, { tokens: tokens - 1, updatedAt: now });
 }
+
+/**
+ * P21 — IP-based rate limit for public HTTP routes.
+ * Reads cf-connecting-ip / x-forwarded-for from the incoming Request.
+ */
+export function rateLimitByIp(request: Request, scope: string, opts: RateLimitOptions = {}): void {
+  const ip =
+    request.headers.get("cf-connecting-ip") ??
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    "unknown";
+  rateLimit(`${scope}:${ip}`, opts);
+}
