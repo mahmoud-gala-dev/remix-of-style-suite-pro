@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as BookRouteImport } from './routes/book'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -32,9 +33,15 @@ import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedBookingsRouteImport } from './routes/_authenticated/bookings'
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
 import { Route as AuthenticatedAccessRouteImport } from './routes/_authenticated/access'
+import { Route as ApiPublicHealthcheckRouteImport } from './routes/api/public/healthcheck'
 import { Route as ApiPublicCronRetryWebhooksRouteImport } from './routes/api/public/cron/retry-webhooks'
 import { Route as ApiPublicCronProcessWebhooksRouteImport } from './routes/api/public/cron/process-webhooks'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SetupRoute = SetupRouteImport.update({
   id: '/setup',
   path: '/setup',
@@ -150,6 +157,11 @@ const AuthenticatedAccessRoute = AuthenticatedAccessRouteImport.update({
   path: '/access',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicHealthcheckRoute = ApiPublicHealthcheckRouteImport.update({
+  id: '/api/public/healthcheck',
+  path: '/api/public/healthcheck',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCronRetryWebhooksRoute =
   ApiPublicCronRetryWebhooksRouteImport.update({
     id: '/api/public/cron/retry-webhooks',
@@ -168,6 +180,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/setup': typeof SetupRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/access': typeof AuthenticatedAccessRoute
   '/audit': typeof AuthenticatedAuditRoute
   '/bookings': typeof AuthenticatedBookingsRoute
@@ -186,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/tenants': typeof AuthenticatedTenantsRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
+  '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
 }
@@ -193,6 +207,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/setup': typeof SetupRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/access': typeof AuthenticatedAccessRoute
   '/audit': typeof AuthenticatedAuditRoute
   '/bookings': typeof AuthenticatedBookingsRoute
@@ -212,6 +227,7 @@ export interface FileRoutesByTo {
   '/tenants': typeof AuthenticatedTenantsRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
   '/': typeof AuthenticatedIndexRoute
+  '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
 }
@@ -221,6 +237,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/setup': typeof SetupRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/access': typeof AuthenticatedAccessRoute
   '/_authenticated/audit': typeof AuthenticatedAuditRoute
   '/_authenticated/bookings': typeof AuthenticatedBookingsRoute
@@ -240,6 +257,7 @@ export interface FileRoutesById {
   '/_authenticated/tenants': typeof AuthenticatedTenantsRoute
   '/_authenticated/webhooks': typeof AuthenticatedWebhooksRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
 }
@@ -250,6 +268,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/book'
     | '/setup'
+    | '/sitemap.xml'
     | '/access'
     | '/audit'
     | '/bookings'
@@ -268,6 +287,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tenants'
     | '/webhooks'
+    | '/api/public/healthcheck'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
   fileRoutesByTo: FileRoutesByTo
@@ -275,6 +295,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/book'
     | '/setup'
+    | '/sitemap.xml'
     | '/access'
     | '/audit'
     | '/bookings'
@@ -294,6 +315,7 @@ export interface FileRouteTypes {
     | '/tenants'
     | '/webhooks'
     | '/'
+    | '/api/public/healthcheck'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
   id:
@@ -302,6 +324,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/book'
     | '/setup'
+    | '/sitemap.xml'
     | '/_authenticated/access'
     | '/_authenticated/audit'
     | '/_authenticated/bookings'
@@ -321,6 +344,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tenants'
     | '/_authenticated/webhooks'
     | '/_authenticated/'
+    | '/api/public/healthcheck'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
   fileRoutesById: FileRoutesById
@@ -330,12 +354,21 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BookRoute: typeof BookRoute
   SetupRoute: typeof SetupRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiPublicHealthcheckRoute: typeof ApiPublicHealthcheckRoute
   ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
   ApiPublicCronRetryWebhooksRoute: typeof ApiPublicCronRetryWebhooksRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/setup': {
       id: '/setup'
       path: '/setup'
@@ -497,6 +530,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccessRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/healthcheck': {
+      id: '/api/public/healthcheck'
+      path: '/api/public/healthcheck'
+      fullPath: '/api/public/healthcheck'
+      preLoaderRoute: typeof ApiPublicHealthcheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/retry-webhooks': {
       id: '/api/public/cron/retry-webhooks'
       path: '/api/public/cron/retry-webhooks'
@@ -566,19 +606,11 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BookRoute: BookRoute,
   SetupRoute: SetupRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiPublicHealthcheckRoute: ApiPublicHealthcheckRoute,
   ApiPublicCronProcessWebhooksRoute: ApiPublicCronProcessWebhooksRoute,
   ApiPublicCronRetryWebhooksRoute: ApiPublicCronRetryWebhooksRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
