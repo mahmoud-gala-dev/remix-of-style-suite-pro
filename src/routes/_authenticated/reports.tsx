@@ -5,7 +5,7 @@ import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
 import { useT } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
-import { getReportsSummary, exportReportsCsv, exportReportsRows } from "@/lib/reports.functions";
+import { getReportsSummary, exportReportsCsv, exportReportsRows, getReportsCompare } from "@/lib/reports.functions";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
@@ -50,9 +50,14 @@ function Page() {
   const fetchReports = useServerFn(getReportsSummary);
   const fetchCsv = useServerFn(exportReportsCsv);
   const fetchRows = useServerFn(exportReportsRows);
+  const fetchCompare = useServerFn(getReportsCompare);
   const { data, isFetching } = useQuery({
     queryKey: ["reports", from, to, branchId],
     queryFn: () => fetchReports({ data: { from, to, branchId: branchId === "all" ? null : branchId } }),
+  });
+  const compareQ = useQuery({
+    queryKey: ["reports-compare", from, to, branchId],
+    queryFn: () => fetchCompare({ data: { from, to, branchId: branchId === "all" ? null : branchId } }),
   });
 
   const onExport = async () => {
