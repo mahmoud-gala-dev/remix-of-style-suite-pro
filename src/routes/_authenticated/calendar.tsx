@@ -4,7 +4,9 @@ import { PageHeader, Surface } from "@/components/shell/page";
 import { useCurrentBranch, useData } from "@/lib/store";
 import { useI18n, useT } from "@/lib/i18n";
 import { fmtTime } from "@/lib/format";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/calendar")({
   ssr: false,
@@ -20,6 +22,18 @@ function Page() {
   const t = useT();
   const lang = useI18n((s) => s.lang);
   const branch = useCurrentBranch();
+  const qc = useQueryClient();
+  useEffect(() => {
+    const ch = supabase
+      .channel("realtime:calendar")
+      .on("postgres_changes", { event: "*", schema: "public", table: "bookings" }, () => {
+        qc.invalidateQueries({ queryKey: ["hydrate"] });
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
+  }, [qc]);
   const employees = useData((s) => s.employees).filter((e) => e.branchId === branch.id);
   const bookings = useData((s) => s.bookings).filter((b) => b.branchId === branch.id);
   const customers = useData((s) => s.customers);
