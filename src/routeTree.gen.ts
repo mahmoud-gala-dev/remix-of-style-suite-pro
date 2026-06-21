@@ -28,6 +28,7 @@ import { Route as AuthenticatedCouponsRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticated/branches'
 import { Route as AuthenticatedBookingsRouteImport } from './routes/_authenticated/bookings'
+import { Route as AuthenticatedAccessRouteImport } from './routes/_authenticated/access'
 
 const SetupRoute = SetupRouteImport.update({
   id: '/setup',
@@ -124,12 +125,18 @@ const AuthenticatedBookingsRoute = AuthenticatedBookingsRouteImport.update({
   path: '/bookings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAccessRoute = AuthenticatedAccessRouteImport.update({
+  id: '/access',
+  path: '/access',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/setup': typeof SetupRoute
+  '/access': typeof AuthenticatedAccessRoute
   '/bookings': typeof AuthenticatedBookingsRoute
   '/branches': typeof AuthenticatedBranchesRoute
   '/calendar': typeof AuthenticatedCalendarRoute
@@ -149,6 +156,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/setup': typeof SetupRoute
+  '/access': typeof AuthenticatedAccessRoute
   '/bookings': typeof AuthenticatedBookingsRoute
   '/branches': typeof AuthenticatedBranchesRoute
   '/calendar': typeof AuthenticatedCalendarRoute
@@ -171,6 +179,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/setup': typeof SetupRoute
+  '/_authenticated/access': typeof AuthenticatedAccessRoute
   '/_authenticated/bookings': typeof AuthenticatedBookingsRoute
   '/_authenticated/branches': typeof AuthenticatedBranchesRoute
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
@@ -194,6 +203,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/book'
     | '/setup'
+    | '/access'
     | '/bookings'
     | '/branches'
     | '/calendar'
@@ -213,6 +223,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/book'
     | '/setup'
+    | '/access'
     | '/bookings'
     | '/branches'
     | '/calendar'
@@ -234,6 +245,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/book'
     | '/setup'
+    | '/_authenticated/access'
     | '/_authenticated/bookings'
     | '/_authenticated/branches'
     | '/_authenticated/calendar'
@@ -393,10 +405,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBookingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/access': {
+      id: '/_authenticated/access'
+      path: '/access'
+      fullPath: '/access'
+      preLoaderRoute: typeof AuthenticatedAccessRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAccessRoute: typeof AuthenticatedAccessRoute
   AuthenticatedBookingsRoute: typeof AuthenticatedBookingsRoute
   AuthenticatedBranchesRoute: typeof AuthenticatedBranchesRoute
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
@@ -415,6 +435,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAccessRoute: AuthenticatedAccessRoute,
   AuthenticatedBookingsRoute: AuthenticatedBookingsRoute,
   AuthenticatedBranchesRoute: AuthenticatedBranchesRoute,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
