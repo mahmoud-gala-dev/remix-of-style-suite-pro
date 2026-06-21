@@ -32,6 +32,7 @@ import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedBookingsRouteImport } from './routes/_authenticated/bookings'
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
 import { Route as AuthenticatedAccessRouteImport } from './routes/_authenticated/access'
+import { Route as ApiPublicHealthcheckRouteImport } from './routes/api/public/healthcheck'
 import { Route as ApiPublicCronRetryWebhooksRouteImport } from './routes/api/public/cron/retry-webhooks'
 import { Route as ApiPublicCronProcessWebhooksRouteImport } from './routes/api/public/cron/process-webhooks'
 
@@ -150,6 +151,11 @@ const AuthenticatedAccessRoute = AuthenticatedAccessRouteImport.update({
   path: '/access',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicHealthcheckRoute = ApiPublicHealthcheckRouteImport.update({
+  id: '/api/public/healthcheck',
+  path: '/api/public/healthcheck',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCronRetryWebhooksRoute =
   ApiPublicCronRetryWebhooksRouteImport.update({
     id: '/api/public/cron/retry-webhooks',
@@ -186,6 +192,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/tenants': typeof AuthenticatedTenantsRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
+  '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
 }
@@ -212,6 +219,7 @@ export interface FileRoutesByTo {
   '/tenants': typeof AuthenticatedTenantsRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
   '/': typeof AuthenticatedIndexRoute
+  '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
 }
@@ -240,6 +248,7 @@ export interface FileRoutesById {
   '/_authenticated/tenants': typeof AuthenticatedTenantsRoute
   '/_authenticated/webhooks': typeof AuthenticatedWebhooksRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
 }
@@ -268,6 +277,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tenants'
     | '/webhooks'
+    | '/api/public/healthcheck'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
   fileRoutesByTo: FileRoutesByTo
@@ -294,6 +304,7 @@ export interface FileRouteTypes {
     | '/tenants'
     | '/webhooks'
     | '/'
+    | '/api/public/healthcheck'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
   id:
@@ -321,6 +332,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tenants'
     | '/_authenticated/webhooks'
     | '/_authenticated/'
+    | '/api/public/healthcheck'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
   fileRoutesById: FileRoutesById
@@ -330,6 +342,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BookRoute: typeof BookRoute
   SetupRoute: typeof SetupRoute
+  ApiPublicHealthcheckRoute: typeof ApiPublicHealthcheckRoute
   ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
   ApiPublicCronRetryWebhooksRoute: typeof ApiPublicCronRetryWebhooksRoute
 }
@@ -497,6 +510,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccessRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/healthcheck': {
+      id: '/api/public/healthcheck'
+      path: '/api/public/healthcheck'
+      fullPath: '/api/public/healthcheck'
+      preLoaderRoute: typeof ApiPublicHealthcheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/retry-webhooks': {
       id: '/api/public/cron/retry-webhooks'
       path: '/api/public/cron/retry-webhooks'
@@ -566,19 +586,10 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BookRoute: BookRoute,
   SetupRoute: SetupRoute,
+  ApiPublicHealthcheckRoute: ApiPublicHealthcheckRoute,
   ApiPublicCronProcessWebhooksRoute: ApiPublicCronProcessWebhooksRoute,
   ApiPublicCronRetryWebhooksRoute: ApiPublicCronRetryWebhooksRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
