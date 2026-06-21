@@ -173,25 +173,24 @@ function InvoiceDialog({
 
   const svc = services.find((s) => s.id === serviceId);
   const unitPrice = svc?.price ?? 0;
-  const subtotal = unitPrice * qty;
+  const subtotal = calcSubtotal(unitPrice, qty);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true); setErr(null);
 
-    let discount = 0;
+    let coupon: Coupon = null;
     let couponId: string | null = null;
     if (couponCode.trim()) {
       const { data: coup } = await supabase
         .from("coupons").select("*").eq("code", couponCode.trim().toUpperCase()).maybeSingle();
       if (coup && coup.active) {
         couponId = coup.id;
-        discount = coup.kind === "percent" ? (subtotal * Number(coup.value)) / 100 : Number(coup.value);
+        coupon = { kind: coup.kind as "percent" | "amount", value: Number(coup.value) };
         await supabase.from("coupons").update({ used_count: (coup.used_count ?? 0) + 1 }).eq("id", coup.id);
       }
     }
-    const tax = ((subtotal - discount) * taxPct) / 100;
-    const total = subtotal - discount + tax;
+    const { discount, tax, total } = calcInvoice({ unitPrice, qty, taxPct, coupon });
 
     const { data: inv, error: invErr } = await supabase
       .from("invoices")
