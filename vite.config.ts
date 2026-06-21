@@ -5,11 +5,29 @@
 //     error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 
 export default defineConfig({
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+  },
+  vite: {
+    build: { sourcemap: true },
+    plugins: [
+      // Upload source maps to Sentry only when build-time creds are present.
+      ...(process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT
+        ? [
+            sentryVitePlugin({
+              org: process.env.SENTRY_ORG,
+              project: process.env.SENTRY_PROJECT,
+              authToken: process.env.SENTRY_AUTH_TOKEN,
+              telemetry: false,
+              sourcemaps: { filesToDeleteAfterUpload: ["**/*.map"] },
+            }),
+          ]
+        : []),
+    ],
   },
 });
