@@ -46,7 +46,7 @@ function Page() {
 
   return (
     <div className="p-8 max-w-[1400px] mx-auto">
-      <PageHeader title={t("waitlist") ?? "Waitlist"} subtitle={`${rows.length} ${rows.length === 1 ? "entry" : "entries"}`} />
+      <PageHeader title="Waitlist" subtitle={`${rows.length} ${rows.length === 1 ? "entry" : "entries"}`} />
       <DataState
         loading={q.isLoading}
         error={q.error}
