@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+// TODO: replace with your project URL once a custom domain is set.
+const BASE_URL = "";
+
 // P25 — basic sitemap for public pages.
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: async ({ request }) => {
-        const origin = new URL(request.url).origin;
+      GET: async () => {
         const urls = ["/", "/book", "/auth"];
         const lastmod = new Date().toISOString().split("T")[0];
         const body =
@@ -14,7 +16,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           urls
             .map(
               (u) =>
-                `  <url><loc>${origin}${u}</loc><lastmod>${lastmod}</lastmod><changefreq>weekly</changefreq></url>`,
+                `  <url><loc>${BASE_URL}${u}</loc><lastmod>${lastmod}</lastmod><changefreq>weekly</changefreq></url>`,
             )
             .join("\n") +
           `\n</urlset>\n`;

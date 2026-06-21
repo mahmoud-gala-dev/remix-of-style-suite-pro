@@ -3,5 +3,3 @@ Allow: /
 Disallow: /api/
 Disallow: /_authenticated/
 Disallow: /setup
-
-Sitemap: /sitemap.xml
