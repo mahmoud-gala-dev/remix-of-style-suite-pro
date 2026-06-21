@@ -1,10 +1,13 @@
 import { Bell, ChevronDown, LogOut, Moon, Search, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { useI18n, useT } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { useData, useCurrentBranch } from "@/lib/store";
 import { supabase } from "@/integrations/supabase/client";
+import { listTenants } from "@/lib/tenants.functions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,8 +23,15 @@ export function Topbar() {
   const themeMode = useTheme((s) => s.mode);
   const toggleTheme = useTheme((s) => s.toggle);
   const branch = useCurrentBranch();
-  const branches = useData((s) => s.branches);
+  const allBranches = useData((s) => s.branches);
   const setCurrentBranch = useData((s) => s.setCurrentBranch);
+  const currentTenantId = useData((s) => s.currentTenantId);
+  const setCurrentTenant = useData((s) => s.setCurrentTenant);
+  const fetchTenants = useServerFn(listTenants);
+  const tenantsQ = useQuery({ queryKey: ["tenants"], queryFn: () => fetchTenants(), staleTime: 60_000 });
+  const branches = currentTenantId
+    ? allBranches.filter((b) => b.tenantId === currentTenantId)
+    : allBranches;
   const [now, setNow] = useState<string>("");
   const navigate = useNavigate();
 
@@ -40,6 +50,34 @@ export function Topbar() {
   return (
     <header className="h-16 border-b border-border flex items-center justify-between px-6 bg-background/70 backdrop-blur-md sticky top-0 z-20">
       <div className="flex items-center gap-3">
+        {(tenantsQ.data?.length ?? 0) > 0 && (
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-2 bg-surface border border-border px-3 py-1.5 rounded-md hover:bg-surface-2 transition-colors">
+              <span className="text-xs text-dim">{t("tenant")}:</span>
+              <span className="text-xs font-medium text-primary">
+                {tenantsQ.data?.find((x) => x.id === currentTenantId)?.name ?? t("allTenants")}
+              </span>
+              <ChevronDown className="size-3 text-dim" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="min-w-56">
+              <DropdownMenuItem
+                onSelect={() => setCurrentTenant(null)}
+                className={cn("flex items-center justify-between", !currentTenantId && "text-primary")}
+              >
+                <span>{t("allTenants")}</span>
+              </DropdownMenuItem>
+              {tenantsQ.data?.map((tn) => (
+                <DropdownMenuItem
+                  key={tn.id}
+                  onSelect={() => setCurrentTenant(tn.id)}
+                  className={cn("flex items-center justify-between", tn.id === currentTenantId && "text-primary")}
+                >
+                  <span>{tn.name}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center gap-2 bg-surface border border-border px-3 py-1.5 rounded-md hover:bg-surface-2 transition-colors">
             <span className="text-xs text-dim">{t("branch")}:</span>
