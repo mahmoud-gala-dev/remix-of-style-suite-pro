@@ -4,8 +4,8 @@ import { PageHeader, Surface } from "@/components/shell/page";
 import { useData } from "@/lib/store";
 import { useT } from "@/lib/i18n";
 import { fmtDate, fmtMoney, initials } from "@/lib/format";
-import { useMemo, useState } from "react";
-import { Plus, Search, Download, Phone, MessageCircle, Pencil, Trash2, CalendarPlus, Sparkles } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { Plus, Search, Download, Upload, Phone, MessageCircle, Pencil, Trash2, CalendarPlus, Sparkles } from "lucide-react";
 import { CustomerDialog } from "@/components/dialogs/customer-dialog";
 import {
   AlertDialog,
@@ -26,6 +26,7 @@ import {
   ContextMenuSeparator,
 } from "@/components/ui/context-menu";
 import { downloadCsv, toCsv } from "@/lib/csv";
+import { parseCsvWithHeader } from "@/lib/csv-parse";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/customers")({
@@ -44,9 +45,40 @@ function Page() {
   const allRaw = useData((s) => s.customers);
   const removeCustomer = useData((s) => s.removeCustomer);
   const updateCustomer = useData((s) => s.updateCustomer);
+  const addCustomer = useData((s) => s.addCustomer);
   const all = useMemo(() => allRaw.filter((c) => c.branchId === branchId), [allRaw, branchId]);
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const handleImport = async (file: File) => {
+    try {
+      const text = await file.text();
+      const rows = parseCsvWithHeader(text);
+      const existing = new Set(allRaw.map((c) => c.phone.replace(/\D/g, "")));
+      let added = 0; let skipped = 0;
+      for (const r of rows) {
+        const phone = (r.phone ?? r["phone number"] ?? "").trim();
+        const name = (r.name ?? r["full name"] ?? "").trim();
+        if (!phone || !name) { skipped++; continue; }
+        const norm = phone.replace(/\D/g, "");
+        if (existing.has(norm)) { skipped++; continue; }
+        existing.add(norm);
+        addCustomer({
+          branchId,
+          name,
+          phone,
+          email: r.email || "",
+          notes: r.notes || "",
+          lastVisit: null,
+        } as any);
+        added++;
+      }
+      toast.success(`Imported ${added}, skipped ${skipped}`);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Import failed");
+    }
+  };
 
   const list = useMemo(() => {
     if (!q.trim()) return all;
@@ -61,6 +93,24 @@ function Page() {
         subtitle={`${all.length} total`}
         actions={
           <div className="flex items-center gap-2">
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".csv,text/csv"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) handleImport(f);
+              e.target.value = "";
+            }}
+          />
+          <button
+            onClick={() => fileRef.current?.click()}
+            className="inline-flex items-center gap-2 border border-border px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest hover:bg-surface-2/40"
+          >
+            <Upload className="size-3.5" />
+            Import
+          </button>
           <button
             onClick={() =>
               downloadCsv(
