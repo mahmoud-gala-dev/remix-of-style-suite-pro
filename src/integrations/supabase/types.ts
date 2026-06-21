@@ -917,6 +917,24 @@ export type Database = {
           },
         ]
       }
+      rate_limit_buckets: {
+        Row: {
+          key: string
+          tokens: number
+          updated_at: string
+        }
+        Insert: {
+          key: string
+          tokens: number
+          updated_at?: string
+        }
+        Update: {
+          key?: string
+          tokens?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       services: {
         Row: {
           active: boolean
@@ -1273,6 +1291,11 @@ export type Database = {
         Args: { p_email: string; p_ip: string }
         Returns: undefined
       }
+      check_token_bucket: {
+        Args: { p_capacity: number; p_key: string; p_refill_per_min: number }
+        Returns: number
+      }
+      cleanup_rate_limit_buckets: { Args: never; Returns: number }
       count_tenant_bookings_this_period: {
         Args: { _tenant_id: string }
         Returns: number
