@@ -8,7 +8,8 @@ import { StatusPill } from "@/components/shell/status-pill";
 import { useCurrentBranch, useData } from "@/lib/store";
 import { useI18n, useT } from "@/lib/i18n";
 import { fmtMoney, fmtTime, fmtDate, isToday } from "@/lib/format";
-import { Plus, Download, Check, X, Trash2, Play } from "lucide-react";
+import { Plus, Download, Check, X, Trash2, Play, Calendar } from "lucide-react";
+import { EmptyState } from "@/components/shell/empty-state";
 import { useState } from "react";
 import { BookingDialog } from "@/components/dialogs/booking-dialog";
 import {
