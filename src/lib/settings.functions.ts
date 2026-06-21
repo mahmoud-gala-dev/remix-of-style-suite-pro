@@ -3,23 +3,28 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const KEYS = ["booking_otp_required", "default_tax_pct", "refresh_interval"] as const;
-type Key = (typeof KEYS)[number];
 
-export const getAppSettings = createServerFn({ method: "GET" }).handler(async () => {
+export type AppSettings = {
+  booking_otp_required: boolean;
+  default_tax_pct: number;
+  refresh_interval: number;
+};
+
+export const getAppSettings = createServerFn({ method: "GET" }).handler(async (): Promise<AppSettings> => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data } = await supabaseAdmin
     .from("app_settings")
     .select("key,value")
     .in("key", KEYS as unknown as string[]);
-  const out: Record<Key, unknown> = {
+  const out: AppSettings = {
     booking_otp_required: false,
     default_tax_pct: 0,
     refresh_interval: 30,
   };
   for (const row of data ?? []) {
-    if ((KEYS as readonly string[]).includes(row.key)) {
-      (out as Record<string, unknown>)[row.key] = row.value;
-    }
+    if (row.key === "booking_otp_required") out.booking_otp_required = Boolean(row.value);
+    else if (row.key === "default_tax_pct") out.default_tax_pct = Number(row.value) || 0;
+    else if (row.key === "refresh_interval") out.refresh_interval = Number(row.value) || 30;
   }
   return out;
 });
