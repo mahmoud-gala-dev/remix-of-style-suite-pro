@@ -18,10 +18,10 @@ export default defineConfig({
       sourcemap: true,
       rollupOptions: {
         output: {
-          manualChunks: {
-            recharts: ["recharts"],
-            framer: ["framer-motion"],
-            sentry: ["@sentry/browser"],
+          manualChunks: (id: string) => {
+            if (id.includes("node_modules/recharts")) return "recharts";
+            if (id.includes("node_modules/framer-motion")) return "framer";
+            if (id.includes("node_modules/@sentry")) return "sentry";
           },
         },
       },
