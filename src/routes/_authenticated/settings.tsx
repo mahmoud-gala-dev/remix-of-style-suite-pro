@@ -129,9 +129,9 @@ function Page() {
       {isAdmin && (
         <Surface>
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">Public booking — OTP</h3>
+            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">{t("bookingOtpRequired")}</h3>
             <label className="inline-flex items-center gap-2 cursor-pointer">
-              <span className="text-xs text-dim">{otpQ.data?.enabled ? "Required" : "Disabled"}</span>
+              <span className="text-xs text-dim">{otpQ.data?.enabled ? t("active") : t("disabled")}</span>
               <input
                 type="checkbox"
                 checked={Boolean(otpQ.data?.enabled)}
@@ -144,6 +144,45 @@ function Page() {
           <p className="text-xs text-dim">
             When enabled, guests must verify their phone with a 6-digit code before a booking is accepted.
           </p>
+        </Surface>
+      )}
+
+      {isAdmin && (
+        <Surface>
+          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-4">{t("generalSettings")}</h3>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="space-y-1.5 text-xs">
+              <span className="text-dim">{t("defaultTaxPct")}</span>
+              <input
+                type="number"
+                min={0}
+                max={100}
+                step={0.5}
+                defaultValue={Number(settingsQ.data?.default_tax_pct ?? 0)}
+                onBlur={(e) => {
+                  const v = Number(e.target.value);
+                  if (!Number.isNaN(v)) settingMut.mutate({ key: "default_tax_pct", value: v });
+                }}
+                className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
+              />
+            </label>
+            <label className="space-y-1.5 text-xs">
+              <span className="text-dim">{t("refreshInterval")}</span>
+              <input
+                type="number"
+                min={5}
+                max={600}
+                step={5}
+                defaultValue={Number(settingsQ.data?.refresh_interval ?? 30)}
+                onBlur={(e) => {
+                  const v = Number(e.target.value);
+                  if (!Number.isNaN(v)) settingMut.mutate({ key: "refresh_interval", value: v });
+                }}
+                className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
+              />
+            </label>
+          </div>
+          <p className="text-xs text-dim mt-3">Values save on blur.</p>
         </Surface>
       )}
 
