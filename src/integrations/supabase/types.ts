@@ -522,6 +522,73 @@ export type Database = {
           },
         ]
       }
+      employee_days_off: {
+        Row: {
+          created_at: string
+          day: string
+          employee_id: string
+          id: string
+          reason: string | null
+        }
+        Insert: {
+          created_at?: string
+          day: string
+          employee_id: string
+          id?: string
+          reason?: string | null
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          employee_id?: string
+          id?: string
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_days_off_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employee_shifts: {
+        Row: {
+          created_at: string
+          employee_id: string
+          end_time: string
+          id: string
+          start_time: string
+          weekday: number
+        }
+        Insert: {
+          created_at?: string
+          employee_id: string
+          end_time: string
+          id?: string
+          start_time: string
+          weekday: number
+        }
+        Update: {
+          created_at?: string
+          employee_id?: string
+          end_time?: string
+          id?: string
+          start_time?: string
+          weekday?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_shifts_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       employees: {
         Row: {
           active: boolean

@@ -77,6 +77,32 @@ export const createBooking = createServerFn({ method: "POST" })
       .single();
     if (employeeErr || !employee) throw new Error("Employee is not available");
 
+    // P52 — per-employee shifts + days-off enforcement.
+    // Shifts are optional: if none defined for the employee, fall back to branch hours.
+    {
+      const startDate = new Date(data.startAt);
+      const endDate = new Date(data.endAt);
+      const dayStr = startDate.toISOString().slice(0, 10);
+      const [{ data: dayOff }, { data: shifts }] = await Promise.all([
+        supabaseAdmin.from("employee_days_off").select("id").eq("employee_id", data.employeeId).eq("day", dayStr).maybeSingle(),
+        supabaseAdmin.from("employee_shifts").select("weekday,start_time,end_time").eq("employee_id", data.employeeId),
+      ]);
+      if (dayOff) throw new Response("Employee is off on this day", { status: 409 });
+      if (shifts && shifts.length > 0) {
+        const weekday = startDate.getUTCDay();
+        const toMin = (t: string) => {
+          const [h, m] = t.split(":").map(Number);
+          return h * 60 + m;
+        };
+        const startMin = startDate.getUTCHours() * 60 + startDate.getUTCMinutes();
+        const endMin = endDate.getUTCHours() * 60 + endDate.getUTCMinutes();
+        const inShift = shifts.some((s) =>
+          s.weekday === weekday && toMin(s.start_time) <= startMin && toMin(s.end_time) >= endMin,
+        );
+        if (!inShift) throw new Response("Outside employee working hours", { status: 409 });
+      }
+    }
+
     let customerId = data.customerId;
     if (!customerId) {
       if (!data.customerName || !data.customerPhone) throw new Error("Customer details are required");
