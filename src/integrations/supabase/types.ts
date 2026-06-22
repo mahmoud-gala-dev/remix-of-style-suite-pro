@@ -1869,6 +1869,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      notification_jobs_health: {
+        Args: never
+        Returns: {
+          failed: number
+          pending: number
+          stuck: number
+        }[]
+      }
       refresh_mv_daily_revenue: { Args: never; Returns: undefined }
       request_otp: { Args: { p_phone: string }; Returns: string }
       seed_service_templates: {
