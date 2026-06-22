@@ -25,14 +25,6 @@ const DEFAULTS: StripeSettings = {
   cancel_url: "/settings",
 };
 
-async function assertAdmin(ctx: { supabase: any; userId: string }) {
-  const [a, s] = await Promise.all([
-    ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "admin" }),
-    ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "super_admin" }),
-  ]);
-  if (!a.data && !s.data) throw new Response("Forbidden", { status: 403 });
-}
-
 function redact(cfg: StripeSettings): StripeSettings {
   return {
     ...cfg,

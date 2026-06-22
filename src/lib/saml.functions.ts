@@ -17,14 +17,6 @@ const DEFAULTS: SAMLSettings = {
   domains: [],
 };
 
-async function assertAdmin(ctx: { supabase: any; userId: string }) {
-  const [a, s] = await Promise.all([
-    ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "admin" }),
-    ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "super_admin" }),
-  ]);
-  if (!a.data && !s.data) throw new Response("Forbidden", { status: 403 });
-}
-
 export const getSAMLSettings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<SAMLSettings> => {
