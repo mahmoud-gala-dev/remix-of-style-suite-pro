@@ -17,7 +17,7 @@ export const getBranchDisplay = createServerFn({ method: "GET" })
         .eq("branch_id", data.branchId).in("status", ["waiting", "called", "in_progress"]).order("position"),
       supabaseAdmin.from("bookings").select("id,customer_id,employee_id,service_id,start_at,status")
         .eq("branch_id", data.branchId).gte("start_at", todayStart.toISOString()).lte("start_at", todayEnd.toISOString())
-        .in("status", ["confirmed", "arrived", "waiting", "in_progress"]).order("start_at"),
+        .in("status", ["confirmed", "arrived", "in_progress"]).order("start_at"),
       supabaseAdmin.from("customers").select("id,name").eq("branch_id", data.branchId),
       supabaseAdmin.from("employees").select("id,name_en,name_ar").eq("branch_id", data.branchId),
       supabaseAdmin.from("services").select("id,name_en,name_ar").eq("branch_id", data.branchId),
