@@ -6,7 +6,6 @@ import { PageHeader, Surface } from "@/components/shell/page";
 import { useCurrentBranch, useData } from "@/lib/store";
 import { supabase } from "@/integrations/supabase/client";
 import { useT } from "@/lib/i18n";
-import { useI18n } from "@/lib/i18n";
 import { notify } from "@/lib/push";
 import { useServerFn } from "@tanstack/react-start";
 import { broadcastPush } from "@/lib/push.functions";
@@ -25,7 +24,6 @@ export const Route = createFileRoute("/_authenticated/queue")({
 
 function Page() {
   const t = useT();
-  const lang = useI18n((s) => s.lang);
   const branch = useCurrentBranch();
   const qc = useQueryClient();
   const broadcast = useServerFn(broadcastPush);
