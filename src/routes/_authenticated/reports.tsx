@@ -130,13 +130,13 @@ function Page() {
     <div data-print-root className="p-8 max-w-[1600px] mx-auto space-y-6">
       <PageHeader
         title={t("reports")}
-        subtitle="Cross-branch performance from database"
+        subtitle={t("reportsSubtitle")}
         actions={
           <div className="flex gap-2" data-no-print>
-            <Button variant="outline" size="sm" onClick={onExport}>Export CSV</Button>
-            <Button variant="outline" size="sm" onClick={onExportXlsx}>Export Excel</Button>
-            <Button variant="outline" size="sm" onClick={onExportPdf}>Export PDF</Button>
-            <Button variant="outline" size="sm" onClick={() => window.print()}>Print</Button>
+            <Button variant="outline" size="sm" onClick={onExport}>{t("exportCsv")}</Button>
+            <Button variant="outline" size="sm" onClick={onExportXlsx}>{t("exportExcel")}</Button>
+            <Button variant="outline" size="sm" onClick={onExportPdf}>{t("exportPdf")}</Button>
+            <Button variant="outline" size="sm" onClick={() => window.print()}>{t("print")}</Button>
           </div>
         }
       />
