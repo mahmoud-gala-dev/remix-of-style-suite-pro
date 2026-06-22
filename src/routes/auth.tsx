@@ -42,6 +42,9 @@ function AuthPage() {
   const navigate = useNavigate();
   const [tab, setTab] = useState<"signin" | "signup">("signin");
   const [busy, setBusy] = useState(false);
+  const [resetOpen, setResetOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetBusy, setResetBusy] = useState(false);
   const rateLimit = useServerFn(checkAuthRateLimit);
   const check2FA = useServerFn(requires2FA);
   const verifyCode = useServerFn(verify2FA);
@@ -163,6 +166,26 @@ function AuthPage() {
     await supabase.auth.signOut();
   };
 
+  const onSendReset = async () => {
+    const email = resetEmail.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error("Enter a valid email");
+      return;
+    }
+    setResetBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setResetBusy(false);
+    if (error) {
+      toast.error(errT(error.message));
+    } else {
+      toast.success("Check your email for the reset link.");
+      setResetOpen(false);
+      setResetEmail("");
+    }
+  };
+
   return (
     <div className="min-h-screen grid place-items-center bg-background px-4">
       <div className="w-full max-w-md">
@@ -197,6 +220,13 @@ function AuthPage() {
                 <Button type="submit" className="w-full" disabled={busy}>
                   {busy ? "Signing in…" : "Sign in"}
                 </Button>
+                <button
+                  type="button"
+                  onClick={() => setResetOpen(true)}
+                  className="block w-full text-center text-xs text-dim hover:text-primary"
+                >
+                  Forgot password?
+                </button>
               </form>
             </TabsContent>
 
@@ -262,6 +292,36 @@ function AuthPage() {
               </Button>
               <Button type="button" onClick={onVerify2FA} disabled={twoFABusy || twoFACode.length !== 6}>
                 {twoFABusy ? "…" : t("twoFAVerify")}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={resetOpen} onOpenChange={setResetOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reset password</DialogTitle>
+            <DialogDescription>
+              Enter your email and we'll send you a secure reset link.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Label htmlFor="reset-email">Email</Label>
+            <Input
+              id="reset-email"
+              type="email"
+              autoComplete="email"
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
+              autoFocus
+            />
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" type="button" onClick={() => setResetOpen(false)} disabled={resetBusy}>
+                Cancel
+              </Button>
+              <Button type="button" onClick={onSendReset} disabled={resetBusy || !resetEmail.trim()}>
+                {resetBusy ? "Sending…" : "Send reset link"}
               </Button>
             </div>
           </div>

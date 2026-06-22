@@ -11,6 +11,7 @@ export const dict = {
   calendar: { en: "Calendar", ar: "التقويم" },
   bookings: { en: "Bookings", ar: "الحجوزات" },
   queue: { en: "Queue", ar: "قائمة الانتظار" },
+  waitlist: { en: "Waitlist", ar: "قائمة الانتظار للحجوزات" },
   customers: { en: "Customers", ar: "العملاء" },
   services: { en: "Services", ar: "الخدمات" },
   employees: { en: "Employees", ar: "الموظفون" },

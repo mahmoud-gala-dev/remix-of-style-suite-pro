@@ -74,6 +74,7 @@ function BookPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [confirmedId, setConfirmedId] = useState<string | null>(null);
+  const [confirmedToken, setConfirmedToken] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [otpCode, setOtpCode] = useState("");
   const [otpSent, setOtpSent] = useState(false);
@@ -149,6 +150,7 @@ function BookPage() {
         },
       });
       setConfirmedId(res.id);
+      setConfirmedToken(res.manageToken ?? null);
       setStep(5);
       await catalog.refetch();
     } catch (error) {
@@ -447,6 +449,7 @@ function BookPage() {
                 date={date}
                 time={time}
                 bookingId={confirmedId}
+                manageToken={confirmedToken}
               />
             )}
           </motion.div>
@@ -658,6 +661,7 @@ function ConfirmedView({
   date,
   time,
   bookingId,
+  manageToken,
 }: {
   lang: "en" | "ar";
   branch: Branch | null;
@@ -665,6 +669,7 @@ function ConfirmedView({
   date: string;
   time: string | null;
   bookingId: string | null;
+  manageToken: string | null;
 }) {
   return (
     <div className="py-10 text-center">
@@ -715,6 +720,24 @@ function ConfirmedView({
           {lang === "ar" ? "حجز آخر" : "Book another"}
         </Link>
         </div>
+        {manageToken && (
+          <div className="mt-6 rounded-md border border-border/60 bg-muted/20 p-4 text-sm">
+            <p className="font-medium">
+              {lang === "ar" ? "إدارة حجزك" : "Manage your booking"}
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {lang === "ar"
+                ? "احفظ هذا الرابط لإلغاء أو تعديل حجزك لاحقاً."
+                : "Save this link to view or cancel your booking later."}
+            </p>
+            <a
+              href={`/my/${manageToken}`}
+              className="mt-3 inline-block break-all rounded-md bg-primary/10 px-3 py-2 text-xs font-mono text-primary hover:bg-primary/20"
+            >
+              {typeof window !== "undefined" ? `${window.location.origin}/my/${manageToken}` : `/my/${manageToken}`}
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );
