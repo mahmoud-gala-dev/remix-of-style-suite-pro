@@ -21,7 +21,10 @@
 - [x] Per-employee shifts + days-off tables added (RLS: read-all, admin-write). `createBooking` rejects bookings outside shifts or on days off. Admin UI shipped at `/shifts` (cycle #3).
 - [x] Recurring bookings UI already wired in `BookingDialog` (weekly/biweekly/monthly + occurrences) via `createRecurringSeries`. (cycle #3)
 - [x] Saved filters via `usePersistedState` hook — customers search, invoices status/date range (localStorage-persisted). (cycle #3)
-- [~] Test coverage expanded: `rate-limit`, `csv`, `whatsapp`, `stripe-verify`, `otp-helpers`, `totp`, `booking-shift`, `recurring`, `cancel-policy`, `reports-aggregate`, `format`, `client-ip`, `layout`, `csv-parse`, `push-vapid`, `theme`, `utils`, `translate-error`, `error-page`, `retry-policy`, `modules`, `logger`, `error-capture`, `require-admin` (admin/super_admin pass, 403 on denial), and `i18n-dict` (en/ar coverage invariants + translateError fallthrough). Suite: 206 tests. (cycle #3)
+- [~] Test coverage expanded: …`require-admin`, `i18n-dict`, **`storage-transforms`** (CDN webp defaults + caller overrides), **`push-vapid-required`** (KI-002 regression guard). Suite: 213 tests. (cycle #3)
+- [x] **KI-002 closed**: removed hardcoded `DEV_VAPID_PRIVATE_KEY` fallback; `VAPID_PRIVATE_KEY` env required in every environment with a clear remediation message. (cycle #3)
+- [x] **CDN image optimization**: `getAvatarUrl` / `getImageUrl` now request Supabase Storage transforms (`format=webp`, sensible width + quality defaults) so every avatar/image URL is auto-optimized at the edge. (cycle #3)
+- [x] **Twilio ↔ OTP**: `requestOtp` already routes through `sendWhatsappInternal` (Twilio WhatsApp) when admin enabled it in Settings; OTP code only leaks when delivery failed in non-prod. (cycle #2, re-verified)
 - [~] Removed `any` in webhooks/tenants/memberships routes (cycle #3). Residual: `admin.functions.ts` supabase dynamic table, `restore.functions.ts`, `lovable-error-reporting.ts` (Sentry dynamic import), `tenants.functions.ts` ctx typing, `coupons.tsx` select cast — all intentional dynamic boundaries.
 
 ## P4 (nice-to-have / future)
