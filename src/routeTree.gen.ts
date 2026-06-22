@@ -50,6 +50,7 @@ import { Route as ApiPublicCronWaitlistPromoteRouteImport } from './routes/api/p
 import { Route as ApiPublicCronReviewRequestsRouteImport } from './routes/api/public/cron/review-requests'
 import { Route as ApiPublicCronRetryWebhooksRouteImport } from './routes/api/public/cron/retry-webhooks'
 import { Route as ApiPublicCronReengagementRouteImport } from './routes/api/public/cron/reengagement'
+import { Route as ApiPublicCronQueueStaleCleanupRouteImport } from './routes/api/public/cron/queue-stale-cleanup'
 import { Route as ApiPublicCronProcessWebhooksRouteImport } from './routes/api/public/cron/process-webhooks'
 import { Route as ApiPublicCronMembershipExpiryRouteImport } from './routes/api/public/cron/membership-expiry'
 import { Route as ApiPublicCronInventoryLowStockRouteImport } from './routes/api/public/cron/inventory-low-stock'
@@ -272,6 +273,12 @@ const ApiPublicCronReengagementRoute =
     path: '/api/public/cron/reengagement',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronQueueStaleCleanupRoute =
+  ApiPublicCronQueueStaleCleanupRouteImport.update({
+    id: '/api/public/cron/queue-stale-cleanup',
+    path: '/api/public/cron/queue-stale-cleanup',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCronProcessWebhooksRoute =
   ApiPublicCronProcessWebhooksRouteImport.update({
     id: '/api/public/cron/process-webhooks',
@@ -374,6 +381,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/membership-expiry': typeof ApiPublicCronMembershipExpiryRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
+  '/api/public/cron/queue-stale-cleanup': typeof ApiPublicCronQueueStaleCleanupRoute
   '/api/public/cron/reengagement': typeof ApiPublicCronReengagementRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
@@ -426,6 +434,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/membership-expiry': typeof ApiPublicCronMembershipExpiryRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
+  '/api/public/cron/queue-stale-cleanup': typeof ApiPublicCronQueueStaleCleanupRoute
   '/api/public/cron/reengagement': typeof ApiPublicCronReengagementRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
@@ -480,6 +489,7 @@ export interface FileRoutesById {
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/membership-expiry': typeof ApiPublicCronMembershipExpiryRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
+  '/api/public/cron/queue-stale-cleanup': typeof ApiPublicCronQueueStaleCleanupRoute
   '/api/public/cron/reengagement': typeof ApiPublicCronReengagementRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
@@ -534,6 +544,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/membership-expiry'
     | '/api/public/cron/process-webhooks'
+    | '/api/public/cron/queue-stale-cleanup'
     | '/api/public/cron/reengagement'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/cron/review-requests'
@@ -586,6 +597,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/membership-expiry'
     | '/api/public/cron/process-webhooks'
+    | '/api/public/cron/queue-stale-cleanup'
     | '/api/public/cron/reengagement'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/cron/review-requests'
@@ -639,6 +651,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/membership-expiry'
     | '/api/public/cron/process-webhooks'
+    | '/api/public/cron/queue-stale-cleanup'
     | '/api/public/cron/reengagement'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/cron/review-requests'
@@ -670,6 +683,7 @@ export interface RootRouteChildren {
   ApiPublicCronInventoryLowStockRoute: typeof ApiPublicCronInventoryLowStockRoute
   ApiPublicCronMembershipExpiryRoute: typeof ApiPublicCronMembershipExpiryRoute
   ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
+  ApiPublicCronQueueStaleCleanupRoute: typeof ApiPublicCronQueueStaleCleanupRoute
   ApiPublicCronReengagementRoute: typeof ApiPublicCronReengagementRoute
   ApiPublicCronRetryWebhooksRoute: typeof ApiPublicCronRetryWebhooksRoute
   ApiPublicCronReviewRequestsRoute: typeof ApiPublicCronReviewRequestsRoute
@@ -968,6 +982,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronReengagementRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/queue-stale-cleanup': {
+      id: '/api/public/cron/queue-stale-cleanup'
+      path: '/api/public/cron/queue-stale-cleanup'
+      fullPath: '/api/public/cron/queue-stale-cleanup'
+      preLoaderRoute: typeof ApiPublicCronQueueStaleCleanupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/process-webhooks': {
       id: '/api/public/cron/process-webhooks'
       path: '/api/public/cron/process-webhooks'
@@ -1129,6 +1150,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronInventoryLowStockRoute: ApiPublicCronInventoryLowStockRoute,
   ApiPublicCronMembershipExpiryRoute: ApiPublicCronMembershipExpiryRoute,
   ApiPublicCronProcessWebhooksRoute: ApiPublicCronProcessWebhooksRoute,
+  ApiPublicCronQueueStaleCleanupRoute: ApiPublicCronQueueStaleCleanupRoute,
   ApiPublicCronReengagementRoute: ApiPublicCronReengagementRoute,
   ApiPublicCronRetryWebhooksRoute: ApiPublicCronRetryWebhooksRoute,
   ApiPublicCronReviewRequestsRoute: ApiPublicCronReviewRequestsRoute,
