@@ -374,6 +374,7 @@ export const dict = {
   valueLabel: { en: "Value", ar: "القيمة" },
   maxUsesOptional: { en: "Max uses (optional)", ar: "الحد الأقصى للاستخدام (اختياري)" },
   validUntil: { en: "Valid until", ar: "صالح حتى" },
+  tax: { en: "Tax", ar: "الضريبة" },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;
