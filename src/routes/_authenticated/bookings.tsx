@@ -76,7 +76,7 @@ function Page() {
     <div className="p-8 max-w-[1600px] mx-auto">
       <PageHeader
         title={t("bookings")}
-        subtitle={`${bookings.length} total · ${bookings.filter((b) => isToday(b.start)).length} today`}
+        subtitle={t("bookingsSummary").replace("{n}", String(bookings.length)).replace("{today}", String(bookings.filter((b) => isToday(b.start)).length))}
         actions={
           <div className="flex items-center gap-2">
           <button
@@ -96,13 +96,13 @@ function Page() {
                     status: b.status,
                   })),
                   [
-                    { key: "date", label: "Date" },
-                    { key: "time", label: "Time" },
-                    { key: "customer", label: "Customer" },
-                    { key: "service", label: "Service" },
-                    { key: "stylist", label: "Stylist" },
-                    { key: "price", label: "Price" },
-                    { key: "status", label: "Status" },
+                    { key: "date", label: t("date") },
+                    { key: "time", label: t("time") },
+                    { key: "customer", label: t("customer") },
+                    { key: "service", label: t("service") },
+                    { key: "stylist", label: t("stylist") },
+                    { key: "price", label: t("price") },
+                    { key: "status", label: t("status") },
                   ],
                 ),
               )
@@ -155,36 +155,36 @@ function Page() {
                   </ContextMenuTrigger>
                   <ContextMenuContent>
                     <ContextMenuItem onSelect={() => updateBooking(b.id, { status: "confirmed" })}>
-                      <Check className="size-3.5 me-2" /> Confirm
+                      <Check className="size-3.5 me-2" /> {t("confirm")}
                     </ContextMenuItem>
                     <ContextMenuItem onSelect={() => updateBooking(b.id, { status: "inProgress" })}>
-                      <Play className="size-3.5 me-2" /> Start
+                      <Play className="size-3.5 me-2" /> {t("start")}
                     </ContextMenuItem>
                     <ContextMenuItem onSelect={() => updateBooking(b.id, { status: "completed" })}>
-                      <Check className="size-3.5 me-2" /> Complete
+                      <Check className="size-3.5 me-2" /> {t("complete")}
                     </ContextMenuItem>
                     <ContextMenuSeparator />
                     <ContextMenuItem onSelect={() => updateBooking(b.id, { status: "cancelled" })}>
-                      <X className="size-3.5 me-2" /> Cancel
+                      <X className="size-3.5 me-2" /> {t("cancel")}
                     </ContextMenuItem>
                     <ContextMenuItem onSelect={() => updateBooking(b.id, { status: "noShow" })}>
-                      <X className="size-3.5 me-2" /> No-show
+                      <X className="size-3.5 me-2" /> {t("noShow")}
                     </ContextMenuItem>
                     <ContextMenuSeparator />
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <ContextMenuItem onSelect={(e) => e.preventDefault()} className="text-red-500 focus:text-red-500">
-                          <Trash2 className="size-3.5 me-2" /> Delete
+                          <Trash2 className="size-3.5 me-2" /> {t("delete")}
                         </ContextMenuItem>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Delete this booking?</AlertDialogTitle>
-                          <AlertDialogDescription>This removes the booking from this device's current list.</AlertDialogDescription>
+                          <AlertDialogTitle>{t("deleteBookingConfirm")}</AlertDialogTitle>
+                          <AlertDialogDescription>{t("deleteBookingDesc")}</AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => { removeBooking(b.id); toast.success("Deleted"); }}>Delete</AlertDialogAction>
+                          <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => { removeBooking(b.id); toast.success(t("deleted")); }}>{t("delete")}</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
