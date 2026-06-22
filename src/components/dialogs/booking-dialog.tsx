@@ -51,7 +51,7 @@ export function BookingDialog({
           },
         });
         const customer = customers.find((c) => c.id === customerId);
-        notify("New booking", `${customer?.name ?? "Customer"} · ${service.name} @ ${time}`);
+        notify("New booking", `${customer?.name ?? "Customer"} · ${service.nameEn} @ ${time}`);
       } else {
         const res = await createSeriesFn({
           data: {
