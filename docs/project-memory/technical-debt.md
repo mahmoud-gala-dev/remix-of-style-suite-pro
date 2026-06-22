@@ -6,7 +6,7 @@
 | 2 | No `React.lazy()` / dynamic imports — entire app eager-loaded (~1–2 MB JS) | all `src/routes/` | P2 | Medium |
 | 3 | 3 PDF libs installed (`jspdf`, `jspdf-autotable`, `pdf-lib`) — consolidate | `package.json` | P4 | Low |
 | 4 | `<3%` test coverage of server functions (3 unit files for 114 fns) | `tests/` | P3 | Medium |
-| 5 | `assertAdmin` boilerplate duplicated — now centralized as `requireAdmin`; backfill remaining files | `webhooks/notifications/twilio/stripe/saml/tenants .functions.ts` | P3 | Low |
+| 5 | ~~`assertAdmin` boilerplate duplicated~~ — FIXED (all `.functions.ts` use shared `requireAdmin`; `access.functions.ts` keeps its local typed variant intentionally) | — | — | — |
 | 6 | ~~Hardcoded VAPID private key fallback~~ — FIXED (KI-002, throws when secret missing) | `src/lib/push.server.ts` | — | — |
 | 7 | ~~Hardcoded WhatsApp brand color `#25D366`~~ — FIXED (tokenized) | — | — | — |
 | 8 | ~~`sitemap.xml.ts` URL placeholder~~ — FIXED (origin derived from request) | `src/routes/sitemap[.]xml.ts` | — | — |

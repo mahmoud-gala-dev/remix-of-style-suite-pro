@@ -1,17 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireAdmin } from "@/lib/require-admin";
 
 export const SALON_TYPES = ["barbershop", "women_salon", "unisex", "spa"] as const;
 export type SalonType = (typeof SALON_TYPES)[number];
-
-async function assertAdmin(ctx: { supabase: any; userId: string }) {
-  const [a, sa] = await Promise.all([
-    ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "admin" }),
-    ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "super_admin" }),
-  ]);
-  if (!a.data && !sa.data) throw new Response("Forbidden", { status: 403 });
-}
 
 export const listMyTenants = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -41,7 +34,7 @@ export const updateTenantSalonType = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const patch: { salon_type: SalonType; staff_photos_public?: boolean } = {
       salon_type: data.salon_type,
     };
@@ -67,7 +60,7 @@ export const seedServiceTemplates = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     let branchId = data.branch_id;
     if (!branchId) {
       const { data: b } = await context.supabase
