@@ -163,6 +163,13 @@ function MyBookingPage() {
             <li className="flex items-center gap-3 font-semibold">{fmtMoney(b.price)}</li>
           </ul>
 
+          {invoiceQ.data && (
+            <button onClick={downloadInvoicePdf}
+              className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm font-medium hover:bg-accent">
+              <FileDown className="size-4" /> {lang === "ar" ? `تحميل الفاتورة ${invoiceQ.data.number}` : `Download invoice ${invoiceQ.data.number}`}
+            </button>
+          )}
+
           {!cancelled && !completed && (
             <div className="mt-6 grid gap-2">
               {shareHref && (
