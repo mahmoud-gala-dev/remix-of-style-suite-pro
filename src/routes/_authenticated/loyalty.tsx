@@ -130,7 +130,6 @@ function Page() {
         branchId={branch.id}
         customers={customers}
         onCreated={() => qc.invalidateQueries({ queryKey: ["points_transactions"] })}
-        t={t}
       />
     </div>
   );
@@ -149,6 +148,7 @@ function PointsDialog({
   open: boolean; onClose: () => void; branchId: string;
   customers: { id: string; name: string }[]; onCreated: () => void;
 }) {
+  const t = useT();
   const [customerId, setCustomerId] = useState(customers[0]?.id ?? "");
   const [delta, setDelta] = useState(10);
   const [reason, setReason] = useState("manual");
@@ -166,17 +166,17 @@ function PointsDialog({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="Award / redeem points">
+    <Modal open={open} onClose={onClose} title={t("awardRedeemPoints")}>
       <form onSubmit={submit} className="space-y-3">
-        <Field label="Customer">
+        <Field label={t("customer")}>
           <select required value={customerId} onChange={(e) => setCustomerId(e.target.value)} className={inputCls}>
             <option value="">—</option>
             {customers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Points (+/-)"><input type="number" value={delta} onChange={(e) => setDelta(+e.target.value)} className={inputCls} /></Field>
-          <Field label="Reason"><input value={reason} onChange={(e) => setReason(e.target.value)} className={inputCls} /></Field>
+          <Field label={t("pointsDelta")}><input type="number" value={delta} onChange={(e) => setDelta(+e.target.value)} className={inputCls} /></Field>
+          <Field label={t("reason")}><input value={reason} onChange={(e) => setReason(e.target.value)} className={inputCls} /></Field>
         </div>
         {err && <p className="text-xs text-red-400">{err}</p>}
         <ModalActions onCancel={onClose} saving={saving} />
