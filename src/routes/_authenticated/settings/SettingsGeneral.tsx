@@ -7,6 +7,7 @@ import { useTheme } from "@/lib/theme";
 import { useRole } from "@/lib/use-role";
 import { getBookingOtpEnabled, setBookingOtpEnabled } from "@/lib/otp.functions";
 import { getAppSettings, setAppSetting } from "@/lib/settings.functions";
+import { requestPushPermission, pushSupported, notify } from "@/lib/push";
 
 export function SettingsGeneral() {
   const t = useT();
@@ -31,7 +32,8 @@ export function SettingsGeneral() {
         | "deposit_type"
         | "deposit_amount"
         | "whatsapp_reminders_enabled"
-        | "whatsapp_api_enabled";
+        | "whatsapp_api_enabled"
+        | "push_notifications_enabled";
       value: number | boolean | string;
     }) => saveSetting({ data: v }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["app-settings"] }); toast.success(t("save")); },
@@ -183,6 +185,39 @@ export function SettingsGeneral() {
               />
             </label>
           </div>
+        </Surface>
+      )}
+
+      {isAdmin && (
+        <Surface>
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">Push Notifications</h3>
+              <p className="text-xs text-dim mt-1">
+                إشعارات سطح المكتب للموظفين (نداء العميل التالي، حجز جديد). يتطلب إذن المتصفح.
+              </p>
+            </div>
+            <label className="inline-flex items-center gap-2 cursor-pointer">
+              <span className="text-xs text-dim">{settingsQ.data?.push_notifications_enabled ? t("active") : t("disabled")}</span>
+              <input
+                type="checkbox"
+                checked={Boolean(settingsQ.data?.push_notifications_enabled)}
+                disabled={settingMut.isPending || settingsQ.isLoading || !pushSupported()}
+                onChange={async (e) => {
+                  if (e.target.checked) {
+                    const perm = await requestPushPermission();
+                    if (perm !== "granted") { toast.error("Permission denied by browser"); return; }
+                    notify("Notifications enabled", "You'll get alerts for queue and bookings.");
+                  }
+                  settingMut.mutate({ key: "push_notifications_enabled", value: e.target.checked });
+                }}
+                className="size-4 accent-primary"
+              />
+            </label>
+          </div>
+          {!pushSupported() && (
+            <p className="text-xs text-amber-500">المتصفح لا يدعم الإشعارات.</p>
+          )}
         </Surface>
       )}
     </>
