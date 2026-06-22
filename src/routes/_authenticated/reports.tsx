@@ -130,13 +130,13 @@ function Page() {
     <div data-print-root className="p-8 max-w-[1600px] mx-auto space-y-6">
       <PageHeader
         title={t("reports")}
-        subtitle="Cross-branch performance from database"
+        subtitle={t("reportsSubtitle")}
         actions={
           <div className="flex gap-2" data-no-print>
-            <Button variant="outline" size="sm" onClick={onExport}>Export CSV</Button>
-            <Button variant="outline" size="sm" onClick={onExportXlsx}>Export Excel</Button>
-            <Button variant="outline" size="sm" onClick={onExportPdf}>Export PDF</Button>
-            <Button variant="outline" size="sm" onClick={() => window.print()}>Print</Button>
+            <Button variant="outline" size="sm" onClick={onExport}>{t("exportCsv")}</Button>
+            <Button variant="outline" size="sm" onClick={onExportXlsx}>{t("exportExcel")}</Button>
+            <Button variant="outline" size="sm" onClick={onExportPdf}>{t("exportPdf")}</Button>
+            <Button variant="outline" size="sm" onClick={() => window.print()}>{t("print")}</Button>
           </div>
         }
       />
@@ -144,43 +144,43 @@ function Page() {
       <Surface>
         <div className="grid gap-3 sm:grid-cols-4">
           <label className="space-y-1.5 text-xs text-dim">
-            <span className="block uppercase tracking-wider">From</span>
+            <span className="block uppercase tracking-wider">{t("from")}</span>
             <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" />
           </label>
           <label className="space-y-1.5 text-xs text-dim">
-            <span className="block uppercase tracking-wider">To</span>
+            <span className="block uppercase tracking-wider">{t("to")}</span>
             <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" />
           </label>
           <label className="space-y-1.5 text-xs text-dim sm:col-span-2">
-            <span className="block uppercase tracking-wider">Branch</span>
+            <span className="block uppercase tracking-wider">{t("branch")}</span>
             <select value={branchId} onChange={(e) => setBranchId(e.target.value)} className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground">
-              <option value="all">All branches</option>
+              <option value="all">{t("allBranches")}</option>
               {report.branches.map((b) => <option key={b.id} value={b.id}>{lang === "ar" ? b.nameAr : b.nameEn}</option>)}
             </select>
           </label>
         </div>
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          <Metric label="Revenue" value={fmtMoney(report.totals.revenue)} />
-          <Metric label="Bookings" value={String(report.totals.bookings)} />
-          <Metric label="Active branches" value={String(report.totals.branches)} />
+          <Metric label={t("revenue")} value={fmtMoney(report.totals.revenue)} />
+          <Metric label={t("bookings")} value={String(report.totals.bookings)} />
+          <Metric label={t("activeBranches")} value={String(report.totals.branches)} />
         </div>
-        {isFetching && <p className="mt-3 text-xs text-dim">Refreshing…</p>}
+        {isFetching && <p className="mt-3 text-xs text-dim">{t("loading")}</p>}
       </Surface>
 
       {compareQ.data && (
         <Surface>
           <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-4">
-            Compare vs previous period ({compareQ.data.range.prev_from} → {compareQ.data.range.prev_to})
+            {t("comparePrevPeriod")} ({compareQ.data.range.prev_from} → {compareQ.data.range.prev_to})
           </h3>
           <div className="grid gap-3 sm:grid-cols-2">
             <CompareMetric
-              label="Revenue"
+              label={t("revenue")}
               current={fmtMoney(compareQ.data.current.revenue)}
               previous={fmtMoney(compareQ.data.previous.revenue)}
               delta={compareQ.data.delta.revenue}
             />
             <CompareMetric
-              label="Bookings"
+              label={t("bookings")}
               current={String(compareQ.data.current.bookings)}
               previous={String(compareQ.data.previous.bookings)}
               delta={compareQ.data.delta.bookings}
@@ -191,7 +191,7 @@ function Page() {
 
       <Surface>
         <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-6">
-          Revenue · selected period
+          {t("revenueChartTitle")}
         </h3>
         <div className="h-72">
           <ResponsiveContainer>
@@ -214,7 +214,7 @@ function Page() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Surface className="lg:col-span-2">
-          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-6">Revenue by Branch</h3>
+          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-6">{t("revenueByBranch")}</h3>
           <div className="h-64">
             <ResponsiveContainer>
               <BarChart data={report.byBranch}>
@@ -229,7 +229,7 @@ function Page() {
         </Surface>
 
         <Surface>
-          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-6">Bookings by Status</h3>
+          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-6">{t("bookingsByStatus")}</h3>
           <div className="h-64">
             <ResponsiveContainer>
               <PieChart>

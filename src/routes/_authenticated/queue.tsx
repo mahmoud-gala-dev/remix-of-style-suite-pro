@@ -53,11 +53,11 @@ function Page() {
     const c = customers.find((x) => x.id === item?.customerId);
     updateQueue(id, { status: "inProgress" });
     await supabase.from("queue_items").update({ status: "in_progress" }).eq("id", id);
-    notify("Next customer", c?.name ? `${c.name} — please come in` : "Calling next customer");
+    notify(t("nextCustomer"), c?.name ? `${c.name} — ${t("pleaseComeIn")}` : t("callingNext"));
     void broadcast({
       data: {
-        title: "Next customer",
-        body: c?.name ? `${c.name} — please come in` : "Calling next customer",
+        title: t("nextCustomer"),
+        body: c?.name ? `${c.name} — ${t("pleaseComeIn")}` : t("callingNext"),
         url: "/queue",
         tag: `queue-${id}`,
       },
@@ -94,7 +94,7 @@ function Page() {
                     <div>
                       <div className="text-sm font-semibold">{c?.name}</div>
                       <div className="text-[10px] text-dim font-mono mt-0.5">
-                        Started {minutesSince(q.createdAt)}m ago
+                        {t("startedMinAgo").replace("{n}", String(minutesSince(q.createdAt)))}
                       </div>
                     </div>
                     <button
@@ -138,14 +138,14 @@ function Page() {
                       <button
                         onClick={() => startServing(q.id)}
                         className="p-2 rounded-md border border-border hover:border-primary hover:text-primary transition-colors"
-                        title="Start"
+                        title={t("start")}
                       >
                         <ArrowRight className="size-3.5" />
                       </button>
                       <button
                         onClick={() => completeOrCancel(q.id)}
                         className="p-2 rounded-md border border-border hover:border-destructive hover:text-destructive transition-colors"
-                        title="Cancel"
+                        title={t("cancel")}
                       >
                         <X className="size-3.5" />
                       </button>

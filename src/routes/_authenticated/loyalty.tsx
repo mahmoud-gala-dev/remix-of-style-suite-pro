@@ -61,10 +61,12 @@ function Page() {
     <div className="p-8 max-w-[1600px] mx-auto space-y-8">
       <PageHeader
         title={t("loyalty")}
-        subtitle={`${txns.length} transactions · ${txns.reduce((s, t) => s + t.delta, 0)} pts awarded`}
+        subtitle={t("loyaltySubtitle")
+          .replace("{tx}", String(txns.length))
+          .replace("{pts}", String(txns.reduce((s, x) => s + x.delta, 0)))}
         actions={
           <button onClick={() => setOpen(true)} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest">
-            <Plus className="size-3.5" /> Award points
+            <Plus className="size-3.5" /> {t("awardPoints")}
           </button>
         }
       />
@@ -72,7 +74,7 @@ function Page() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Surface className="lg:col-span-1">
           <h3 className="font-display uppercase tracking-tight text-sm mb-3 flex items-center gap-2">
-            <Sparkles className="size-4 text-primary" /> Top earners
+            <Sparkles className="size-4 text-primary" /> {t("topEarners")}
           </h3>
           <ul className="space-y-2">
             {totals.map((row) => (
@@ -96,10 +98,10 @@ function Page() {
           <table className="w-full text-sm">
             <thead className="text-[10px] uppercase tracking-widest text-dim">
               <tr>
-                <Th>Date</Th>
-                <Th>Customer</Th>
-                <Th>Reason</Th>
-                <Th>Points</Th>
+                <Th>{t("date")}</Th>
+                <Th>{t("customer")}</Th>
+                <Th>{t("reason")}</Th>
+                <Th>{t("points")}</Th>
               </tr>
             </thead>
             <tbody>
@@ -146,6 +148,7 @@ function PointsDialog({
   open: boolean; onClose: () => void; branchId: string;
   customers: { id: string; name: string }[]; onCreated: () => void;
 }) {
+  const t = useT();
   const [customerId, setCustomerId] = useState(customers[0]?.id ?? "");
   const [delta, setDelta] = useState(10);
   const [reason, setReason] = useState("manual");
@@ -163,17 +166,17 @@ function PointsDialog({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="Award / redeem points">
+    <Modal open={open} onClose={onClose} title={t("awardRedeemPoints")}>
       <form onSubmit={submit} className="space-y-3">
-        <Field label="Customer">
+        <Field label={t("customer")}>
           <select required value={customerId} onChange={(e) => setCustomerId(e.target.value)} className={inputCls}>
             <option value="">—</option>
             {customers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Points (+/-)"><input type="number" value={delta} onChange={(e) => setDelta(+e.target.value)} className={inputCls} /></Field>
-          <Field label="Reason"><input value={reason} onChange={(e) => setReason(e.target.value)} className={inputCls} /></Field>
+          <Field label={t("pointsDelta")}><input type="number" value={delta} onChange={(e) => setDelta(+e.target.value)} className={inputCls} /></Field>
+          <Field label={t("reason")}><input value={reason} onChange={(e) => setReason(e.target.value)} className={inputCls} /></Field>
         </div>
         {err && <p className="text-xs text-red-400">{err}</p>}
         <ModalActions onCancel={onClose} saving={saving} />

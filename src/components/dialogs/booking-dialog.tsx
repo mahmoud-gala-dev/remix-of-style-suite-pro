@@ -7,6 +7,7 @@ import { createBooking } from "@/lib/bookings.functions";
 import { createRecurringSeries } from "@/lib/recurring.functions";
 import { Modal, Field, inputCls, ModalActions } from "@/components/ui/modal";
 import { notify } from "@/lib/push";
+import { useT } from "@/lib/i18n";
 
 export function BookingDialog({
   branchId,
@@ -17,6 +18,7 @@ export function BookingDialog({
   open: boolean;
   onClose: () => void;
 }) {
+  const t = useT();
   const qc = useQueryClient();
   const createBookingFn = useServerFn(createBooking);
   const createSeriesFn = useServerFn(createRecurringSeries);
@@ -39,7 +41,7 @@ export function BookingDialog({
     setSaving(true);
     setErr(null);
     const service = services.find((s) => s.id === serviceId);
-    if (!service) { setErr("Pick a service"); setSaving(false); return; }
+    if (!service) { setErr(t("pickService")); setSaving(false); return; }
     const start = new Date(`${date}T${time}:00`);
     const end = new Date(start.getTime() + service.durationMin * 60_000);
     try {
@@ -51,7 +53,7 @@ export function BookingDialog({
           },
         });
         const customer = customers.find((c) => c.id === customerId);
-        notify("New booking", `${customer?.name ?? "Customer"} · ${service.nameEn} @ ${time}`);
+        notify(t("newBooking"), `${customer?.name ?? t("customer")} · ${service.nameEn} @ ${time}`);
       } else {
         const res = await createSeriesFn({
           data: {
@@ -60,8 +62,8 @@ export function BookingDialog({
             pattern: recurrence, occurrences,
           },
         });
-        toast.success(`Created ${res.count} bookings in series`);
-        notify("Recurring bookings created", `${res.count} appointments scheduled`);
+        toast.success(t("seriesCreated").replace("{n}", String(res.count)));
+        notify(t("newBooking"), t("seriesCreated").replace("{n}", String(res.count)));
       }
     } catch (error) {
       const message = error instanceof Error && error.message ? error.message : "Slot taken";
@@ -77,41 +79,41 @@ export function BookingDialog({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="New booking">
+    <Modal open={open} onClose={onClose} title={t("newBooking")}>
       <form onSubmit={submit} className="space-y-3">
-        <Field label="Customer">
+        <Field label={t("customer")}>
           <select required value={customerId} onChange={(e) => setCustomerId(e.target.value)} className={inputCls}>
             <option value="">—</option>
             {customers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </Field>
-        <Field label="Service">
+        <Field label={t("services")}>
           <select required value={serviceId} onChange={(e) => setServiceId(e.target.value)} className={inputCls}>
             <option value="">—</option>
             {services.map((s) => <option key={s.id} value={s.id}>{s.nameEn} · {s.durationMin}m</option>)}
           </select>
         </Field>
-        <Field label="Employee">
+        <Field label={t("employee")}>
           <select required value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} className={inputCls}>
             <option value="">—</option>
             {employees.map((e) => <option key={e.id} value={e.id}>{e.nameEn}</option>)}
           </select>
         </Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Date"><input type="date" required value={date} onChange={(e) => setDate(e.target.value)} className={inputCls} /></Field>
-          <Field label="Time"><input type="time" required value={time} onChange={(e) => setTime(e.target.value)} className={inputCls} /></Field>
+          <Field label={t("date")}><input type="date" required value={date} onChange={(e) => setDate(e.target.value)} className={inputCls} /></Field>
+          <Field label={t("time")}><input type="time" required value={time} onChange={(e) => setTime(e.target.value)} className={inputCls} /></Field>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Repeat">
+          <Field label={t("repeat")}>
             <select value={recurrence} onChange={(e) => setRecurrence(e.target.value as typeof recurrence)} className={inputCls}>
-              <option value="none">No repeat</option>
-              <option value="weekly">Every week</option>
-              <option value="biweekly">Every 2 weeks</option>
-              <option value="monthly">Every month</option>
+              <option value="none">{t("noRepeat")}</option>
+              <option value="weekly">{t("everyWeek")}</option>
+              <option value="biweekly">{t("everyTwoWeeks")}</option>
+              <option value="monthly">{t("everyMonth")}</option>
             </select>
           </Field>
           {recurrence !== "none" && (
-            <Field label="Occurrences">
+            <Field label={t("occurrences")}>
               <input type="number" min={2} max={26} value={occurrences}
                 onChange={(e) => setOccurrences(Math.max(2, Math.min(26, Number(e.target.value) || 2)))}
                 className={inputCls} />
