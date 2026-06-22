@@ -4,6 +4,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { rateLimit } from "@/lib/rate-limit";
+import { canCancelBooking } from "@/lib/cancel-policy";
 
 const tokenSchema = z.object({ token: z.string().uuid() });
 
@@ -53,12 +54,12 @@ export const cancelBookingByToken = createServerFn({ method: "POST" })
       .maybeSingle();
     if (error) throw new Error(error.message);
     if (!b) throw new Response("Not found", { status: 404 });
-    if (["cancelled", "completed", "no_show"].includes(b.status)) {
-      throw new Response("This booking can no longer be cancelled", { status: 400 });
-    }
-    const hoursAhead = (new Date(b.start_at).getTime() - Date.now()) / 36e5;
-    if (hoursAhead < 2) {
-      throw new Response("Cancellation requires at least 2 hours notice", { status: 400 });
+    const decision = canCancelBooking(b.status, new Date(b.start_at));
+    if (!decision.ok) {
+      const msg = decision.reason === "terminal"
+        ? "This booking can no longer be cancelled"
+        : "Cancellation requires at least 2 hours notice";
+      throw new Response(msg, { status: decision.status });
     }
     const { error: updErr } = await supabaseAdmin
       .from("bookings").update({ status: "cancelled" }).eq("id", b.id);
