@@ -218,5 +218,9 @@ export const createBooking = createServerFn({ method: "POST" })
         });
       }
     } catch { /* enqueue failures must not break booking */ }
+    try {
+      const { invalidateReportCache } = await import("@/lib/report-cache.server");
+      await invalidateReportCache();
+    } catch { /* invalidation is best-effort */ }
     return { ok: true as const, id: row.id, manageToken: row.manage_token as string };
   });
