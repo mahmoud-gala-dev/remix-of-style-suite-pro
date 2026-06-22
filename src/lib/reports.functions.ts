@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { aggregateReports, REVENUE_STATUSES, percentDelta, previousPeriod } from "@/lib/reports-aggregate";
+import { cached, reportKey } from "@/lib/report-cache.server";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const inputSchema = z.object({
@@ -31,30 +32,32 @@ export const getReportsSummary = createServerFn({ method: "GET" })
     if (Number.isNaN(from.getTime()) || Number.isNaN(toExclusive.getTime()) || from >= toExclusive) {
       throw new Error("Invalid report range");
     }
-
-    const [branchesRes, servicesRes] = await Promise.all([
+    const key = reportKey("reports.summary", { from: data.from, to: data.to, branchId: data.branchId });
+    return cached(key, 60, async () => {
+      const [branchesRes, servicesRes] = await Promise.all([
       context.supabase.from("branches").select("id,name_en,name_ar").order("name_en"),
       context.supabase.from("services").select("id,name_en,name_ar"),
     ]);
-    if (branchesRes.error) throw new Error(branchesRes.error.message);
-    if (servicesRes.error) throw new Error(servicesRes.error.message);
+      if (branchesRes.error) throw new Error(branchesRes.error.message);
+      if (servicesRes.error) throw new Error(servicesRes.error.message);
 
-    let bookingsQuery = context.supabase
+      let bookingsQuery = context.supabase
       .from("bookings")
       .select("id,branch_id,service_id,start_at,status,price")
       .gte("start_at", from.toISOString())
       .lt("start_at", toExclusive.toISOString());
-    if (data.branchId) bookingsQuery = bookingsQuery.eq("branch_id", data.branchId);
-    const { data: bookings, error } = await bookingsQuery;
-    if (error) throw new Error(error.message);
+      if (data.branchId) bookingsQuery = bookingsQuery.eq("branch_id", data.branchId);
+      const { data: bookings, error } = await bookingsQuery;
+      if (error) throw new Error(error.message);
 
-    return aggregateReports({
+      return aggregateReports({
       bookings: bookings ?? [],
       branches: branchesRes.data ?? [],
       services: servicesRes.data ?? [],
       from,
       toExclusive,
       branchId: data.branchId,
+      });
     });
   });
 
