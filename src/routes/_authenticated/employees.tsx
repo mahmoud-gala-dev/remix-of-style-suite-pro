@@ -29,7 +29,7 @@ function Page() {
     <div className="p-8 max-w-[1600px] mx-auto">
       <PageHeader
         title={t("employees")}
-        subtitle={`${list.length} on staff`}
+        subtitle={t("onStaff").replace("{n}", String(list.length))}
         actions={
           <button
             onClick={() => setOpen(true)}

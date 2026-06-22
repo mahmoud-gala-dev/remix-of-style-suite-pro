@@ -150,28 +150,28 @@ function AddServiceDialog({ branchId, onClose }: { branchId: string; onClose: ()
         onSubmit={submit}
         className="w-full max-w-md bg-surface border border-white/10 rounded-lg p-6 space-y-3"
       >
-        <h2 className="font-display text-xl">{t("add")} {t("services")}</h2>
-        <Field label="Name (EN)"><input required value={nameEn} onChange={(e) => setNameEn(e.target.value)} className="w-full bg-surface-2 border border-white/10 rounded-md px-3 py-2 text-sm" /></Field>
-        <Field label="Name (AR)"><input value={nameAr} onChange={(e) => setNameAr(e.target.value)} className="w-full bg-surface-2 border border-white/10 rounded-md px-3 py-2 text-sm" /></Field>
-        <Field label="Category"><input value={category} onChange={(e) => setCategory(e.target.value)} className="w-full bg-surface-2 border border-white/10 rounded-md px-3 py-2 text-sm" /></Field>
+        <h2 className="font-display text-xl">{t("addService")}</h2>
+        <Field label={t("nameEn")}><input required value={nameEn} onChange={(e) => setNameEn(e.target.value)} className="w-full bg-surface-2 border border-white/10 rounded-md px-3 py-2 text-sm" /></Field>
+        <Field label={t("nameAr")}><input value={nameAr} onChange={(e) => setNameAr(e.target.value)} className="w-full bg-surface-2 border border-white/10 rounded-md px-3 py-2 text-sm" /></Field>
+        <Field label={t("category")}><input value={category} onChange={(e) => setCategory(e.target.value)} className="w-full bg-surface-2 border border-white/10 rounded-md px-3 py-2 text-sm" /></Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Duration (min)">
+          <Field label={t("durationMin")}>
             <input type="number" min={1} value={durationMin} onChange={(e) => setDurationMin(+e.target.value)} className="w-full bg-surface-2 border border-white/10 rounded-md px-3 py-2 text-sm" />
           </Field>
-          <Field label="Price">
+          <Field label={t("price")}>
             <input type="number" min={0} step="0.01" value={price} onChange={(e) => setPrice(+e.target.value)} className="w-full bg-surface-2 border border-white/10 rounded-md px-3 py-2 text-sm" />
           </Field>
         </div>
-        <Field label="Gender">
+        <Field label={t("gender")}>
           <select value={gender} onChange={(e) => setGender(e.target.value as Gender)} className="w-full bg-surface-2 border border-white/10 rounded-md px-3 py-2 text-sm">
-            <option value="both">Both</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
+            <option value="both">{t("both")}</option>
+            <option value="male">{t("male")}</option>
+            <option value="female">{t("female")}</option>
           </select>
         </Field>
         {err && <p className="text-xs text-red-400">{err}</p>}
         <div className="flex justify-end gap-2 pt-2">
-          <button type="button" onClick={onClose} className="px-3 py-2 text-xs uppercase tracking-widest border border-white/10 rounded-md">Cancel</button>
+          <button type="button" onClick={onClose} className="px-3 py-2 text-xs uppercase tracking-widest border border-white/10 rounded-md">{t("cancel")}</button>
           <button disabled={saving} className="px-3 py-2 text-xs uppercase tracking-widest font-bold bg-primary text-primary-foreground rounded-md disabled:opacity-50">
             {saving ? "..." : t("save")}
           </button>
