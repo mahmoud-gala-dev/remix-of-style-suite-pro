@@ -25,7 +25,7 @@
 - [~] Removed `any` in webhooks/tenants/memberships routes (cycle #3). Residual: `admin.functions.ts` supabase dynamic table, `restore.functions.ts`, `lovable-error-reporting.ts` (Sentry dynamic import), `tenants.functions.ts` ctx typing, `coupons.tsx` select cast — all intentional dynamic boundaries.
 
 ## P4 (nice-to-have / future)
-- [ ] Consolidate PDF libraries (keep one of jspdf / pdf-lib).
+- [x] PDF stack consolidated on `jspdf` + `jspdf-autotable`. `pdf-lib` removed from deps; reports server-fn rewritten to use jspdf. (cycle #3)
 - [x] WhatsApp brand color tokenized as `--color-whatsapp` / `bg-whatsapp` / `text-whatsapp-foreground`; `book.tsx` and `reminders-widget` updated. (cycle #3)
 - [x] `sitemap.xml` now derives origin from the request URL (works on preview, prod, custom domain) and emits priority + changefreq per page. (cycle #3)
 - [ ] Theme-able kiosk (`display.$branch.tsx`).
