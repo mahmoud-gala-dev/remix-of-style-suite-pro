@@ -166,14 +166,12 @@ export const createBooking = createServerFn({ method: "POST" })
     } catch { /* swallow — webhook failure must not break booking */ }
     // Web Push — best-effort broadcast to staff/admins with push subscriptions.
     try {
-      const { broadcastPush } = await import("./push.functions");
-      await broadcastPush({
-        data: {
-          title: "New booking",
-          body: `${new Date(data.startAt).toLocaleString()}`,
-          url: "/bookings",
-          tag: `booking-${row.id}`,
-        },
+      const { broadcastWebPush } = await import("./push.server");
+      await broadcastWebPush({
+        title: "New booking",
+        body: new Date(data.startAt).toLocaleString(),
+        url: "/bookings",
+        tag: `booking-${row.id}`,
       });
     } catch { /* push failures must not break booking */ }
     return { ok: true as const, id: row.id, manageToken: row.manage_token as string };
