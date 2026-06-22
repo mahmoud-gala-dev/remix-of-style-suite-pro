@@ -272,6 +272,7 @@ export const dict = {
   // reports
   reportsSubtitle: { en: "Cross-branch performance from database", ar: "الأداء متعدد الفروع من قاعدة البيانات" },
   exportCsv: { en: "Export CSV", ar: "تصدير CSV" },
+  exportXlsx: { en: "Export Excel", ar: "تصدير Excel" },
   exportExcel: { en: "Export Excel", ar: "تصدير Excel" },
   exportPdf: { en: "Export PDF", ar: "تصدير PDF" },
   print: { en: "Print", ar: "طباعة" },
