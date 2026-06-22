@@ -128,11 +128,11 @@ function Page() {
           <table className="w-full text-sm">
             <thead className="text-[10px] uppercase tracking-widest text-dim">
               <tr>
-                <Th>Customer</Th>
-                <Th>Plan</Th>
-                <Th>Remaining</Th>
-                <Th>Expires</Th>
-                <Th>Status</Th>
+                <Th>{t("customer")}</Th>
+                <Th>{t("plan")}</Th>
+                <Th>{t("remaining")}</Th>
+                <Th>{t("expires")}</Th>
+                <Th>{t("status")}</Th>
               </tr>
             </thead>
             <tbody>
