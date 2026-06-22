@@ -3,6 +3,7 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { requireAdmin } from "@/lib/require-admin";
 import { rateLimit } from "@/lib/rate-limit";
+import { shouldExposeOtpCode } from "@/lib/otp-helpers";
 
 // Public — read whether the booking flow requires OTP.
 export const getBookingOtpEnabled = createServerFn({ method: "GET" }).handler(async () => {
@@ -41,9 +42,7 @@ export const requestOtp = createServerFn({ method: "POST" })
     );
     // In production never leak the code; expose only when Twilio isn't
     // delivering (dev preview, or tests with EXPOSE_OTP_FOR_TESTS=1).
-    const exposeCode =
-      !send.sent &&
-      (process.env.NODE_ENV !== "production" || process.env.EXPOSE_OTP_FOR_TESTS === "1");
+    const exposeCode = shouldExposeOtpCode(send.sent, process.env);
     return exposeCode
       ? { ok: true as const, sent: send.sent, code: code as string }
       : { ok: true as const, sent: send.sent };
