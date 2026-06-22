@@ -10,7 +10,7 @@
 | 6 | ~~Hardcoded VAPID private key fallback~~ — FIXED (KI-002, throws when secret missing) | `src/lib/push.server.ts` | — | — |
 | 7 | ~~Hardcoded WhatsApp brand color `#25D366`~~ — FIXED (tokenized) | — | — | — |
 | 8 | ~~`sitemap.xml.ts` URL placeholder~~ — FIXED (origin derived from request) | `src/routes/sitemap[.]xml.ts` | — | — |
-| 9 | `any` types: 2 of 11 cleaned (`tenants`, `coupons`). Remaining are intentional (dynamic Sentry/web-vitals imports, generic table-name routing in admin/restore). | `admin.functions.ts`, `restore.functions.ts`, `lovable-error-reporting.ts` | P4 | Low |
+| 9 | `any` types: Sentry block in `lovable-error-reporting.ts` cleaned with a `SentryLike` interface (cycle #13). Remaining `any`s are intentional: `web-vitals` dynamic import + generic table-name routing in `admin`/`restore` (Supabase typed client requires literal table names). | `admin.functions.ts`, `restore.functions.ts` | P4 | Low |
 | 10 | ~~No Supabase Realtime~~ — FIXED (queue + calendar subscribe to `postgres_changes`) | `queue.tsx`, `calendar.tsx` | — | — |
 | 11 | ~~No customer-facing invoice PDF~~ — FIXED (jsPDF + autoTable on `/my/$token`) | `my.$token.tsx` | — | — |
 | 12 | ~~No booking-confirmation email/SMS~~ — FIXED (Resend email + Twilio WhatsApp best-effort) | `bookings.functions.ts`, `notifications.server.ts` | — | — |
