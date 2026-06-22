@@ -12,6 +12,7 @@ import { BottomNav } from "@/components/shell/bottom-nav";
 import { useGlobalShortcuts } from "@/hooks/use-shortcuts";
 import { ShortcutsHelp } from "@/components/shell/shortcuts-help";
 import { OfflineBanner } from "@/components/shell/offline-banner";
+import { AppContextMenu } from "@/components/shell/app-context-menu";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const lang = useI18n((s) => s.lang);
@@ -42,6 +43,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   if (shellMode === "topbar") {
     return (
+      <AppContextMenu>
       <div className="min-h-screen bg-background text-foreground flex flex-col">
         <a
           href="#main-content"
@@ -59,10 +61,12 @@ export function AppShell({ children }: { children: ReactNode }) {
         <BottomNav />
         <ShortcutsHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
       </div>
+      </AppContextMenu>
     );
   }
 
   return (
+    <AppContextMenu>
     <div className="min-h-screen bg-background text-foreground flex">
       <a
         href="#main-content"
@@ -84,5 +88,6 @@ export function AppShell({ children }: { children: ReactNode }) {
       <BottomNav />
       <ShortcutsHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
     </div>
+    </AppContextMenu>
   );
 }
