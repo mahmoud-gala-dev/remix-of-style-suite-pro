@@ -46,11 +46,13 @@ import { Route as ApiPublicHealthcheckRouteImport } from './routes/api/public/he
 import { Route as ApiPublicClientErrorsRouteImport } from './routes/api/public/client-errors'
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 import { Route as ApiPublicCronWebVitalsAlertRouteImport } from './routes/api/public/cron/web-vitals-alert'
+import { Route as ApiPublicCronWaitlistPromoteRouteImport } from './routes/api/public/cron/waitlist-promote'
 import { Route as ApiPublicCronReviewRequestsRouteImport } from './routes/api/public/cron/review-requests'
 import { Route as ApiPublicCronRetryWebhooksRouteImport } from './routes/api/public/cron/retry-webhooks'
 import { Route as ApiPublicCronProcessWebhooksRouteImport } from './routes/api/public/cron/process-webhooks'
 import { Route as ApiPublicCronDepositNoshowCaptureRouteImport } from './routes/api/public/cron/deposit-noshow-capture'
 import { Route as ApiPublicCronBookingRemindersRouteImport } from './routes/api/public/cron/booking-reminders'
+import { Route as ApiPublicCronBirthdayCouponsRouteImport } from './routes/api/public/cron/birthday-coupons'
 import { Route as ApiPublicScimV2UsersRouteImport } from './routes/api/public/scim/v2/Users'
 import { Route as ApiPublicScimV2UsersIdRouteImport } from './routes/api/public/scim/v2/Users.$id'
 
@@ -241,6 +243,12 @@ const ApiPublicCronWebVitalsAlertRoute =
     path: '/api/public/cron/web-vitals-alert',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronWaitlistPromoteRoute =
+  ApiPublicCronWaitlistPromoteRouteImport.update({
+    id: '/api/public/cron/waitlist-promote',
+    path: '/api/public/cron/waitlist-promote',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCronReviewRequestsRoute =
   ApiPublicCronReviewRequestsRouteImport.update({
     id: '/api/public/cron/review-requests',
@@ -269,6 +277,12 @@ const ApiPublicCronBookingRemindersRoute =
   ApiPublicCronBookingRemindersRouteImport.update({
     id: '/api/public/cron/booking-reminders',
     path: '/api/public/cron/booking-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronBirthdayCouponsRoute =
+  ApiPublicCronBirthdayCouponsRouteImport.update({
+    id: '/api/public/cron/birthday-coupons',
+    path: '/api/public/cron/birthday-coupons',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicScimV2UsersRoute = ApiPublicScimV2UsersRouteImport.update({
@@ -317,11 +331,13 @@ export interface FileRoutesByFullPath {
   '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/web-vitals': typeof ApiPublicWebVitalsRoute
+  '/api/public/cron/birthday-coupons': typeof ApiPublicCronBirthdayCouponsRoute
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
+  '/api/public/cron/waitlist-promote': typeof ApiPublicCronWaitlistPromoteRoute
   '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRouteWithChildren
@@ -362,11 +378,13 @@ export interface FileRoutesByTo {
   '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/web-vitals': typeof ApiPublicWebVitalsRoute
+  '/api/public/cron/birthday-coupons': typeof ApiPublicCronBirthdayCouponsRoute
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
+  '/api/public/cron/waitlist-promote': typeof ApiPublicCronWaitlistPromoteRoute
   '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRouteWithChildren
@@ -409,11 +427,13 @@ export interface FileRoutesById {
   '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/web-vitals': typeof ApiPublicWebVitalsRoute
+  '/api/public/cron/birthday-coupons': typeof ApiPublicCronBirthdayCouponsRoute
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
+  '/api/public/cron/waitlist-promote': typeof ApiPublicCronWaitlistPromoteRoute
   '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRouteWithChildren
@@ -456,11 +476,13 @@ export interface FileRouteTypes {
     | '/api/public/client-errors'
     | '/api/public/healthcheck'
     | '/api/public/web-vitals'
+    | '/api/public/cron/birthday-coupons'
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/deposit-noshow-capture'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/cron/review-requests'
+    | '/api/public/cron/waitlist-promote'
     | '/api/public/cron/web-vitals-alert'
     | '/api/public/webhooks/stripe'
     | '/api/public/scim/v2/Users'
@@ -501,11 +523,13 @@ export interface FileRouteTypes {
     | '/api/public/client-errors'
     | '/api/public/healthcheck'
     | '/api/public/web-vitals'
+    | '/api/public/cron/birthday-coupons'
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/deposit-noshow-capture'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/cron/review-requests'
+    | '/api/public/cron/waitlist-promote'
     | '/api/public/cron/web-vitals-alert'
     | '/api/public/webhooks/stripe'
     | '/api/public/scim/v2/Users'
@@ -547,11 +571,13 @@ export interface FileRouteTypes {
     | '/api/public/client-errors'
     | '/api/public/healthcheck'
     | '/api/public/web-vitals'
+    | '/api/public/cron/birthday-coupons'
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/deposit-noshow-capture'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/cron/review-requests'
+    | '/api/public/cron/waitlist-promote'
     | '/api/public/cron/web-vitals-alert'
     | '/api/public/webhooks/stripe'
     | '/api/public/scim/v2/Users'
@@ -571,11 +597,13 @@ export interface RootRouteChildren {
   ApiPublicClientErrorsRoute: typeof ApiPublicClientErrorsRoute
   ApiPublicHealthcheckRoute: typeof ApiPublicHealthcheckRoute
   ApiPublicWebVitalsRoute: typeof ApiPublicWebVitalsRoute
+  ApiPublicCronBirthdayCouponsRoute: typeof ApiPublicCronBirthdayCouponsRoute
   ApiPublicCronBookingRemindersRoute: typeof ApiPublicCronBookingRemindersRoute
   ApiPublicCronDepositNoshowCaptureRoute: typeof ApiPublicCronDepositNoshowCaptureRoute
   ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
   ApiPublicCronRetryWebhooksRoute: typeof ApiPublicCronRetryWebhooksRoute
   ApiPublicCronReviewRequestsRoute: typeof ApiPublicCronReviewRequestsRoute
+  ApiPublicCronWaitlistPromoteRoute: typeof ApiPublicCronWaitlistPromoteRoute
   ApiPublicCronWebVitalsAlertRoute: typeof ApiPublicCronWebVitalsAlertRoute
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
   ApiPublicScimV2UsersRoute: typeof ApiPublicScimV2UsersRouteWithChildren
@@ -842,6 +870,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronWebVitalsAlertRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/waitlist-promote': {
+      id: '/api/public/cron/waitlist-promote'
+      path: '/api/public/cron/waitlist-promote'
+      fullPath: '/api/public/cron/waitlist-promote'
+      preLoaderRoute: typeof ApiPublicCronWaitlistPromoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/review-requests': {
       id: '/api/public/cron/review-requests'
       path: '/api/public/cron/review-requests'
@@ -875,6 +910,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/cron/booking-reminders'
       fullPath: '/api/public/cron/booking-reminders'
       preLoaderRoute: typeof ApiPublicCronBookingRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/birthday-coupons': {
+      id: '/api/public/cron/birthday-coupons'
+      path: '/api/public/cron/birthday-coupons'
+      fullPath: '/api/public/cron/birthday-coupons'
+      preLoaderRoute: typeof ApiPublicCronBirthdayCouponsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/scim/v2/Users': {
@@ -973,12 +1015,14 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicClientErrorsRoute: ApiPublicClientErrorsRoute,
   ApiPublicHealthcheckRoute: ApiPublicHealthcheckRoute,
   ApiPublicWebVitalsRoute: ApiPublicWebVitalsRoute,
+  ApiPublicCronBirthdayCouponsRoute: ApiPublicCronBirthdayCouponsRoute,
   ApiPublicCronBookingRemindersRoute: ApiPublicCronBookingRemindersRoute,
   ApiPublicCronDepositNoshowCaptureRoute:
     ApiPublicCronDepositNoshowCaptureRoute,
   ApiPublicCronProcessWebhooksRoute: ApiPublicCronProcessWebhooksRoute,
   ApiPublicCronRetryWebhooksRoute: ApiPublicCronRetryWebhooksRoute,
   ApiPublicCronReviewRequestsRoute: ApiPublicCronReviewRequestsRoute,
+  ApiPublicCronWaitlistPromoteRoute: ApiPublicCronWaitlistPromoteRoute,
   ApiPublicCronWebVitalsAlertRoute: ApiPublicCronWebVitalsAlertRoute,
   ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
   ApiPublicScimV2UsersRoute: ApiPublicScimV2UsersRouteWithChildren,
