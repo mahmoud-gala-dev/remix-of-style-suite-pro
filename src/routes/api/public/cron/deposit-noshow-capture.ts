@@ -50,7 +50,7 @@ export const Route = createFileRoute("/api/public/cron/deposit-noshow-capture")(
         const baseSel = "id, deposit_intent_id" as const;
         const { data: toCapture } = await supabaseAdmin
           .from("bookings").select(baseSel)
-          .eq("status", "noShow")
+          .eq("status", "no_show")
           .eq("deposit_status" as never, "authorized")
           .lte("start_at", cutoff).limit(200);
         const { data: toRelease } = await supabaseAdmin
