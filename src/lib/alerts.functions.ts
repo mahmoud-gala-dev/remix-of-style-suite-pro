@@ -4,7 +4,7 @@ import { z } from "zod";
 
 export type Alert = {
   id: string;
-  kind: "membership_expiring" | "webhook_failed";
+  kind: "membership_expiring" | "webhook_failed" | "notification_queue_stuck";
   title: string;
   detail: string;
   severity: "info" | "warn" | "error";
@@ -61,6 +61,29 @@ export const getAlerts = createServerFn({ method: "GET" })
         detail: `Status ${f.status ?? "—"} · ${new Date(f.created_at).toLocaleString()}`,
         severity: "error",
       });
+    }
+
+    // Cycle #17 — SLA monitoring for the notification queue.
+    // Surfaces when jobs are stuck in 'sending' > 5min or hit the 5-attempt cap.
+    const { data: health } = await context.supabase
+      .rpc("notification_jobs_health")
+      .maybeSingle();
+    if (health) {
+      const failed = Number(health.failed ?? 0);
+      const stuck = Number(health.stuck ?? 0);
+      const pending = Number(health.pending ?? 0);
+      if (failed > 0 || stuck > 0) {
+        const id = "notif-queue-sla";
+        if (!hidden.has(id)) {
+          alerts.push({
+            id,
+            kind: "notification_queue_stuck",
+            title: "Notification queue degraded",
+            detail: `${failed} failed · ${stuck} stuck · ${pending} pending`,
+            severity: failed > 0 ? "error" : "warn",
+          });
+        }
+      }
     }
 
     return alerts;
