@@ -3,8 +3,9 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Calendar, MapPin, Scissors, User, XCircle, MessageCircle, CheckCircle2 } from "lucide-react";
+import { Calendar, MapPin, Scissors, User, XCircle, MessageCircle, CheckCircle2, Star } from "lucide-react";
 import { getBookingByToken, cancelBookingByToken } from "@/lib/customer-portal.functions";
+import { submitReview, getReviewForBooking } from "@/lib/reviews.functions";
 import { useDir, useI18n } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
 import { waLink, buildBookingConfirmMsg } from "@/lib/whatsapp";
@@ -21,13 +22,32 @@ function MyBookingPage() {
   const dir = useDir();
   const fetchBooking = useServerFn(getBookingByToken);
   const cancelFn = useServerFn(cancelBookingByToken);
+  const fetchReview = useServerFn(getReviewForBooking);
+  const submitReviewFn = useServerFn(submitReview);
   const qc = useQueryClient();
   const [confirmCancel, setConfirmCancel] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
 
   const q = useQuery({
     queryKey: ["portal-booking", token],
     queryFn: () => fetchBooking({ data: { token } }),
     retry: false,
+  });
+
+  const reviewQ = useQuery({
+    queryKey: ["portal-review", token],
+    queryFn: () => fetchReview({ data: { token } }),
+    retry: false,
+  });
+
+  const reviewMut = useMutation({
+    mutationFn: () => submitReviewFn({ data: { token, rating, comment: comment.trim() || undefined } }),
+    onSuccess: () => {
+      toast.success(lang === "ar" ? "شكراً لتقييمك" : "Thanks for your review");
+      qc.invalidateQueries({ queryKey: ["portal-review", token] });
+    },
+    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : "Failed"),
   });
 
   const cancelMut = useMutation({
