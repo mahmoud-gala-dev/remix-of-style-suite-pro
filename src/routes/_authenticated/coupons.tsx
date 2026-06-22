@@ -122,7 +122,7 @@ function CouponDialog({ open, onClose, branchId, onCreated }: { open: boolean; o
         <Field label={t("codeLabel")}><input required value={code} onChange={(e) => setCode(e.target.value)} className={inputCls} placeholder="WELCOME10" /></Field>
         <div className="grid grid-cols-2 gap-3">
           <Field label={t("kind")}>
-            <select value={kind} onChange={(e) => setKind(e.target.value as any)} className={inputCls}>
+            <select value={kind} onChange={(e) => setKind(e.target.value as "percent" | "fixed")} className={inputCls}>
               <option value="percent">{t("percentDiscount")}</option>
               <option value="fixed">{t("fixedAmount")}</option>
             </select>
