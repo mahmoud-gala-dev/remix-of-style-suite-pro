@@ -53,8 +53,71 @@ async function initSentry() {
     const mod = "@sentry/browser";
     const Sentry: any = await import(/* @vite-ignore */ mod).catch(() => null);
     if (!Sentry) return;
-    Sentry.init({ dsn, tracesSampleRate: 0.1 });
+    Sentry.init({
+      dsn,
+      tracesSampleRate: 0.1,
+      // Performance: browser tracing if integrations are available in the bundle.
+      integrations: typeof Sentry.browserTracingIntegration === "function"
+        ? [Sentry.browserTracingIntegration()]
+        : undefined,
+    });
     _sentry = { captureException: (e, ctx) => Sentry.captureException(e, { extra: ctx as any }) };
+    _sentryMetric = (name, value, ctx) => {
+      try {
+        // Prefer Sentry.metrics.distribution when available, else breadcrumb.
+        const m = (Sentry as any).metrics;
+        if (m?.distribution) m.distribution(name, value, { tags: ctx as any });
+        else Sentry.addBreadcrumb?.({ category: "web-vitals", message: name, data: { value, ...(ctx ?? {}) } });
+      } catch {
+        /* ignore */
+      }
+    };
+  } catch {
+    /* ignore */
+  }
+}
+
+let _sentryMetric: ((name: string, value: number, ctx?: Record<string, unknown>) => void) | null = null;
+
+// P49 — Forward Core Web Vitals (CLS, INP, LCP, FCP, TTFB) to:
+//   1. window.__lovableEvents.captureMetric (LOVABLE_ERROR_REPORTING pipeline)
+//   2. Sentry metrics / breadcrumbs (when VITE_SENTRY_DSN is set)
+//   3. /api/public/client-errors as a best-effort beacon for self-hosted aggregation.
+async function initWebVitals() {
+  if (typeof window === "undefined") return;
+  try {
+    const mod = "web-vitals";
+    const wv: any = await import(/* @vite-ignore */ mod).catch(() => null);
+    if (!wv) return;
+    const report = (metric: { name: string; value: number; id: string; rating?: string }) => {
+      const ctx = { id: metric.id, rating: metric.rating, route: window.location.pathname };
+      try {
+        window.__lovableEvents?.captureMetric?.(metric.name, metric.value, ctx);
+      } catch {
+        /* ignore */
+      }
+      _sentryMetric?.(`web_vitals.${metric.name.toLowerCase()}`, metric.value, ctx);
+      try {
+        const body = JSON.stringify({ kind: "web-vital", name: metric.name, value: metric.value, ...ctx });
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon("/api/public/web-vitals", body);
+        } else {
+          void fetch("/api/public/web-vitals", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body,
+            keepalive: true,
+          }).catch(() => undefined);
+        }
+      } catch {
+        /* ignore */
+      }
+    };
+    wv.onCLS?.(report);
+    wv.onINP?.(report);
+    wv.onLCP?.(report);
+    wv.onFCP?.(report);
+    wv.onTTFB?.(report);
   } catch {
     /* ignore */
   }
