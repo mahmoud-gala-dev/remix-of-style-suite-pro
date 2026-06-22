@@ -154,6 +154,52 @@ function MyBookingPage() {
               )}
             </div>
           )}
+
+          {completed && (
+            <div className="mt-6 border-t pt-6">
+              <h2 className="font-semibold mb-3 flex items-center gap-2">
+                <Star className="size-4" />
+                {lang === "ar" ? "كيف كانت تجربتك؟" : "How was your visit?"}
+              </h2>
+              {reviewQ.data ? (
+                <div className="rounded-md bg-muted/30 p-4 text-sm">
+                  <div className="flex gap-1 mb-2">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <Star key={n} className={`size-4 ${n <= reviewQ.data!.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} />
+                    ))}
+                  </div>
+                  {reviewQ.data.comment && <p className="text-muted-foreground">{reviewQ.data.comment}</p>}
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {lang === "ar" ? "تم إرسال تقييمك. شكراً لك!" : "Your review was submitted. Thank you!"}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <button key={n} type="button" onClick={() => setRating(n)} aria-label={`${n} stars`}>
+                        <Star className={`size-7 transition ${n <= rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground hover:text-yellow-400"}`} />
+                      </button>
+                    ))}
+                  </div>
+                  <textarea
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value.slice(0, 1000))}
+                    placeholder={lang === "ar" ? "تعليق اختياري…" : "Optional comment…"}
+                    rows={3}
+                    className="w-full rounded-md border bg-background p-2 text-sm"
+                  />
+                  <button
+                    disabled={rating === 0 || reviewMut.isPending}
+                    onClick={() => reviewMut.mutate()}
+                    className="w-full rounded-md bg-primary text-primary-foreground py-2 text-sm font-semibold disabled:opacity-50"
+                  >
+                    {reviewMut.isPending ? "…" : (lang === "ar" ? "إرسال التقييم" : "Submit review")}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
