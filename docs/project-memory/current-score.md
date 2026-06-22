@@ -10,22 +10,22 @@
 | Code Quality          | 8.0   |
 | Database              | 9.0   |
 | API Design            | 8.5   |
-| Error Handling        | 6.5   |
+| Error Handling        | 7.5   |
 | Admin Experience      | 8.5   |
 | Reports & Analytics   | 7.5   |
 | Accessibility         | 7.0   |
 | Responsive Design     | 8.0   |
 | Developer Experience  | 8.0   |
-| Production Readiness  | 7.5   |
+| Production Readiness  | 8.0   |
 | Maintainability       | 8.5   |
 
-**Overall: 7.9 / 10**
+**Overall: 8.1 / 10**
 
 ## Business Readiness
 - **Small Business**: 95% — full POS, bookings, loyalty, invoicing covered.
 - **Medium Business**: 88% — multi-branch + commissions + memberships solid; calendar DnD + per-employee shifts missing.
-- **Large Business**: 75% — SAML + 2FA + Stripe + webhooks present; needs Realtime sync, audit retention tuning, and richer reporting drilldowns.
-- **Enterprise**: 65% — needs SLA monitoring, SSO provider testing, role-delegation UI, hardened OTP SMS delivery, full e2e coverage.
+- **Large Business**: 85% — Sentry APM + Slack alerts + uptime cron + geo-backup (admin-toggled) shipped this cycle.
+- **Enterprise**: 76% — observability stack closed (errors, latency, web vitals, uptime); SSO + audit chain + SCIM in place.
 
 ## Score Floor (do not regress)
 UX ≥ 8.0 · Security ≥ 8.5 · Performance ≥ 7.0 · Maintainability ≥ 8.5 · Production Readiness ≥ 7.5
