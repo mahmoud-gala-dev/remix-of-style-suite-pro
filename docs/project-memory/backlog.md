@@ -29,4 +29,4 @@
 - [x] WhatsApp brand color tokenized as `--color-whatsapp` / `bg-whatsapp` / `text-whatsapp-foreground`; `book.tsx` and `reminders-widget` updated. (cycle #3)
 - [x] `sitemap.xml` now derives origin from the request URL (works on preview, prod, custom domain) and emits priority + changefreq per page. (cycle #3)
 - [x] Kiosk display uses semantic tokens (`bg-background`, `text-foreground`, `bg-primary/15`, etc.) and accepts `?theme=light|dark&accent=RRGGBB` search params for per-branch theming. (cycle #3)
-- [ ] Background-jobs UI (queue inspector for `webhook_deliveries`).
+- [x] Webhook deliveries queue inspector with totals (OK/Failed/Pending), "show failed only" filter, and retry button. (cycle #3)

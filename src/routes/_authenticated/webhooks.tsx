@@ -38,6 +38,7 @@ function Page() {
   const dq = useQuery({ queryKey: ["webhook-deliveries"], queryFn: () => fetchDeliveries() });
   const [event, setEvent] = useState("booking.created");
   const [url, setUrl] = useState("");
+  const [onlyFailed, setOnlyFailed] = useState(false);
 
   const add = useMutation({
     mutationFn: () => saveHook({ data: { event, url, enabled: true } }),
@@ -119,7 +120,12 @@ function Page() {
         </TabsContent>
         <TabsContent value="deliveries" className="space-y-4">
           <Surface>
-            <div className="flex justify-end mb-3">
+            <DeliveryStats rows={dq.data ?? []} />
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-xs text-dim inline-flex items-center gap-2">
+                <input type="checkbox" checked={onlyFailed} onChange={(e) => setOnlyFailed(e.target.checked)} />
+                {t("failed")}
+              </label>
               <Button size="sm" onClick={() => retry.mutate()} disabled={retry.isPending}>
                 {t("retryNow")}
               </Button>
@@ -137,7 +143,7 @@ function Page() {
                   </tr>
                 </thead>
                 <tbody>
-                  {dq.data?.map((d: Delivery) => (
+                  {(dq.data ?? []).filter((d) => !onlyFailed || d.failed).map((d: Delivery) => (
                     <tr key={d.id} className="border-t border-border/40">
                       <td className="py-2 font-mono text-xs">{d.event}</td>
                       <td>
@@ -155,6 +161,22 @@ function Page() {
           </Surface>
         </TabsContent>
       </Tabs>
+    </div>
+  );
+}
+
+function DeliveryStats({ rows }: { rows: Delivery[] }) {
+  const total = rows.length;
+  const ok = rows.filter((r) => !r.failed && (r.status ?? 0) >= 200 && (r.status ?? 0) < 400).length;
+  const failed = rows.filter((r) => r.failed).length;
+  const pending = total - ok - failed;
+  const cell = "rounded-md border border-border bg-surface px-3 py-2";
+  return (
+    <div className="grid grid-cols-4 gap-2 mb-4 text-xs">
+      <div className={cell}><div className="text-dim uppercase tracking-widest text-[10px]">Total</div><div className="text-lg font-bold tabular-nums">{total}</div></div>
+      <div className={cell}><div className="text-dim uppercase tracking-widest text-[10px]">OK</div><div className="text-lg font-bold tabular-nums text-primary">{ok}</div></div>
+      <div className={cell}><div className="text-dim uppercase tracking-widest text-[10px]">Failed</div><div className="text-lg font-bold tabular-nums text-destructive">{failed}</div></div>
+      <div className={cell}><div className="text-dim uppercase tracking-widest text-[10px]">Pending</div><div className="text-lg font-bold tabular-nums">{pending}</div></div>
     </div>
   );
 }
