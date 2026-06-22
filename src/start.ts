@@ -3,6 +3,7 @@ import { createStart, createMiddleware } from "@tanstack/react-start";
 import { renderErrorPage } from "./lib/error-page";
 import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
 import { captureServerException, captureServerMetric } from "./lib/sentry.server";
+import { notifySlack } from "./lib/slack.server";
 
 const errorMiddleware = createMiddleware().server(async ({ next }) => {
   const startedAt = Date.now();
@@ -18,6 +19,10 @@ const errorMiddleware = createMiddleware().server(async ({ next }) => {
     console.error(error);
     void captureServerException(error, { kind: "unhandled_server_error" });
     void captureServerMetric("server.request.duration_ms", Date.now() - startedAt, { status: "error" });
+    void notifySlack(
+      `Unhandled server error: ${error instanceof Error ? error.message : String(error)}`,
+      { stack: error instanceof Error ? error.stack?.split("\n").slice(0, 5).join("\n") : undefined },
+    );
     return new Response(renderErrorPage(), {
       status: 500,
       headers: { "content-type": "text/html; charset=utf-8" },
