@@ -1,11 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+function authorized(request: Request): boolean {
+  const expected = process.env.CRON_SECRET;
+  if (!expected) return true;
+  const got = request.headers.get("x-cron-secret") ?? "";
+  return got === expected;
+}
+
 // P47 — Called by pg_cron every minute. Retries failed webhook deliveries
 // (status >= 500 OR status == 0) up to 3 times with exponential backoff.
 export const Route = createFileRoute("/api/public/cron/retry-webhooks")({
   server: {
     handlers: {
-      POST: async () => {
+      POST: async ({ request }) => {
+        if (!authorized(request)) return new Response("Unauthorized", { status: 401 });
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const nowIso = new Date().toISOString();
         const { data: rows } = await supabaseAdmin
