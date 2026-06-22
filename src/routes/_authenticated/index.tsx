@@ -4,9 +4,9 @@ import { AppShell } from "@/components/shell/app-shell";
 import { useCurrentBranch, useData } from "@/lib/store";
 import { useT, useI18n } from "@/lib/i18n";
 import { isToday, minutesSince } from "@/lib/format";
-import { DashboardKPIs } from "./dashboard/DashboardKPIs";
+import { DashboardKPIs } from "./dashboard/-DashboardKPIs";
 import { DashboardSchedule } from "./dashboard/-DashboardSchedule";
-import { DashboardSidebar } from "./dashboard/DashboardSidebar";
+import { DashboardSidebar } from "./dashboard/-DashboardSidebar";
 
 export const Route = createFileRoute("/_authenticated/")({
   ssr: false,
