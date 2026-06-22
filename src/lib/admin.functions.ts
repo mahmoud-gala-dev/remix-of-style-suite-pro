@@ -109,9 +109,9 @@ export const seedDemoData = createServerFn({ method: "POST" })
       { branch_id: brDowntown, customer_id: cu4, status: "waiting", position: 3 },
     ];
 
+    const { insertDynamic } = await import("@/lib/dynamic-table.server");
     const ins = async (table: string, rows: unknown) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (supabaseAdmin.from(table as any) as any).insert(rows);
+      const { error } = await insertDynamic(supabaseAdmin, table, rows);
       if (error) throw new Error(`${table}: ${error.message}`);
     };
     await ins("branches", branches);
