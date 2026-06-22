@@ -12,6 +12,9 @@ import { listWebhooks, upsertWebhook, deleteWebhook, listDeliveries, retryFailed
 import { useT } from "@/lib/i18n";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
+type Hook = Awaited<ReturnType<typeof listWebhooks>>[number];
+type Delivery = Awaited<ReturnType<typeof listDeliveries>>[number];
+
 export const Route = createFileRoute("/_authenticated/webhooks")({
   ssr: false,
   head: () => ({ meta: [{ title: "Webhooks" }] }),
