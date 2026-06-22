@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/shell/app-shell";
@@ -10,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { DataState } from "@/components/shell/data-state";
 import {
-import { RouteError, RouteNotFound } from "@/components/shell/route-error";
   Area,
   AreaChart,
   Bar,

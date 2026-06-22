@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
 import { useData } from "@/lib/store";
@@ -9,7 +10,6 @@ import { Plus, Search, Download, Upload, Phone, MessageCircle, Pencil, Trash2, C
 import { EmptyState } from "@/components/shell/empty-state";
 import { CustomerDialog } from "@/components/dialogs/customer-dialog";
 import {
-import { RouteError, RouteNotFound } from "@/components/shell/route-error";
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +14,6 @@ import { EmptyState } from "@/components/shell/empty-state";
 import { useState } from "react";
 import { BookingDialog } from "@/components/dialogs/booking-dialog";
 import {
-import { RouteError, RouteNotFound } from "@/components/shell/route-error";
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
