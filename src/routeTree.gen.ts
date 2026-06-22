@@ -45,6 +45,7 @@ import { Route as ApiPublicWebVitalsRouteImport } from './routes/api/public/web-
 import { Route as ApiPublicHealthcheckRouteImport } from './routes/api/public/healthcheck'
 import { Route as ApiPublicClientErrorsRouteImport } from './routes/api/public/client-errors'
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
+import { Route as ApiPublicCronWebVitalsAlertRouteImport } from './routes/api/public/cron/web-vitals-alert'
 import { Route as ApiPublicCronRetryWebhooksRouteImport } from './routes/api/public/cron/retry-webhooks'
 import { Route as ApiPublicCronProcessWebhooksRouteImport } from './routes/api/public/cron/process-webhooks'
 import { Route as ApiPublicScimV2UsersRouteImport } from './routes/api/public/scim/v2/Users'
@@ -231,6 +232,12 @@ const ApiPublicWebhooksStripeRoute = ApiPublicWebhooksStripeRouteImport.update({
   path: '/api/public/webhooks/stripe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCronWebVitalsAlertRoute =
+  ApiPublicCronWebVitalsAlertRouteImport.update({
+    id: '/api/public/cron/web-vitals-alert',
+    path: '/api/public/cron/web-vitals-alert',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCronRetryWebhooksRoute =
   ApiPublicCronRetryWebhooksRouteImport.update({
     id: '/api/public/cron/retry-webhooks',
@@ -291,6 +298,7 @@ export interface FileRoutesByFullPath {
   '/api/public/web-vitals': typeof ApiPublicWebVitalsRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
+  '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRouteWithChildren
   '/api/public/scim/v2/Users/$id': typeof ApiPublicScimV2UsersIdRoute
@@ -332,6 +340,7 @@ export interface FileRoutesByTo {
   '/api/public/web-vitals': typeof ApiPublicWebVitalsRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
+  '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRouteWithChildren
   '/api/public/scim/v2/Users/$id': typeof ApiPublicScimV2UsersIdRoute
@@ -375,6 +384,7 @@ export interface FileRoutesById {
   '/api/public/web-vitals': typeof ApiPublicWebVitalsRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
+  '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRouteWithChildren
   '/api/public/scim/v2/Users/$id': typeof ApiPublicScimV2UsersIdRoute
@@ -418,6 +428,7 @@ export interface FileRouteTypes {
     | '/api/public/web-vitals'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
+    | '/api/public/cron/web-vitals-alert'
     | '/api/public/webhooks/stripe'
     | '/api/public/scim/v2/Users'
     | '/api/public/scim/v2/Users/$id'
@@ -459,6 +470,7 @@ export interface FileRouteTypes {
     | '/api/public/web-vitals'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
+    | '/api/public/cron/web-vitals-alert'
     | '/api/public/webhooks/stripe'
     | '/api/public/scim/v2/Users'
     | '/api/public/scim/v2/Users/$id'
@@ -501,6 +513,7 @@ export interface FileRouteTypes {
     | '/api/public/web-vitals'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
+    | '/api/public/cron/web-vitals-alert'
     | '/api/public/webhooks/stripe'
     | '/api/public/scim/v2/Users'
     | '/api/public/scim/v2/Users/$id'
@@ -521,6 +534,7 @@ export interface RootRouteChildren {
   ApiPublicWebVitalsRoute: typeof ApiPublicWebVitalsRoute
   ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
   ApiPublicCronRetryWebhooksRoute: typeof ApiPublicCronRetryWebhooksRoute
+  ApiPublicCronWebVitalsAlertRoute: typeof ApiPublicCronWebVitalsAlertRoute
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
   ApiPublicScimV2UsersRoute: typeof ApiPublicScimV2UsersRouteWithChildren
 }
@@ -779,6 +793,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWebhooksStripeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/web-vitals-alert': {
+      id: '/api/public/cron/web-vitals-alert'
+      path: '/api/public/cron/web-vitals-alert'
+      fullPath: '/api/public/cron/web-vitals-alert'
+      preLoaderRoute: typeof ApiPublicCronWebVitalsAlertRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/retry-webhooks': {
       id: '/api/public/cron/retry-webhooks'
       path: '/api/public/cron/retry-webhooks'
@@ -891,6 +912,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicWebVitalsRoute: ApiPublicWebVitalsRoute,
   ApiPublicCronProcessWebhooksRoute: ApiPublicCronProcessWebhooksRoute,
   ApiPublicCronRetryWebhooksRoute: ApiPublicCronRetryWebhooksRoute,
+  ApiPublicCronWebVitalsAlertRoute: ApiPublicCronWebVitalsAlertRoute,
   ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
   ApiPublicScimV2UsersRoute: ApiPublicScimV2UsersRouteWithChildren,
 }
