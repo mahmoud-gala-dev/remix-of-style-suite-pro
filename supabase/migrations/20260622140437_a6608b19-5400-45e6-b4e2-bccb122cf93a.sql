@@ -1,0 +1,2 @@
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS last_low_stock_alert_at timestamptz;
+CREATE INDEX IF NOT EXISTS products_low_stock_alert_idx ON public.products (branch_id, last_low_stock_alert_at) WHERE active = true;

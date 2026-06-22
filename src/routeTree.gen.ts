@@ -50,6 +50,7 @@ import { Route as ApiPublicCronWaitlistPromoteRouteImport } from './routes/api/p
 import { Route as ApiPublicCronReviewRequestsRouteImport } from './routes/api/public/cron/review-requests'
 import { Route as ApiPublicCronRetryWebhooksRouteImport } from './routes/api/public/cron/retry-webhooks'
 import { Route as ApiPublicCronProcessWebhooksRouteImport } from './routes/api/public/cron/process-webhooks'
+import { Route as ApiPublicCronInventoryLowStockRouteImport } from './routes/api/public/cron/inventory-low-stock'
 import { Route as ApiPublicCronDepositNoshowCaptureRouteImport } from './routes/api/public/cron/deposit-noshow-capture'
 import { Route as ApiPublicCronBookingRemindersRouteImport } from './routes/api/public/cron/booking-reminders'
 import { Route as ApiPublicCronBirthdayCouponsRouteImport } from './routes/api/public/cron/birthday-coupons'
@@ -267,6 +268,12 @@ const ApiPublicCronProcessWebhooksRoute =
     path: '/api/public/cron/process-webhooks',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronInventoryLowStockRoute =
+  ApiPublicCronInventoryLowStockRouteImport.update({
+    id: '/api/public/cron/inventory-low-stock',
+    path: '/api/public/cron/inventory-low-stock',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCronDepositNoshowCaptureRoute =
   ApiPublicCronDepositNoshowCaptureRouteImport.update({
     id: '/api/public/cron/deposit-noshow-capture',
@@ -334,6 +341,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/birthday-coupons': typeof ApiPublicCronBirthdayCouponsRoute
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
+  '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
@@ -381,6 +389,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/birthday-coupons': typeof ApiPublicCronBirthdayCouponsRoute
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
+  '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
@@ -430,6 +439,7 @@ export interface FileRoutesById {
   '/api/public/cron/birthday-coupons': typeof ApiPublicCronBirthdayCouponsRoute
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
+  '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
@@ -479,6 +489,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/birthday-coupons'
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/deposit-noshow-capture'
+    | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/cron/review-requests'
@@ -526,6 +537,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/birthday-coupons'
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/deposit-noshow-capture'
+    | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/cron/review-requests'
@@ -574,6 +586,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/birthday-coupons'
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/deposit-noshow-capture'
+    | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/cron/review-requests'
@@ -600,6 +613,7 @@ export interface RootRouteChildren {
   ApiPublicCronBirthdayCouponsRoute: typeof ApiPublicCronBirthdayCouponsRoute
   ApiPublicCronBookingRemindersRoute: typeof ApiPublicCronBookingRemindersRoute
   ApiPublicCronDepositNoshowCaptureRoute: typeof ApiPublicCronDepositNoshowCaptureRoute
+  ApiPublicCronInventoryLowStockRoute: typeof ApiPublicCronInventoryLowStockRoute
   ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
   ApiPublicCronRetryWebhooksRoute: typeof ApiPublicCronRetryWebhooksRoute
   ApiPublicCronReviewRequestsRoute: typeof ApiPublicCronReviewRequestsRoute
@@ -898,6 +912,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronProcessWebhooksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/inventory-low-stock': {
+      id: '/api/public/cron/inventory-low-stock'
+      path: '/api/public/cron/inventory-low-stock'
+      fullPath: '/api/public/cron/inventory-low-stock'
+      preLoaderRoute: typeof ApiPublicCronInventoryLowStockRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/deposit-noshow-capture': {
       id: '/api/public/cron/deposit-noshow-capture'
       path: '/api/public/cron/deposit-noshow-capture'
@@ -1019,6 +1040,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronBookingRemindersRoute: ApiPublicCronBookingRemindersRoute,
   ApiPublicCronDepositNoshowCaptureRoute:
     ApiPublicCronDepositNoshowCaptureRoute,
+  ApiPublicCronInventoryLowStockRoute: ApiPublicCronInventoryLowStockRoute,
   ApiPublicCronProcessWebhooksRoute: ApiPublicCronProcessWebhooksRoute,
   ApiPublicCronRetryWebhooksRoute: ApiPublicCronRetryWebhooksRoute,
   ApiPublicCronReviewRequestsRoute: ApiPublicCronReviewRequestsRoute,
