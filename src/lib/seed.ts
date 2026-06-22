@@ -7,7 +7,10 @@ import type {
   Service,
 } from "@/types/domain";
 
-const rid = () => Math.random().toString(36).slice(2, 10);
+const rid = () =>
+  typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID()
+    : "00000000-0000-4000-8000-" + Math.random().toString(16).slice(2, 14).padStart(12, "0");
 
 // Stable UUIDs for seed entities — keeps demo data compatible with `z.string().uuid()`
 // server-fn validators (debt #15, cycle #11).
