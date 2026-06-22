@@ -14,6 +14,7 @@ import {
   Receipt,
   Sparkles,
   BookOpen,
+  Hourglass,
 } from "lucide-react";
 import type { DictKey } from "@/lib/i18n";
 
@@ -30,6 +31,7 @@ export const MODULES: ModuleItem[] = [
   { id: "calendar", to: "/calendar", icon: CalendarDays, label: "calendar", group: "operations" },
   { id: "bookings", to: "/bookings", icon: ClipboardList, label: "bookings", group: "operations" },
   { id: "queue", to: "/queue", icon: ListOrdered, label: "queue", group: "operations" },
+  { id: "waitlist", to: "/waitlist", icon: Hourglass, label: "waitlist", group: "operations" },
   { id: "customers", to: "/customers", icon: Users, label: "customers", group: "operations" },
   { id: "services", to: "/services", icon: Scissors, label: "services", group: "management" },
   { id: "employees", to: "/employees", icon: UserCog, label: "employees", group: "management" },
