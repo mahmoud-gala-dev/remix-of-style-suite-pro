@@ -53,7 +53,7 @@ export const createRecurringSeries = createServerFn({ method: "POST" })
         service_id: data.serviceId,
         start_at: s.toISOString(),
         end_at: e.toISOString(),
-        status: "confirmed",
+        status: "confirmed" as const,
         price: data.price,
         recurrence_group_id: groupId,
       };
