@@ -170,17 +170,17 @@ function Page() {
       {compareQ.data && (
         <Surface>
           <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-4">
-            Compare vs previous period ({compareQ.data.range.prev_from} → {compareQ.data.range.prev_to})
+            {t("comparePrevPeriod")} ({compareQ.data.range.prev_from} → {compareQ.data.range.prev_to})
           </h3>
           <div className="grid gap-3 sm:grid-cols-2">
             <CompareMetric
-              label="Revenue"
+              label={t("revenue")}
               current={fmtMoney(compareQ.data.current.revenue)}
               previous={fmtMoney(compareQ.data.previous.revenue)}
               delta={compareQ.data.delta.revenue}
             />
             <CompareMetric
-              label="Bookings"
+              label={t("bookings")}
               current={String(compareQ.data.current.bookings)}
               previous={String(compareQ.data.previous.bookings)}
               delta={compareQ.data.delta.bookings}
@@ -191,7 +191,7 @@ function Page() {
 
       <Surface>
         <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-6">
-          Revenue · selected period
+          {t("revenueChartTitle")}
         </h3>
         <div className="h-72">
           <ResponsiveContainer>
@@ -214,7 +214,7 @@ function Page() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Surface className="lg:col-span-2">
-          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-6">Revenue by Branch</h3>
+          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-6">{t("revenueByBranch")}</h3>
           <div className="h-64">
             <ResponsiveContainer>
               <BarChart data={report.byBranch}>
@@ -229,7 +229,7 @@ function Page() {
         </Surface>
 
         <Surface>
-          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-6">Bookings by Status</h3>
+          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim mb-6">{t("bookingsByStatus")}</h3>
           <div className="h-64">
             <ResponsiveContainer>
               <PieChart>
