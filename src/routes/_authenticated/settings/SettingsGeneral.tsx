@@ -143,6 +143,48 @@ export function SettingsGeneral() {
           </div>
         </Surface>
       )}
+
+      {isAdmin && (
+        <Surface>
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">WhatsApp Reminders</h3>
+              <p className="text-xs text-dim mt-1">
+                widget على لوحة التحكم يعرض حجوزات الغد بأزرار WhatsApp جاهزة (افتراضي، يعمل بدون API).
+              </p>
+            </div>
+            <label className="inline-flex items-center gap-2 cursor-pointer">
+              <span className="text-xs text-dim">{settingsQ.data?.whatsapp_reminders_enabled ? t("active") : t("disabled")}</span>
+              <input
+                type="checkbox"
+                checked={Boolean(settingsQ.data?.whatsapp_reminders_enabled ?? true)}
+                disabled={settingMut.isPending || settingsQ.isLoading}
+                onChange={(e) => settingMut.mutate({ key: "whatsapp_reminders_enabled", value: e.target.checked })}
+                className="size-4 accent-primary"
+              />
+            </label>
+          </div>
+          <div className="flex items-center justify-between border-t border-border pt-3">
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">WhatsApp Business API</h4>
+              <p className="text-xs text-dim mt-1">
+                إرسال تلقائي للتذكيرات. معطّل افتراضياً — فعّله بعد إضافة مفتاح WhatsApp Business API.
+                عند التفعيل، يختفي widget يدوي.
+              </p>
+            </div>
+            <label className="inline-flex items-center gap-2 cursor-pointer">
+              <span className="text-xs text-dim">{settingsQ.data?.whatsapp_api_enabled ? t("active") : t("disabled")}</span>
+              <input
+                type="checkbox"
+                checked={Boolean(settingsQ.data?.whatsapp_api_enabled)}
+                disabled={settingMut.isPending || settingsQ.isLoading}
+                onChange={(e) => settingMut.mutate({ key: "whatsapp_api_enabled", value: e.target.checked })}
+                className="size-4 accent-primary"
+              />
+            </label>
+          </div>
+        </Surface>
+      )}
     </>
   );
 }
