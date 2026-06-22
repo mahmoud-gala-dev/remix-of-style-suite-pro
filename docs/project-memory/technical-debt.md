@@ -1,0 +1,17 @@
+# Technical Debt — 2026-06-22
+
+| # | Issue | Files | Priority | Severity |
+|---|---|---|---|---|
+| 1 | `DataState` exists but unused on 11 core pages (no loading/error/empty UI) | `bookings.tsx`, `customers.tsx`, `calendar.tsx`, `queue.tsx`, `reports.tsx`, `services.tsx`, `employees.tsx`, `branches.tsx`, `settings.tsx`, `docs.tsx`, `index.tsx` | P2 | Medium |
+| 2 | No `React.lazy()` / dynamic imports — entire app eager-loaded (~1–2 MB JS) | all `src/routes/` | P2 | Medium |
+| 3 | 3 PDF libs installed (`jspdf`, `jspdf-autotable`, `pdf-lib`) — consolidate | `package.json` | P4 | Low |
+| 4 | `<3%` test coverage of server functions (3 unit files for 114 fns) | `tests/` | P3 | Medium |
+| 5 | `assertAdmin` boilerplate duplicated — now centralized as `requireAdmin`; backfill remaining files | `webhooks/notifications/twilio/stripe/saml/tenants .functions.ts` | P3 | Low |
+| 6 | Hardcoded VAPID private key fallback in source | `src/lib/push.server.ts:6` | P2 | Medium |
+| 7 | Hardcoded brand color `#25D366` (WhatsApp) breaks theming | `book.tsx:709`, `reminders-widget.tsx:75` | P4 | Low |
+| 8 | `sitemap.xml.ts` URL placeholder | `src/routes/sitemap[.]xml.ts:3` | P4 | Low |
+| 9 | `any` types in 11 non-generated locations (mostly `ctx: any`) | see audit | P3 | Low |
+| 10 | No Supabase Realtime subscriptions; queue/calendar stale until refetch | entire app | P2 | Medium |
+| 11 | No customer-facing invoice PDF download from `/my/$token` | `customer-portal.functions.ts` | P2 | Medium |
+| 12 | No booking-confirmation email/SMS on `createBooking` | `bookings.functions.ts` | P2 | Medium |
+| 13 | Per-employee shifts / day-off table missing — availability engine inaccurate | DB schema + `bookings.functions.ts` | P3 | Medium |
