@@ -80,3 +80,50 @@ export const cancelBookingByToken = createServerFn({ method: "POST" })
     }
     return { ok: true as const };
   });
+
+// F2.b — Customer-facing invoice fetch by booking manage_token.
+// Returns the invoice + items + branch name if one exists for this booking.
+export const getInvoiceByBookingToken = createServerFn({ method: "GET" })
+  .inputValidator((d) => tokenSchema.parse(d))
+  .handler(async ({ data }) => {
+    await rateLimit(`portal-inv:${data.token}`, { capacity: 30, refillPerMin: 30 });
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: b, error: bErr } = await supabaseAdmin
+      .from("bookings")
+      .select("id,branch_id,customer_id")
+      .eq("manage_token", data.token)
+      .maybeSingle();
+    if (bErr) throw new Error(bErr.message);
+    if (!b) throw new Response("Not found", { status: 404 });
+    const { data: inv } = await supabaseAdmin
+      .from("invoices")
+      .select("id,number,issued_at,status,subtotal,discount,tax,total")
+      .eq("booking_id", b.id)
+      .maybeSingle();
+    if (!inv) return null;
+    const [items, branch, customer] = await Promise.all([
+      supabaseAdmin.from("invoice_items").select("description,qty,unit_price,total").eq("invoice_id", inv.id),
+      supabaseAdmin.from("branches").select("name_en,name_ar").eq("id", b.branch_id).single(),
+      b.customer_id
+        ? supabaseAdmin.from("customers").select("name").eq("id", b.customer_id).single()
+        : Promise.resolve({ data: null } as const),
+    ]);
+    return {
+      id: inv.id,
+      number: inv.number,
+      issuedAt: inv.issued_at,
+      status: inv.status,
+      subtotal: Number(inv.subtotal),
+      discount: Number(inv.discount),
+      tax: Number(inv.tax),
+      total: Number(inv.total),
+      items: (items.data ?? []).map((it) => ({
+        description: it.description,
+        qty: Number(it.qty),
+        unitPrice: Number(it.unit_price),
+        total: Number(it.total),
+      })),
+      branch: branch.data,
+      customer: customer.data,
+    };
+  });
