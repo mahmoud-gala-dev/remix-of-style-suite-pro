@@ -368,6 +368,8 @@ export const dict = {
   birthday: { en: "Birthday", ar: "تاريخ الميلاد" },
   opens: { en: "Opens", ar: "يفتح" },
   closes: { en: "Closes", ar: "يغلق" },
+  tier: { en: "Tier", ar: "المستوى" },
+  validityDays: { en: "Validity (days)", ar: "الصلاحية (أيام)" },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;

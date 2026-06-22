@@ -181,6 +181,7 @@ function Td({ children, className = "" }: { children: React.ReactNode; className
 function PlanDialog({
   open, onClose, branchId, onCreated,
 }: { open: boolean; onClose: () => void; branchId: string; onCreated: () => void }) {
+  const t = useT();
   const [nameEn, setNameEn] = useState("");
   const [nameAr, setNameAr] = useState("");
   const [tier, setTier] = useState("silver");
@@ -204,26 +205,26 @@ function PlanDialog({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="New membership plan">
+    <Modal open={open} onClose={onClose} title={t("newMembershipPlan")}>
       <form onSubmit={submit} className="space-y-3">
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Name (EN)"><input required value={nameEn} onChange={(e) => setNameEn(e.target.value)} className={inputCls} /></Field>
-          <Field label="Name (AR)"><input value={nameAr} onChange={(e) => setNameAr(e.target.value)} className={inputCls} /></Field>
+          <Field label={t("nameEn")}><input required value={nameEn} onChange={(e) => setNameEn(e.target.value)} className={inputCls} /></Field>
+          <Field label={t("nameAr")}><input value={nameAr} onChange={(e) => setNameAr(e.target.value)} className={inputCls} /></Field>
         </div>
-        <Field label="Tier">
+        <Field label={t("tier")}>
           <select value={tier} onChange={(e) => setTier(e.target.value)} className={inputCls}>
-            <option value="silver">Silver</option>
-            <option value="gold">Gold</option>
-            <option value="vip">VIP</option>
+            <option value="silver">{t("silver")}</option>
+            <option value="gold">{t("gold")}</option>
+            <option value="vip">{t("vip")}</option>
           </select>
         </Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Price"><input type="number" min={0} step="0.01" value={price} onChange={(e) => setPrice(+e.target.value)} className={inputCls} /></Field>
-          <Field label="Visits"><input type="number" min={0} value={visits} onChange={(e) => setVisits(+e.target.value)} className={inputCls} /></Field>
+          <Field label={t("price")}><input type="number" min={0} step="0.01" value={price} onChange={(e) => setPrice(+e.target.value)} className={inputCls} /></Field>
+          <Field label={t("visits")}><input type="number" min={0} value={visits} onChange={(e) => setVisits(+e.target.value)} className={inputCls} /></Field>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Validity (days)"><input type="number" min={1} value={validityDays} onChange={(e) => setValidityDays(+e.target.value)} className={inputCls} /></Field>
-          <Field label="Discount %"><input type="number" min={0} max={100} value={discountPct} onChange={(e) => setDiscountPct(+e.target.value)} className={inputCls} /></Field>
+          <Field label={t("validityDays")}><input type="number" min={1} value={validityDays} onChange={(e) => setValidityDays(+e.target.value)} className={inputCls} /></Field>
+          <Field label={`${t("discount")} %`}><input type="number" min={0} max={100} value={discountPct} onChange={(e) => setDiscountPct(+e.target.value)} className={inputCls} /></Field>
         </div>
         {err && <p className="text-xs text-red-400">{err}</p>}
         <ModalActions onCancel={onClose} saving={saving} />
