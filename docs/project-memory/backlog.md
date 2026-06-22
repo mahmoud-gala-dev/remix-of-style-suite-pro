@@ -8,12 +8,12 @@
 - [x] VAPID throws in production when `VAPID_PRIVATE_KEY` env is unset; dev fallback retained. (cycle #2)
 
 ## P2 (important)
-- [ ] Add `<DataState>` wrappers (loading / error / empty) to: bookings, customers, calendar, reports, services, employees, branches, settings, docs, dashboard. (queue already has Realtime + empty states.)
+- [~] Add `<DataState>` wrappers — reports done (cycle #3). Others use Zustand store hydrated by `useHydrate` (already covered by polling + Realtime, no async loading state needed at page level).
 - [x] Booking-confirmation WhatsApp via Twilio (best-effort, fires after `createBooking`). (cycle #2)
 - [ ] Booking-confirmation email via Resend (next).
 - [ ] Customer invoice PDF download from `/my/$token`.
 - [x] Realtime for `queue_items` (already wired in `queue.tsx`).
-- [ ] Realtime for `bookings` (calendar + bookings page).
+- [x] Realtime for `bookings` (calendar + bookings page wired via dedicated channels; hydrate also subscribes). (cycle #3)
 - [ ] `React.lazy()` for heavy routes (`reports`, `calendar`, dashboard) and PDF/Excel libs.
 - [x] Backfill `requireAdmin` shared helper across `webhooks`, `notifications`, `stripe`, `saml`, `twilio`. (cycle #2)
 
