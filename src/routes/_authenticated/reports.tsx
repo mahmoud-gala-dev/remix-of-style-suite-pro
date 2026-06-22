@@ -8,6 +8,7 @@ import { fmtMoney } from "@/lib/format";
 import { getReportsSummary, exportReportsCsv, exportReportsRows, exportReportsPdf, getReportsCompare } from "@/lib/reports.functions";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { DataState } from "@/components/shell/data-state";
 import {
   Area,
   AreaChart,
@@ -52,7 +53,7 @@ function Page() {
   const fetchRows = useServerFn(exportReportsRows);
   const fetchPdf = useServerFn(exportReportsPdf);
   const fetchCompare = useServerFn(getReportsCompare);
-  const { data, isFetching } = useQuery({
+  const { data, isFetching, isLoading, error, refetch } = useQuery({
     queryKey: ["reports", from, to, branchId],
     queryFn: () => fetchReports({ data: { from, to, branchId: branchId === "all" ? null : branchId } }),
   });
@@ -140,7 +141,7 @@ function Page() {
           </div>
         }
       />
-
+      <DataState loading={isLoading && !data} error={error} retry={() => refetch()}>
       <Surface>
         <div className="grid gap-3 sm:grid-cols-4">
           <label className="space-y-1.5 text-xs text-dim">
@@ -286,6 +287,7 @@ function Page() {
           </ul>
         </Surface>
       </div>
+      </DataState>
     </div>
   );
 }
