@@ -88,18 +88,9 @@ export const createBooking = createServerFn({ method: "POST" })
         supabaseAdmin.from("employee_shifts").select("weekday,start_time,end_time").eq("employee_id", data.employeeId),
       ]);
       if (dayOff) throw new Response("Employee is off on this day", { status: 409 });
-      if (shifts && shifts.length > 0) {
-        const weekday = startDate.getUTCDay();
-        const toMin = (t: string) => {
-          const [h, m] = t.split(":").map(Number);
-          return h * 60 + m;
-        };
-        const startMin = startDate.getUTCHours() * 60 + startDate.getUTCMinutes();
-        const endMin = endDate.getUTCHours() * 60 + endDate.getUTCMinutes();
-        const inShift = shifts.some((s) =>
-          s.weekday === weekday && toMin(s.start_time) <= startMin && toMin(s.end_time) >= endMin,
-        );
-        if (!inShift) throw new Response("Outside employee working hours", { status: 409 });
+      const { isWithinShift } = await import("@/lib/booking-shift");
+      if (!isWithinShift(startDate, endDate, shifts ?? [])) {
+        throw new Response("Outside employee working hours", { status: 409 });
       }
     }
 
