@@ -42,7 +42,9 @@ export const updateTenantSalonType = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
-    const patch: Record<string, unknown> = { salon_type: data.salon_type };
+    const patch: { salon_type: SalonType; staff_photos_public?: boolean } = {
+      salon_type: data.salon_type,
+    };
     if (typeof data.staff_photos_public === "boolean")
       patch.staff_photos_public = data.staff_photos_public;
     const { error } = await context.supabase
@@ -81,7 +83,7 @@ export const seedServiceTemplates = createServerFn({ method: "POST" })
     const { data: out, error } = await context.supabase.rpc("seed_service_templates", {
       _tenant_id: data.tenant_id,
       _branch_id: branchId,
-      _salon_type: data.salon_type ?? null,
+      ...(data.salon_type ? { _salon_type: data.salon_type } : {}),
     });
     if (error) throw new Error(error.message);
     return { inserted: Number(out ?? 0), branch_id: branchId };
