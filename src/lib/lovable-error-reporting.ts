@@ -91,6 +91,7 @@ export function initGlobalErrorReporting() {
   if (typeof window === "undefined" || _installed) return;
   _installed = true;
   void initSentry();
+  void initWebVitals();
   window.addEventListener("error", (e) => {
     forward(
       e.error ?? new Error(e.message),
