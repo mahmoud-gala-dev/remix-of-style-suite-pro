@@ -21,7 +21,7 @@
 - [x] Per-employee shifts + days-off tables added (RLS: read-all, admin-write). `createBooking` rejects bookings outside shifts or on days off. Admin UI shipped at `/shifts` (cycle #3).
 - [x] Recurring bookings UI already wired in `BookingDialog` (weekly/biweekly/monthly + occurrences) via `createRecurringSeries`. (cycle #3)
 - [x] Saved filters via `usePersistedState` hook — customers search, invoices status/date range (localStorage-persisted). (cycle #3)
-- [~] Test coverage expanded: `rate-limit`, `csv`, `whatsapp`, `stripe-verify`, `otp-helpers`, `totp`, `booking-shift`, `recurring`, `cancel-policy`, `reports-aggregate` (+`percentDelta`/`previousPeriod`), `format`, `client-ip` (cf-connecting-ip / xff parsing extracted from `rateLimitByIp`), `layout`, and `csv-parse` (quoted fields, escaped quotes, CRLF, embedded newlines, header mapping). Suite: 143 tests. (cycle #3)
+- [~] Test coverage expanded: `rate-limit`, `csv`, `whatsapp`, `stripe-verify`, `otp-helpers`, `totp`, `booking-shift`, `recurring`, `cancel-policy`, `reports-aggregate` (+`percentDelta`/`previousPeriod`), `format`, `client-ip` (cf-connecting-ip / xff parsing extracted from `rateLimitByIp`), `layout`, `csv-parse` (quoted fields, escaped quotes, CRLF, embedded newlines, header mapping), and `push-vapid` (base64url round-trip + VAPID key shape). Suite: 150 tests. (cycle #3)
 - [~] Removed `any` in webhooks/tenants/memberships routes (cycle #3). Residual: `admin.functions.ts` supabase dynamic table, `restore.functions.ts`, `lovable-error-reporting.ts` (Sentry dynamic import), `tenants.functions.ts` ctx typing, `coupons.tsx` select cast — all intentional dynamic boundaries.
 
 ## P4 (nice-to-have / future)
