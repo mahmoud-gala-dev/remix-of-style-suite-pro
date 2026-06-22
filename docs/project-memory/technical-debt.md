@@ -10,7 +10,7 @@
 | 6 | ~~Hardcoded VAPID private key fallback~~ — FIXED (KI-002, throws when secret missing) | `src/lib/push.server.ts` | — | — |
 | 7 | ~~Hardcoded WhatsApp brand color `#25D366`~~ — FIXED (tokenized) | — | — | — |
 | 8 | ~~`sitemap.xml.ts` URL placeholder~~ — FIXED (origin derived from request) | `src/routes/sitemap[.]xml.ts` | — | — |
-| 9 | `any` types: All call-site `any`s removed. Generic Supabase table-routing now goes through a single contained helper `src/lib/dynamic-table.server.ts` (`insertDynamic`) used by `admin`/`restore`. Only remaining `any` is the `web-vitals` dynamic-import shim (intentional). | `dynamic-table.server.ts` | — | — |
+| 9 | ~~`any` types~~ — FIXED cycle #15: `web-vitals` shim now uses a structural `WebVitalsModule` type; the only remaining contained escape hatch is `insertDynamic` in `dynamic-table.server.ts` (documented runtime-table routing). | — | — | — |
 | 10 | ~~No Supabase Realtime~~ — FIXED (queue + calendar subscribe to `postgres_changes`) | `queue.tsx`, `calendar.tsx` | — | — |
 | 11 | ~~No customer-facing invoice PDF~~ — FIXED (jsPDF + autoTable on `/my/$token`) | `my.$token.tsx` | — | — |
 | 12 | ~~No booking-confirmation email/SMS~~ — FIXED (Resend email + Twilio WhatsApp best-effort) | `bookings.functions.ts`, `notifications.server.ts` | — | — |
