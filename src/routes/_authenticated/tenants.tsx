@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { listTenants, upsertTenant, deleteTenant } from "@/lib/tenants.functions";
 import { useT } from "@/lib/i18n";
 
+type Tenant = Awaited<ReturnType<typeof listTenants>>[number];
+
 export const Route = createFileRoute("/_authenticated/tenants")({
   ssr: false,
   head: () => ({ meta: [{ title: "Tenants" }] }),
@@ -75,7 +77,7 @@ function Page() {
               <tr><th className="py-2">{t("tenantName")}</th><th></th></tr>
             </thead>
             <tbody>
-              {q.data?.map((tn: any) => (
+              {q.data?.map((tn: Tenant) => (
                 <tr key={tn.id} className="border-t border-border/40">
                   <td className="py-2">
                     {editingId === tn.id ? (

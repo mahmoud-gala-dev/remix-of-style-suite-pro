@@ -12,6 +12,9 @@ import { listWebhooks, upsertWebhook, deleteWebhook, listDeliveries, retryFailed
 import { useT } from "@/lib/i18n";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
+type Hook = Awaited<ReturnType<typeof listWebhooks>>[number];
+type Delivery = Awaited<ReturnType<typeof listDeliveries>>[number];
+
 export const Route = createFileRoute("/_authenticated/webhooks")({
   ssr: false,
   head: () => ({ meta: [{ title: "Webhooks" }] }),
@@ -98,7 +101,7 @@ function Page() {
               <tr><th className="py-2">{t("event")}</th><th>{t("url")}</th><th>{t("status")}</th><th></th></tr>
             </thead>
             <tbody>
-              {q.data?.map((h: any) => (
+              {q.data?.map((h: Hook) => (
                 <tr key={h.id} className="border-t border-border/40">
                   <td className="py-2 font-mono text-xs">{h.event}</td>
                   <td className="truncate max-w-[420px]">{h.url}</td>
@@ -134,11 +137,11 @@ function Page() {
                   </tr>
                 </thead>
                 <tbody>
-                  {dq.data?.map((d: any) => (
+                  {dq.data?.map((d: Delivery) => (
                     <tr key={d.id} className="border-t border-border/40">
                       <td className="py-2 font-mono text-xs">{d.event}</td>
                       <td>
-                        <span className={d.failed ? "text-destructive" : d.status >= 200 && d.status < 400 ? "text-primary" : "text-dim"}>
+                        <span className={d.failed ? "text-destructive" : (d.status ?? 0) >= 200 && (d.status ?? 0) < 400 ? "text-primary" : "text-dim"}>
                           {d.failed ? t("failed") : d.status || "—"}
                         </span>
                       </td>
