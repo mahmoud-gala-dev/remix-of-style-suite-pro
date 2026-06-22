@@ -56,6 +56,7 @@ import { Route as ApiPublicCronProcessWebhooksRouteImport } from './routes/api/p
 import { Route as ApiPublicCronMembershipExpiryRouteImport } from './routes/api/public/cron/membership-expiry'
 import { Route as ApiPublicCronInventoryLowStockRouteImport } from './routes/api/public/cron/inventory-low-stock'
 import { Route as ApiPublicCronGeoBackupRouteImport } from './routes/api/public/cron/geo-backup'
+import { Route as ApiPublicCronDrainNotificationsRouteImport } from './routes/api/public/cron/drain-notifications'
 import { Route as ApiPublicCronDepositNoshowCaptureRouteImport } from './routes/api/public/cron/deposit-noshow-capture'
 import { Route as ApiPublicCronDailyDigestRouteImport } from './routes/api/public/cron/daily-digest'
 import { Route as ApiPublicCronBookingRemindersRouteImport } from './routes/api/public/cron/booking-reminders'
@@ -310,6 +311,12 @@ const ApiPublicCronGeoBackupRoute = ApiPublicCronGeoBackupRouteImport.update({
   path: '/api/public/cron/geo-backup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCronDrainNotificationsRoute =
+  ApiPublicCronDrainNotificationsRouteImport.update({
+    id: '/api/public/cron/drain-notifications',
+    path: '/api/public/cron/drain-notifications',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCronDepositNoshowCaptureRoute =
   ApiPublicCronDepositNoshowCaptureRouteImport.update({
     id: '/api/public/cron/deposit-noshow-capture',
@@ -391,6 +398,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
+  '/api/public/cron/drain-notifications': typeof ApiPublicCronDrainNotificationsRoute
   '/api/public/cron/geo-backup': typeof ApiPublicCronGeoBackupRoute
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/membership-expiry': typeof ApiPublicCronMembershipExpiryRoute
@@ -446,6 +454,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
+  '/api/public/cron/drain-notifications': typeof ApiPublicCronDrainNotificationsRoute
   '/api/public/cron/geo-backup': typeof ApiPublicCronGeoBackupRoute
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/membership-expiry': typeof ApiPublicCronMembershipExpiryRoute
@@ -503,6 +512,7 @@ export interface FileRoutesById {
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
+  '/api/public/cron/drain-notifications': typeof ApiPublicCronDrainNotificationsRoute
   '/api/public/cron/geo-backup': typeof ApiPublicCronGeoBackupRoute
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/membership-expiry': typeof ApiPublicCronMembershipExpiryRoute
@@ -560,6 +570,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/daily-digest'
     | '/api/public/cron/deposit-noshow-capture'
+    | '/api/public/cron/drain-notifications'
     | '/api/public/cron/geo-backup'
     | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/membership-expiry'
@@ -615,6 +626,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/daily-digest'
     | '/api/public/cron/deposit-noshow-capture'
+    | '/api/public/cron/drain-notifications'
     | '/api/public/cron/geo-backup'
     | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/membership-expiry'
@@ -671,6 +683,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/daily-digest'
     | '/api/public/cron/deposit-noshow-capture'
+    | '/api/public/cron/drain-notifications'
     | '/api/public/cron/geo-backup'
     | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/membership-expiry'
@@ -705,6 +718,7 @@ export interface RootRouteChildren {
   ApiPublicCronBookingRemindersRoute: typeof ApiPublicCronBookingRemindersRoute
   ApiPublicCronDailyDigestRoute: typeof ApiPublicCronDailyDigestRoute
   ApiPublicCronDepositNoshowCaptureRoute: typeof ApiPublicCronDepositNoshowCaptureRoute
+  ApiPublicCronDrainNotificationsRoute: typeof ApiPublicCronDrainNotificationsRoute
   ApiPublicCronGeoBackupRoute: typeof ApiPublicCronGeoBackupRoute
   ApiPublicCronInventoryLowStockRoute: typeof ApiPublicCronInventoryLowStockRoute
   ApiPublicCronMembershipExpiryRoute: typeof ApiPublicCronMembershipExpiryRoute
@@ -1051,6 +1065,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronGeoBackupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/drain-notifications': {
+      id: '/api/public/cron/drain-notifications'
+      path: '/api/public/cron/drain-notifications'
+      fullPath: '/api/public/cron/drain-notifications'
+      preLoaderRoute: typeof ApiPublicCronDrainNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/deposit-noshow-capture': {
       id: '/api/public/cron/deposit-noshow-capture'
       path: '/api/public/cron/deposit-noshow-capture'
@@ -1188,6 +1209,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronDailyDigestRoute: ApiPublicCronDailyDigestRoute,
   ApiPublicCronDepositNoshowCaptureRoute:
     ApiPublicCronDepositNoshowCaptureRoute,
+  ApiPublicCronDrainNotificationsRoute: ApiPublicCronDrainNotificationsRoute,
   ApiPublicCronGeoBackupRoute: ApiPublicCronGeoBackupRoute,
   ApiPublicCronInventoryLowStockRoute: ApiPublicCronInventoryLowStockRoute,
   ApiPublicCronMembershipExpiryRoute: ApiPublicCronMembershipExpiryRoute,
