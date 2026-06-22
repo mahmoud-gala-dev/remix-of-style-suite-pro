@@ -10,7 +10,7 @@
 ## P2 (important)
 - [~] Add `<DataState>` wrappers — reports done (cycle #3). Others use Zustand store hydrated by `useHydrate` (already covered by polling + Realtime, no async loading state needed at page level).
 - [x] Booking-confirmation WhatsApp via Twilio (best-effort, fires after `createBooking`). (cycle #2)
-- [ ] Booking-confirmation email via Resend (next).
+- [x] Booking-confirmation email via Resend (best-effort, fires after `createBooking` when notification settings provider=resend and customer has email). (cycle #3)
 - [x] Customer invoice PDF download from `/my/$token`. (cycle #3)
 - [x] Realtime for `queue_items` (already wired in `queue.tsx`).
 - [x] Realtime for `bookings` (calendar + bookings page wired via dedicated channels; hydrate also subscribes). (cycle #3)
