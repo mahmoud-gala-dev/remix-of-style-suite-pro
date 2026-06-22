@@ -36,6 +36,7 @@ export const ADMIN_ONLY_MODULES = new Set([
   "invoices",
   "memberships",
   "coupons",
+  "commissions",
 ]);
 
 export const DEFAULT_LAYOUT: LayoutSnapshot = {

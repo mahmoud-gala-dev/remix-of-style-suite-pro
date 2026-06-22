@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { useData } from "@/lib/store";
 import { createBooking } from "@/lib/bookings.functions";
+import { createRecurringSeries } from "@/lib/recurring.functions";
 import { Modal, Field, inputCls, ModalActions } from "@/components/ui/modal";
 
 export function BookingDialog({
@@ -17,6 +18,7 @@ export function BookingDialog({
 }) {
   const qc = useQueryClient();
   const createBookingFn = useServerFn(createBooking);
+  const createSeriesFn = useServerFn(createRecurringSeries);
   const customers = useData((s) => s.customers).filter((c) => c.branchId === branchId);
   const employees = useData((s) => s.employees).filter((c) => c.branchId === branchId);
   const services = useData((s) => s.services).filter((c) => c.branchId === branchId);
@@ -26,6 +28,8 @@ export function BookingDialog({
   const [serviceId, setServiceId] = useState(services[0]?.id ?? "");
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [time, setTime] = useState("10:00");
+  const [recurrence, setRecurrence] = useState<"none" | "weekly" | "biweekly" | "monthly">("none");
+  const [occurrences, setOccurrences] = useState(4);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -38,17 +42,23 @@ export function BookingDialog({
     const start = new Date(`${date}T${time}:00`);
     const end = new Date(start.getTime() + service.durationMin * 60_000);
     try {
-      await createBookingFn({
-        data: {
-          branchId,
-          customerId,
-          employeeId,
-          serviceId,
-          startAt: start.toISOString(),
-          endAt: end.toISOString(),
-          price: service.price,
-        },
-      });
+      if (recurrence === "none") {
+        await createBookingFn({
+          data: {
+            branchId, customerId, employeeId, serviceId,
+            startAt: start.toISOString(), endAt: end.toISOString(), price: service.price,
+          },
+        });
+      } else {
+        const res = await createSeriesFn({
+          data: {
+            branchId, customerId, employeeId, serviceId,
+            startAt: start.toISOString(), endAt: end.toISOString(), price: service.price,
+            pattern: recurrence, occurrences,
+          },
+        });
+        toast.success(`Created ${res.count} bookings in series`);
+      }
     } catch (error) {
       const message = error instanceof Error && error.message ? error.message : "Slot taken";
       setErr(message);
@@ -86,6 +96,23 @@ export function BookingDialog({
         <div className="grid grid-cols-2 gap-3">
           <Field label="Date"><input type="date" required value={date} onChange={(e) => setDate(e.target.value)} className={inputCls} /></Field>
           <Field label="Time"><input type="time" required value={time} onChange={(e) => setTime(e.target.value)} className={inputCls} /></Field>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Repeat">
+            <select value={recurrence} onChange={(e) => setRecurrence(e.target.value as typeof recurrence)} className={inputCls}>
+              <option value="none">No repeat</option>
+              <option value="weekly">Every week</option>
+              <option value="biweekly">Every 2 weeks</option>
+              <option value="monthly">Every month</option>
+            </select>
+          </Field>
+          {recurrence !== "none" && (
+            <Field label="Occurrences">
+              <input type="number" min={2} max={26} value={occurrences}
+                onChange={(e) => setOccurrences(Math.max(2, Math.min(26, Number(e.target.value) || 2)))}
+                className={inputCls} />
+            </Field>
+          )}
         </div>
         {err && <p className="text-xs text-red-400">{err}</p>}
         <ModalActions onCancel={onClose} saving={saving} />

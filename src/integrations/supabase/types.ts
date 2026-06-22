@@ -148,6 +148,7 @@ export type Database = {
           manage_token: string
           notes: string | null
           price: number
+          recurrence_group_id: string | null
           reminder_sent_at: string | null
           service_id: string
           start_at: string
@@ -164,6 +165,7 @@ export type Database = {
           manage_token?: string
           notes?: string | null
           price?: number
+          recurrence_group_id?: string | null
           reminder_sent_at?: string | null
           service_id: string
           start_at: string
@@ -180,6 +182,7 @@ export type Database = {
           manage_token?: string
           notes?: string | null
           price?: number
+          recurrence_group_id?: string | null
           reminder_sent_at?: string | null
           service_id?: string
           start_at?: string
@@ -269,6 +272,67 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      commissions: {
+        Row: {
+          amount: number
+          booking_id: string
+          branch_id: string
+          commission_pct: number
+          created_at: string
+          employee_id: string
+          id: string
+          paid: boolean
+          paid_at: string | null
+          service_price: number
+        }
+        Insert: {
+          amount: number
+          booking_id: string
+          branch_id: string
+          commission_pct: number
+          created_at?: string
+          employee_id: string
+          id?: string
+          paid?: boolean
+          paid_at?: string | null
+          service_price: number
+        }
+        Update: {
+          amount?: number
+          booking_id?: string
+          branch_id?: string
+          commission_pct?: number
+          created_at?: string
+          employee_id?: string
+          id?: string
+          paid?: boolean
+          paid_at?: string | null
+          service_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commissions_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
             referencedColumns: ["id"]
           },
         ]
@@ -825,6 +889,59 @@ export type Database = {
           },
         ]
       }
+      products: {
+        Row: {
+          active: boolean
+          branch_id: string
+          cost: number
+          created_at: string
+          id: string
+          low_stock_threshold: number
+          name: string
+          price: number
+          sku: string | null
+          stock: number
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          branch_id: string
+          cost?: number
+          created_at?: string
+          id?: string
+          low_stock_threshold?: number
+          name: string
+          price?: number
+          sku?: string | null
+          stock?: number
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          branch_id?: string
+          cost?: number
+          created_at?: string
+          id?: string
+          low_stock_threshold?: number
+          name?: string
+          price?: number
+          sku?: string | null
+          stock?: number
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -941,6 +1058,68 @@ export type Database = {
         }
         Relationships: []
       }
+      reviews: {
+        Row: {
+          booking_id: string
+          branch_id: string
+          comment: string | null
+          created_at: string
+          customer_id: string
+          employee_id: string
+          id: string
+          rating: number
+        }
+        Insert: {
+          booking_id: string
+          branch_id: string
+          comment?: string | null
+          created_at?: string
+          customer_id: string
+          employee_id: string
+          id?: string
+          rating: number
+        }
+        Update: {
+          booking_id?: string
+          branch_id?: string
+          comment?: string | null
+          created_at?: string
+          customer_id?: string
+          employee_id?: string
+          id?: string
+          rating?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       services: {
         Row: {
           active: boolean
@@ -996,6 +1175,67 @@ export type Database = {
             columns: ["branch_id"]
             isOneToOne: false
             referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_movements: {
+        Row: {
+          booking_id: string | null
+          branch_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          note: string | null
+          product_id: string
+          qty: number
+          unit_cost: number | null
+        }
+        Insert: {
+          booking_id?: string | null
+          branch_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind: string
+          note?: string | null
+          product_id: string
+          qty: number
+          unit_cost?: number | null
+        }
+        Update: {
+          booking_id?: string | null
+          branch_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          note?: string | null
+          product_id?: string
+          qty?: number
+          unit_cost?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_movements_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
             referencedColumns: ["id"]
           },
         ]
