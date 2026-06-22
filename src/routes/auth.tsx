@@ -42,6 +42,9 @@ function AuthPage() {
   const navigate = useNavigate();
   const [tab, setTab] = useState<"signin" | "signup">("signin");
   const [busy, setBusy] = useState(false);
+  const [resetOpen, setResetOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetBusy, setResetBusy] = useState(false);
   const rateLimit = useServerFn(checkAuthRateLimit);
   const check2FA = useServerFn(requires2FA);
   const verifyCode = useServerFn(verify2FA);
@@ -163,6 +166,26 @@ function AuthPage() {
     await supabase.auth.signOut();
   };
 
+  const onSendReset = async () => {
+    const email = resetEmail.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error("Enter a valid email");
+      return;
+    }
+    setResetBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setResetBusy(false);
+    if (error) {
+      toast.error(errT(error.message));
+    } else {
+      toast.success("Check your email for the reset link.");
+      setResetOpen(false);
+      setResetEmail("");
+    }
+  };
+
   return (
     <div className="min-h-screen grid place-items-center bg-background px-4">
       <div className="w-full max-w-md">
@@ -197,6 +220,13 @@ function AuthPage() {
                 <Button type="submit" className="w-full" disabled={busy}>
                   {busy ? "Signing in…" : "Sign in"}
                 </Button>
+                <button
+                  type="button"
+                  onClick={() => setResetOpen(true)}
+                  className="block w-full text-center text-xs text-dim hover:text-primary"
+                >
+                  Forgot password?
+                </button>
               </form>
             </TabsContent>
 
