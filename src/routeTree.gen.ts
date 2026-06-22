@@ -47,6 +47,7 @@ import { Route as ApiPublicClientErrorsRouteImport } from './routes/api/public/c
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 import { Route as ApiPublicCronRetryWebhooksRouteImport } from './routes/api/public/cron/retry-webhooks'
 import { Route as ApiPublicCronProcessWebhooksRouteImport } from './routes/api/public/cron/process-webhooks'
+import { Route as ApiPublicScimV2UsersRouteImport } from './routes/api/public/scim/v2/Users'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -241,6 +242,11 @@ const ApiPublicCronProcessWebhooksRoute =
     path: '/api/public/cron/process-webhooks',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicScimV2UsersRoute = ApiPublicScimV2UsersRouteImport.update({
+  id: '/api/public/scim/v2/Users',
+  path: '/api/public/scim/v2/Users',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -280,6 +286,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
+  '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
@@ -319,6 +326,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
+  '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -360,6 +368,7 @@ export interface FileRoutesById {
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
+  '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -401,6 +410,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/webhooks/stripe'
+    | '/api/public/scim/v2/Users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
@@ -440,6 +450,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/webhooks/stripe'
+    | '/api/public/scim/v2/Users'
   id:
     | '__root__'
     | '/_authenticated'
@@ -480,6 +491,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/webhooks/stripe'
+    | '/api/public/scim/v2/Users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -498,6 +510,7 @@ export interface RootRouteChildren {
   ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
   ApiPublicCronRetryWebhooksRoute: typeof ApiPublicCronRetryWebhooksRoute
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
+  ApiPublicScimV2UsersRoute: typeof ApiPublicScimV2UsersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -768,6 +781,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronProcessWebhooksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/scim/v2/Users': {
+      id: '/api/public/scim/v2/Users'
+      path: '/api/public/scim/v2/Users'
+      fullPath: '/api/public/scim/v2/Users'
+      preLoaderRoute: typeof ApiPublicScimV2UsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -842,6 +862,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronProcessWebhooksRoute: ApiPublicCronProcessWebhooksRoute,
   ApiPublicCronRetryWebhooksRoute: ApiPublicCronRetryWebhooksRoute,
   ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
+  ApiPublicScimV2UsersRoute: ApiPublicScimV2UsersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
