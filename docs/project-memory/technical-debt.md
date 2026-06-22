@@ -11,7 +11,7 @@
 | 7 | ~~Hardcoded WhatsApp brand color `#25D366`~~ — FIXED (tokenized) | — | — | — |
 | 8 | ~~`sitemap.xml.ts` URL placeholder~~ — FIXED (origin derived from request) | `src/routes/sitemap[.]xml.ts` | — | — |
 | 9 | `any` types in 11 non-generated locations (mostly `ctx: any`) | see audit | P3 | Low |
-| 10 | No Supabase Realtime subscriptions; queue/calendar stale until refetch | entire app | P2 | Medium |
-| 11 | No customer-facing invoice PDF download from `/my/$token` | `customer-portal.functions.ts` | P2 | Medium |
-| 12 | No booking-confirmation email/SMS on `createBooking` | `bookings.functions.ts` | P2 | Medium |
+| 10 | ~~No Supabase Realtime~~ — FIXED (queue + calendar subscribe to `postgres_changes`) | `queue.tsx`, `calendar.tsx` | — | — |
+| 11 | ~~No customer-facing invoice PDF~~ — FIXED (jsPDF + autoTable on `/my/$token`) | `my.$token.tsx` | — | — |
+| 12 | ~~No booking-confirmation email/SMS~~ — FIXED (Resend email + Twilio WhatsApp best-effort) | `bookings.functions.ts`, `notifications.server.ts` | — | — |
 | 13 | Per-employee shifts / day-off table missing — availability engine inaccurate | DB schema + `bookings.functions.ts` | P3 | Medium |

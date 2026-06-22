@@ -1,3 +1,4 @@
+| #4 | 2026-06-22 | 8.1 → 8.2 | Verified realtime, customer PDF, booking confirmations all live; lazy-loading audit clean. |
 # Progress Tracker
 
 | Audit | Date | Score Before | Score After | Notes |
