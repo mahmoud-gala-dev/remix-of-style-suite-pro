@@ -47,6 +47,7 @@ import { Route as ApiPublicClientErrorsRouteImport } from './routes/api/public/c
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 import { Route as ApiPublicCronWebVitalsAlertRouteImport } from './routes/api/public/cron/web-vitals-alert'
 import { Route as ApiPublicCronWaitlistPromoteRouteImport } from './routes/api/public/cron/waitlist-promote'
+import { Route as ApiPublicCronUptimeCheckRouteImport } from './routes/api/public/cron/uptime-check'
 import { Route as ApiPublicCronReviewRequestsRouteImport } from './routes/api/public/cron/review-requests'
 import { Route as ApiPublicCronRetryWebhooksRouteImport } from './routes/api/public/cron/retry-webhooks'
 import { Route as ApiPublicCronReengagementRouteImport } from './routes/api/public/cron/reengagement'
@@ -256,6 +257,12 @@ const ApiPublicCronWaitlistPromoteRoute =
     path: '/api/public/cron/waitlist-promote',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronUptimeCheckRoute =
+  ApiPublicCronUptimeCheckRouteImport.update({
+    id: '/api/public/cron/uptime-check',
+    path: '/api/public/cron/uptime-check',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCronReviewRequestsRoute =
   ApiPublicCronReviewRequestsRouteImport.update({
     id: '/api/public/cron/review-requests',
@@ -392,6 +399,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/reengagement': typeof ApiPublicCronReengagementRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
+  '/api/public/cron/uptime-check': typeof ApiPublicCronUptimeCheckRoute
   '/api/public/cron/waitlist-promote': typeof ApiPublicCronWaitlistPromoteRoute
   '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
@@ -446,6 +454,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/reengagement': typeof ApiPublicCronReengagementRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
+  '/api/public/cron/uptime-check': typeof ApiPublicCronUptimeCheckRoute
   '/api/public/cron/waitlist-promote': typeof ApiPublicCronWaitlistPromoteRoute
   '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
@@ -502,6 +511,7 @@ export interface FileRoutesById {
   '/api/public/cron/reengagement': typeof ApiPublicCronReengagementRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
+  '/api/public/cron/uptime-check': typeof ApiPublicCronUptimeCheckRoute
   '/api/public/cron/waitlist-promote': typeof ApiPublicCronWaitlistPromoteRoute
   '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
@@ -558,6 +568,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/reengagement'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/cron/review-requests'
+    | '/api/public/cron/uptime-check'
     | '/api/public/cron/waitlist-promote'
     | '/api/public/cron/web-vitals-alert'
     | '/api/public/webhooks/stripe'
@@ -612,6 +623,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/reengagement'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/cron/review-requests'
+    | '/api/public/cron/uptime-check'
     | '/api/public/cron/waitlist-promote'
     | '/api/public/cron/web-vitals-alert'
     | '/api/public/webhooks/stripe'
@@ -667,6 +679,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/reengagement'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/cron/review-requests'
+    | '/api/public/cron/uptime-check'
     | '/api/public/cron/waitlist-promote'
     | '/api/public/cron/web-vitals-alert'
     | '/api/public/webhooks/stripe'
@@ -700,6 +713,7 @@ export interface RootRouteChildren {
   ApiPublicCronReengagementRoute: typeof ApiPublicCronReengagementRoute
   ApiPublicCronRetryWebhooksRoute: typeof ApiPublicCronRetryWebhooksRoute
   ApiPublicCronReviewRequestsRoute: typeof ApiPublicCronReviewRequestsRoute
+  ApiPublicCronUptimeCheckRoute: typeof ApiPublicCronUptimeCheckRoute
   ApiPublicCronWaitlistPromoteRoute: typeof ApiPublicCronWaitlistPromoteRoute
   ApiPublicCronWebVitalsAlertRoute: typeof ApiPublicCronWebVitalsAlertRoute
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
@@ -974,6 +988,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronWaitlistPromoteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/uptime-check': {
+      id: '/api/public/cron/uptime-check'
+      path: '/api/public/cron/uptime-check'
+      fullPath: '/api/public/cron/uptime-check'
+      preLoaderRoute: typeof ApiPublicCronUptimeCheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/review-requests': {
       id: '/api/public/cron/review-requests'
       path: '/api/public/cron/review-requests'
@@ -1175,6 +1196,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronReengagementRoute: ApiPublicCronReengagementRoute,
   ApiPublicCronRetryWebhooksRoute: ApiPublicCronRetryWebhooksRoute,
   ApiPublicCronReviewRequestsRoute: ApiPublicCronReviewRequestsRoute,
+  ApiPublicCronUptimeCheckRoute: ApiPublicCronUptimeCheckRoute,
   ApiPublicCronWaitlistPromoteRoute: ApiPublicCronWaitlistPromoteRoute,
   ApiPublicCronWebVitalsAlertRoute: ApiPublicCronWebVitalsAlertRoute,
   ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
