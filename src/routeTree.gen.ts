@@ -56,6 +56,7 @@ import { Route as ApiPublicCronDepositNoshowCaptureRouteImport } from './routes/
 import { Route as ApiPublicCronDailyDigestRouteImport } from './routes/api/public/cron/daily-digest'
 import { Route as ApiPublicCronBookingRemindersRouteImport } from './routes/api/public/cron/booking-reminders'
 import { Route as ApiPublicCronBirthdayCouponsRouteImport } from './routes/api/public/cron/birthday-coupons'
+import { Route as ApiPublicCronAutoBlockNoshowRouteImport } from './routes/api/public/cron/auto-block-noshow'
 import { Route as ApiPublicScimV2UsersRouteImport } from './routes/api/public/scim/v2/Users'
 import { Route as ApiPublicScimV2UsersIdRouteImport } from './routes/api/public/scim/v2/Users.$id'
 
@@ -306,6 +307,12 @@ const ApiPublicCronBirthdayCouponsRoute =
     path: '/api/public/cron/birthday-coupons',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronAutoBlockNoshowRoute =
+  ApiPublicCronAutoBlockNoshowRouteImport.update({
+    id: '/api/public/cron/auto-block-noshow',
+    path: '/api/public/cron/auto-block-noshow',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicScimV2UsersRoute = ApiPublicScimV2UsersRouteImport.update({
   id: '/api/public/scim/v2/Users',
   path: '/api/public/scim/v2/Users',
@@ -352,6 +359,7 @@ export interface FileRoutesByFullPath {
   '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/web-vitals': typeof ApiPublicWebVitalsRoute
+  '/api/public/cron/auto-block-noshow': typeof ApiPublicCronAutoBlockNoshowRoute
   '/api/public/cron/birthday-coupons': typeof ApiPublicCronBirthdayCouponsRoute
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
@@ -402,6 +410,7 @@ export interface FileRoutesByTo {
   '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/web-vitals': typeof ApiPublicWebVitalsRoute
+  '/api/public/cron/auto-block-noshow': typeof ApiPublicCronAutoBlockNoshowRoute
   '/api/public/cron/birthday-coupons': typeof ApiPublicCronBirthdayCouponsRoute
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
@@ -454,6 +463,7 @@ export interface FileRoutesById {
   '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/web-vitals': typeof ApiPublicWebVitalsRoute
+  '/api/public/cron/auto-block-noshow': typeof ApiPublicCronAutoBlockNoshowRoute
   '/api/public/cron/birthday-coupons': typeof ApiPublicCronBirthdayCouponsRoute
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
@@ -506,6 +516,7 @@ export interface FileRouteTypes {
     | '/api/public/client-errors'
     | '/api/public/healthcheck'
     | '/api/public/web-vitals'
+    | '/api/public/cron/auto-block-noshow'
     | '/api/public/cron/birthday-coupons'
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/daily-digest'
@@ -556,6 +567,7 @@ export interface FileRouteTypes {
     | '/api/public/client-errors'
     | '/api/public/healthcheck'
     | '/api/public/web-vitals'
+    | '/api/public/cron/auto-block-noshow'
     | '/api/public/cron/birthday-coupons'
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/daily-digest'
@@ -607,6 +619,7 @@ export interface FileRouteTypes {
     | '/api/public/client-errors'
     | '/api/public/healthcheck'
     | '/api/public/web-vitals'
+    | '/api/public/cron/auto-block-noshow'
     | '/api/public/cron/birthday-coupons'
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/daily-digest'
@@ -636,6 +649,7 @@ export interface RootRouteChildren {
   ApiPublicClientErrorsRoute: typeof ApiPublicClientErrorsRoute
   ApiPublicHealthcheckRoute: typeof ApiPublicHealthcheckRoute
   ApiPublicWebVitalsRoute: typeof ApiPublicWebVitalsRoute
+  ApiPublicCronAutoBlockNoshowRoute: typeof ApiPublicCronAutoBlockNoshowRoute
   ApiPublicCronBirthdayCouponsRoute: typeof ApiPublicCronBirthdayCouponsRoute
   ApiPublicCronBookingRemindersRoute: typeof ApiPublicCronBookingRemindersRoute
   ApiPublicCronDailyDigestRoute: typeof ApiPublicCronDailyDigestRoute
@@ -982,6 +996,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronBirthdayCouponsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/auto-block-noshow': {
+      id: '/api/public/cron/auto-block-noshow'
+      path: '/api/public/cron/auto-block-noshow'
+      fullPath: '/api/public/cron/auto-block-noshow'
+      preLoaderRoute: typeof ApiPublicCronAutoBlockNoshowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/scim/v2/Users': {
       id: '/api/public/scim/v2/Users'
       path: '/api/public/scim/v2/Users'
@@ -1078,6 +1099,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicClientErrorsRoute: ApiPublicClientErrorsRoute,
   ApiPublicHealthcheckRoute: ApiPublicHealthcheckRoute,
   ApiPublicWebVitalsRoute: ApiPublicWebVitalsRoute,
+  ApiPublicCronAutoBlockNoshowRoute: ApiPublicCronAutoBlockNoshowRoute,
   ApiPublicCronBirthdayCouponsRoute: ApiPublicCronBirthdayCouponsRoute,
   ApiPublicCronBookingRemindersRoute: ApiPublicCronBookingRemindersRoute,
   ApiPublicCronDailyDigestRoute: ApiPublicCronDailyDigestRoute,
