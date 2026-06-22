@@ -21,7 +21,7 @@
 - [x] Per-employee shifts + days-off tables added (RLS: read-all, admin-write). `createBooking` rejects bookings outside shifts or on days off. Admin UI shipped at `/shifts` (cycle #3).
 - [x] Recurring bookings UI already wired in `BookingDialog` (weekly/biweekly/monthly + occurrences) via `createRecurringSeries`. (cycle #3)
 - [x] Saved filters via `usePersistedState` hook — customers search, invoices status/date range (localStorage-persisted). (cycle #3)
-- [~] Test coverage expanded: `rate-limit`, `csv`, `whatsapp`, `stripe-verify`, `otp-helpers`, `totp`, `booking-shift`, `recurring`, `cancel-policy`, `reports-aggregate`, `format`, `client-ip`, `layout`, `csv-parse`, `push-vapid`, `theme`, `utils`, `translate-error`, `error-page`, `retry-policy` (planRetry/backoff/give-up), and `modules` (registry uniqueness + absolute routes). Suite: 185 tests. (cycle #3)
+- [~] Test coverage expanded: `rate-limit`, `csv`, `whatsapp`, `stripe-verify`, `otp-helpers`, `totp`, `booking-shift`, `recurring`, `cancel-policy`, `reports-aggregate`, `format`, `client-ip`, `layout`, `csv-parse`, `push-vapid`, `theme`, `utils`, `translate-error`, `error-page`, `retry-policy`, `modules`, `logger` (info/warn/error routing + withLog start/ok/fail), and `error-capture` (TTL + error/unhandledrejection capture). Suite: 197 tests. (cycle #3)
 - [~] Removed `any` in webhooks/tenants/memberships routes (cycle #3). Residual: `admin.functions.ts` supabase dynamic table, `restore.functions.ts`, `lovable-error-reporting.ts` (Sentry dynamic import), `tenants.functions.ts` ctx typing, `coupons.tsx` select cast — all intentional dynamic boundaries.
 
 ## P4 (nice-to-have / future)
