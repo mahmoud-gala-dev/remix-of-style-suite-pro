@@ -4,7 +4,7 @@
 |---|---|---|---|---|
 | 1 | `DataState` adopted on 11 routes; remaining gaps: `bookings.tsx`, `customers.tsx`, `calendar.tsx`, `queue.tsx`, `services.tsx`, `employees.tsx`, `branches.tsx`, `settings.tsx`, `docs.tsx`, `index.tsx` | as listed | P3 | Low |
 | 2 | ~~No route code-splitting~~ — FIXED implicitly: TanStack Start auto code-splits each file-based route + heavy libs (`xlsx`, `jspdf`, `pdf-lib`) are dynamic-imported. Verified via `manualChunks` for `recharts`/`framer-motion`/`@sentry`. | `vite.config.ts` | — | — |
-| 3 | 3 PDF libs installed (`jspdf`, `jspdf-autotable`, `pdf-lib`) — consolidate | `package.json` | P4 | Low |
+| 3 | ~~3 PDF libs installed~~ — FIXED (`pdf-lib` removed; only `jspdf` + `jspdf-autotable` remain, both lazy-imported) | — | — | — |
 | 4 | Test coverage: 40 unit test files (booking-shift, customers, notifications, settings, profile-prefs, push-vapid, stripe-verify, webhooks-retry, etc.) + e2e + load. Expand as new server fns land. | `tests/` | P4 | Low |
 | 5 | ~~`assertAdmin` boilerplate duplicated~~ — FIXED (all `.functions.ts` use shared `requireAdmin`; `access.functions.ts` keeps its local typed variant intentionally) | — | — | — |
 | 6 | ~~Hardcoded VAPID private key fallback~~ — FIXED (KI-002, throws when secret missing) | `src/lib/push.server.ts` | — | — |
