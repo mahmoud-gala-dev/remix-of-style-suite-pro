@@ -8,6 +8,7 @@ import { DataState } from "@/components/shell/data-state";
 import { Button } from "@/components/ui/button";
 import { getAuditLog } from "@/lib/audit.functions";
 import { downloadCsv, toCsv } from "@/lib/csv";
+import { downloadXlsx } from "@/lib/xlsx";
 import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authenticated/audit")({
@@ -49,26 +50,46 @@ function Page() {
   const rows = q.data?.pages.flatMap((p) => p.rows) ?? [];
 
   const exportCsv = () => {
-    downloadCsv(
-      `audit-${Date.now()}.csv`,
-      toCsv(
-        rows.map((r) => ({
-          at: r.at,
-          table: r.table_name,
-          action: r.action,
-          actor: r.actor ?? "",
-          row_id: r.row_id ?? "",
-          diff: JSON.stringify(r.diff ?? {}),
-        })),
-        [
-          { key: "at", label: "When" },
-          { key: "table", label: "Table" },
-          { key: "action", label: "Action" },
-          { key: "actor", label: "Actor" },
-          { key: "row_id", label: "Row" },
-          { key: "diff", label: "Diff" },
-        ],
-      ),
+    const data = rows.map((r) => ({
+      at: r.at,
+      table: r.table_name,
+      action: r.action,
+      actor: r.actor ?? "",
+      row_id: r.row_id ?? "",
+      diff: JSON.stringify(r.diff ?? {}),
+    }));
+    const headers = [
+      { key: "at" as const, label: "When" },
+      { key: "table" as const, label: "Table" },
+      { key: "action" as const, label: "Action" },
+      { key: "actor" as const, label: "Actor" },
+      { key: "row_id" as const, label: "Row" },
+      { key: "diff" as const, label: "Diff" },
+    ];
+    downloadCsv(`audit-${Date.now()}.csv`, toCsv(data, headers));
+  };
+
+  const exportXlsx = () => {
+    const data = rows.map((r) => ({
+      at: new Date(r.at).toLocaleString(),
+      table: r.table_name,
+      action: r.action,
+      actor: r.actor ?? "",
+      row_id: r.row_id ?? "",
+      diff: JSON.stringify(r.diff ?? {}),
+    }));
+    downloadXlsx(
+      `audit-${Date.now()}.xlsx`,
+      data,
+      [
+        { key: "at", label: "When" },
+        { key: "table", label: "Table" },
+        { key: "action", label: "Action" },
+        { key: "actor", label: "Actor" },
+        { key: "row_id", label: "Row" },
+        { key: "diff", label: "Diff" },
+      ],
+      "Audit",
     );
   };
 
@@ -101,9 +122,12 @@ function Page() {
             {[50, 100, 200, 500].map((n) => <option key={n} value={n}>{n} / page</option>)}
           </select>
         </div>
-        <div className="mb-3 flex justify-end">
+        <div className="mb-3 flex justify-end gap-2">
           <Button size="sm" variant="outline" onClick={exportCsv} disabled={rows.length === 0}>
-            Export CSV
+            {t("exportCsv")}
+          </Button>
+          <Button size="sm" onClick={exportXlsx} disabled={rows.length === 0}>
+            {t("exportXlsx")}
           </Button>
         </div>
         <DataState
@@ -113,9 +137,9 @@ function Page() {
           emptyTitle={t("noAuditEvents")}
           retry={() => q.refetch()}
         >
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[60vh]">
             <table className="w-full text-xs">
-              <thead>
+              <thead className="sticky top-0 bg-background z-10">
                 <tr className="text-left uppercase tracking-wider text-dim border-b border-border">
                   <th className="py-2 pr-3">When</th>
                   <th className="py-2 pr-3">Table</th>
