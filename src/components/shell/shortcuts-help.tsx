@@ -1,7 +1,9 @@
 import { SHORTCUT_LIST } from "@/hooks/use-shortcuts";
 import { X } from "lucide-react";
+import { useT } from "@/lib/i18n";
 
 export function ShortcutsHelp({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const t = useT();
   if (!open) return null;
   return (
     <div
@@ -9,15 +11,15 @@ export function ShortcutsHelp({ open, onClose }: { open: boolean; onClose: () =>
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label="Keyboard shortcuts"
+      aria-label={t("keyboardShortcuts")}
     >
       <div
         className="bg-surface border border-border rounded-lg shadow-xl w-full max-w-md p-5"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-bold uppercase tracking-[0.2em]">Keyboard Shortcuts</h2>
-          <button onClick={onClose} className="text-dim hover:text-foreground" aria-label="Close">
+          <h2 className="text-sm font-bold uppercase tracking-[0.2em]">{t("keyboardShortcuts")}</h2>
+          <button onClick={onClose} className="text-dim hover:text-foreground" aria-label={t("close")}>
             <X className="size-4" />
           </button>
         </div>
