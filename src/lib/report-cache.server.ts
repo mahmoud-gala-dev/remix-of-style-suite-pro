@@ -32,7 +32,8 @@ export async function cached<T>(
   try {
     await supabaseAdmin
       .from("report_cache")
-      .upsert({ key, payload: fresh as unknown as object, expires_at: expires });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .upsert({ key, payload: fresh as any, expires_at: expires });
   } catch {
     /* cache write failed — return value anyway */
   }
