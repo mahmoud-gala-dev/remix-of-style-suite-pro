@@ -4,10 +4,13 @@ import { PageHeader, Surface } from "@/components/shell/page";
 import { useCurrentBranch, useData } from "@/lib/store";
 import { useI18n, useT } from "@/lib/i18n";
 import { fmtTime } from "@/lib/format";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { RouteError, RouteNotFound } from "@/components/shell/route-error";
+import { useServerFn } from "@tanstack/react-start";
+import { rescheduleBooking } from "@/lib/reschedule.functions";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/calendar")({
   errorComponent: RouteError,
@@ -26,6 +29,9 @@ function Page() {
   const lang = useI18n((s) => s.lang);
   const branch = useCurrentBranch();
   const qc = useQueryClient();
+  const reschedule = useServerFn(rescheduleBooking);
+  const updateBooking = useData((s) => s.updateBooking);
+  const [dragId, setDragId] = useState<string | null>(null);
   useEffect(() => {
     const ch = supabase
       .channel("realtime:calendar")
@@ -58,6 +64,28 @@ function Page() {
     );
   };
 
+  async function handleDrop(employeeId: string, hour: number) {
+    if (!dragId) return;
+    const b = bookings.find((x) => x.id === dragId);
+    setDragId(null);
+    if (!b) return;
+    const newStart = new Date(b.start);
+    newStart.setHours(hour, 0, 0, 0);
+    const duration = new Date(b.end).getTime() - new Date(b.start).getTime();
+    const newEnd = new Date(newStart.getTime() + duration);
+    if (b.employeeId === employeeId && new Date(b.start).getHours() === hour) return;
+    const prev = { employeeId: b.employeeId, start: b.start, end: b.end };
+    updateBooking(b.id, { employeeId, start: newStart.toISOString(), end: newEnd.toISOString() });
+    try {
+      await reschedule({ data: { id: b.id, employeeId, startAt: newStart.toISOString(), endAt: newEnd.toISOString() } });
+      toast.success(t("saved") ?? "Saved");
+      await qc.invalidateQueries({ queryKey: ["hydrate"] });
+    } catch (e) {
+      updateBooking(b.id, prev);
+      toast.error(e instanceof Error ? e.message : "Slot taken");
+    }
+  }
+
   return (
     <div className="p-8 max-w-[1600px] mx-auto">
       <PageHeader title={t("calendar")} subtitle={today.toLocaleDateString([], { dateStyle: "full" })} />
@@ -79,6 +107,7 @@ function Page() {
               key={h}
               hour={h}
               employees={employees}
+              onDropCell={handleDrop}
               cellRender={(empId) => {
                 const cell = bookings.find(
                   (b) =>
@@ -90,7 +119,12 @@ function Page() {
                 const cust = customers.find((c) => c.id === cell.customerId);
                 const svc = services.find((s) => s.id === cell.serviceId);
                 return (
-                  <div className="bg-primary/10 border border-primary/40 rounded-md p-2 h-full">
+                  <div
+                    draggable
+                    onDragStart={(e) => { setDragId(cell.id); e.dataTransfer.effectAllowed = "move"; }}
+                    onDragEnd={() => setDragId(null)}
+                    className="bg-primary/10 border border-primary/40 rounded-md p-2 h-full cursor-grab active:cursor-grabbing"
+                  >
                     <div className="text-[10px] text-primary font-mono">{fmtTime(cell.start)}</div>
                     <div className="text-xs font-semibold truncate">{cust?.name}</div>
                     <div className="text-[10px] text-dim truncate">
@@ -111,10 +145,12 @@ function FragmentRow({
   hour,
   employees,
   cellRender,
+  onDropCell,
 }: {
   hour: number;
   employees: { id: string }[];
   cellRender: (empId: string) => React.ReactNode;
+  onDropCell: (empId: string, hour: number) => void;
 }) {
   return (
     <>
@@ -122,7 +158,12 @@ function FragmentRow({
         {hour.toString().padStart(2, "0")}:00
       </div>
       {employees.map((e) => (
-        <div key={e.id} className="border-t border-s border-border min-h-16 p-1.5">
+        <div
+          key={e.id}
+          onDragOver={(ev) => { ev.preventDefault(); ev.dataTransfer.dropEffect = "move"; }}
+          onDrop={() => onDropCell(e.id, hour)}
+          className="border-t border-s border-border min-h-16 p-1.5"
+        >
           {cellRender(e.id)}
         </div>
       ))}
