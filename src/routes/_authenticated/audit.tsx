@@ -8,6 +8,7 @@ import { DataState } from "@/components/shell/data-state";
 import { Button } from "@/components/ui/button";
 import { getAuditLog } from "@/lib/audit.functions";
 import { downloadCsv, toCsv } from "@/lib/csv";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authenticated/audit")({
   ssr: false,
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/_authenticated/audit")({
 });
 
 function Page() {
+  const t = useT();
   const [table, setTable] = useState("");
   const [action, setAction] = useState("");
   const [actor, setActor] = useState("");
@@ -72,17 +74,17 @@ function Page() {
 
   return (
     <div className="p-8 max-w-[1400px] mx-auto space-y-6">
-      <PageHeader title="Audit Log" subtitle="Sensitive changes across roles, bookings, and invoices" />
+      <PageHeader title={t("auditLog")} subtitle={t("auditSubtitle")} />
       <Surface>
         <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6 mb-4">
           <select value={table} onChange={(e) => setTable(e.target.value)} className="rounded-md border border-border bg-background px-3 py-2 text-sm">
-            <option value="">All tables</option>
+            <option value="">{t("allTables")}</option>
             <option value="user_roles">user_roles</option>
             <option value="bookings">bookings</option>
             <option value="invoices">invoices</option>
           </select>
           <select value={action} onChange={(e) => setAction(e.target.value)} className="rounded-md border border-border bg-background px-3 py-2 text-sm">
-            <option value="">All actions</option>
+            <option value="">{t("allActions")}</option>
             <option value="INSERT">INSERT</option>
             <option value="UPDATE">UPDATE</option>
             <option value="DELETE">DELETE</option>
@@ -90,7 +92,7 @@ function Page() {
           <input
             value={actor}
             onChange={(e) => setActor(e.target.value)}
-            placeholder="Actor user id"
+            placeholder={t("actorUserId")}
             className="rounded-md border border-border bg-background px-3 py-2 text-sm font-mono"
           />
           <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="rounded-md border border-border bg-background px-3 py-2 text-sm" />
