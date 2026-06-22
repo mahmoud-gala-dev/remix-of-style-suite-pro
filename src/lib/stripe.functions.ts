@@ -149,15 +149,8 @@ export const verifyStripeWebhook = createServerFn({ method: "POST" })
     if (!cfg.enabled) return { skipped: true as const, reason: "disabled" as const };
     if (!cfg.webhook_secret) return { skipped: true as const, reason: "no webhook secret" as const };
 
-    const { createHmac, timingSafeEqual } = await import("crypto");
-    const expected = createHmac("sha256", cfg.webhook_secret)
-      .update(data.payload)
-      .digest("hex");
-    const sig = Buffer.from(data.signature);
-    const exp = Buffer.from(expected);
-    if (sig.length !== exp.length || !timingSafeEqual(sig, exp)) {
-      throw new Response("Invalid signature", { status: 401 });
-    }
+    const { verifyHmacSignature } = await import("@/lib/stripe-verify");
+    verifyHmacSignature(data.payload, data.signature, cfg.webhook_secret);
     const event = JSON.parse(data.payload);
     return {
       type: String(event.type ?? ""),
