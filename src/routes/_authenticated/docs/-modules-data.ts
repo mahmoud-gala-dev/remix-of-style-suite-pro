@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Icons } from "./icons";
+import { Icons } from "./-icons";
 
 export type DocCategory = "operations" | "management" | "finance" | "system";
 
