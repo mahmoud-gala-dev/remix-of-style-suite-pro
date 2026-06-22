@@ -18,7 +18,7 @@
 - [x] Backfill `requireAdmin` shared helper across `webhooks`, `notifications`, `stripe`, `saml`, `twilio`. (cycle #2)
 
 ## P3 (improvements)
-- [x] Per-employee shifts + days-off tables added (RLS: read-all, admin-write). `createBooking` rejects bookings outside shifts or on days off. Admin UI for managing shifts pending. (cycle #3)
+- [x] Per-employee shifts + days-off tables added (RLS: read-all, admin-write). `createBooking` rejects bookings outside shifts or on days off. Admin UI shipped at `/shifts` (cycle #3).
 - [x] Recurring bookings UI already wired in `BookingDialog` (weekly/biweekly/monthly + occurrences) via `createRecurringSeries`. (cycle #3)
 - [x] Saved filters via `usePersistedState` hook — customers search, invoices status/date range (localStorage-persisted). (cycle #3)
 - [~] Test coverage expanded: `rate-limit.test.ts`, `csv.test.ts` (toCsv + parseCsv edge cases), `whatsapp.test.ts` (link + i18n messages). Server-fn tests (bookings/invoices/2FA/OTP/Stripe webhook) still pending — they need supabase mocking harness. (cycle #3)
