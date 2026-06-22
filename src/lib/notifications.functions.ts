@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireAdmin } from "@/lib/require-admin";
 
 const SETTINGS_KEY = "notification_settings";
 
@@ -17,14 +18,6 @@ const DEFAULTS: NotificationSettings = {
   from_email: "",
   notify_booking_created: false,
 };
-
-async function assertAdmin(ctx: any) {
-  const [a, s] = await Promise.all([
-    ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "admin" }),
-    ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "super_admin" }),
-  ]);
-  if (!a.data && !s.data) throw new Response("Forbidden", { status: 403 });
-}
 
 export const getNotificationSettings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -44,7 +37,7 @@ export const updateNotificationSettings = createServerFn({ method: "POST" })
     notify_booking_created: z.boolean(),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("app_settings").upsert({
       key: SETTINGS_KEY,
@@ -90,7 +83,7 @@ export const sendNotification = createServerFn({ method: "POST" })
     html: z.string().min(1),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row } = await supabaseAdmin
       .from("app_settings").select("value").eq("key", SETTINGS_KEY).maybeSingle();

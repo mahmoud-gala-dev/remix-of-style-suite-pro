@@ -8,12 +8,14 @@
 - [x] VAPID throws in production when `VAPID_PRIVATE_KEY` env is unset; dev fallback retained. (cycle #2)
 
 ## P2 (important)
-- [ ] Add `<DataState>` wrappers (loading / error / empty) to: bookings, customers, calendar, queue, reports, services, employees, branches, settings, docs, dashboard.
-- [ ] Booking-confirmation email via Resend + optional WhatsApp via Twilio.
+- [ ] Add `<DataState>` wrappers (loading / error / empty) to: bookings, customers, calendar, reports, services, employees, branches, settings, docs, dashboard. (queue already has Realtime + empty states.)
+- [x] Booking-confirmation WhatsApp via Twilio (best-effort, fires after `createBooking`). (cycle #2)
+- [ ] Booking-confirmation email via Resend (next).
 - [ ] Customer invoice PDF download from `/my/$token`.
-- [ ] Realtime subscriptions for `queue_items` and `bookings` so kiosk + admin update without refresh.
+- [x] Realtime for `queue_items` (already wired in `queue.tsx`).
+- [ ] Realtime for `bookings` (calendar + bookings page).
 - [ ] `React.lazy()` for heavy routes (`reports`, `calendar`, dashboard) and PDF/Excel libs.
-- [ ] Backfill `requireAdmin` shared helper across `webhooks`, `notifications`, `stripe`, `saml`, `tenants`, `twilio`.
+- [x] Backfill `requireAdmin` shared helper across `webhooks`, `notifications`, `stripe`, `saml`, `twilio`. (cycle #2)
 
 ## P3 (improvements)
 - [ ] Per-employee shifts + days-off table → tighten availability engine.

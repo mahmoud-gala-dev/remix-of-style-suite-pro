@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireAdmin } from "@/lib/require-admin";
 
 const SETTINGS_KEY = "stripe_billing";
 
@@ -24,14 +25,6 @@ const DEFAULTS: StripeSettings = {
   cancel_url: "/settings",
 };
 
-async function assertAdmin(ctx: { supabase: any; userId: string }) {
-  const [a, s] = await Promise.all([
-    ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "admin" }),
-    ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "super_admin" }),
-  ]);
-  if (!a.data && !s.data) throw new Response("Forbidden", { status: 403 });
-}
-
 function redact(cfg: StripeSettings): StripeSettings {
   return {
     ...cfg,
@@ -53,7 +46,7 @@ async function loadConfig(): Promise<StripeSettings> {
 export const getStripeSettings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<StripeSettings> => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const cfg = await loadConfig();
     return redact(cfg);
   });
@@ -72,7 +65,7 @@ export const updateStripeSettings = createServerFn({ method: "POST" })
     }).parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: existing } = await supabaseAdmin
       .from("app_settings")

@@ -174,5 +174,16 @@ export const createBooking = createServerFn({ method: "POST" })
         tag: `booking-${row.id}`,
       });
     } catch { /* push failures must not break booking */ }
+    // Best-effort WhatsApp confirmation to the customer when Twilio is enabled.
+    if (data.customerPhone) {
+      try {
+        const { sendWhatsappInternal } = await import("./twilio.functions");
+        const when = new Date(data.startAt).toLocaleString();
+        await sendWhatsappInternal(
+          data.customerPhone,
+          `Booking confirmed for ${when}. Manage: ${row.manage_token ? `/my/${row.manage_token}` : "(see email)"}`,
+        );
+      } catch { /* Twilio failures must not break booking */ }
+    }
     return { ok: true as const, id: row.id, manageToken: row.manage_token as string };
   });

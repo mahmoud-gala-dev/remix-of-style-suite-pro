@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireAdmin } from "@/lib/require-admin";
 
 const SETTINGS_KEY = "twilio_whatsapp";
 
@@ -22,14 +23,6 @@ const DEFAULTS: TwilioSettings = {
   notify_reminders: false,
 };
 
-async function assertAdmin(ctx: { supabase: any; userId: string }) {
-  const [a, s] = await Promise.all([
-    ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "admin" }),
-    ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "super_admin" }),
-  ]);
-  if (!a.data && !s.data) throw new Response("Forbidden", { status: 403 });
-}
-
 function redact(cfg: TwilioSettings): TwilioSettings {
   return {
     ...cfg,
@@ -40,7 +33,7 @@ function redact(cfg: TwilioSettings): TwilioSettings {
 export const getTwilioSettings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<TwilioSettings> => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await supabaseAdmin
       .from("app_settings").select("value").eq("key", SETTINGS_KEY).maybeSingle();
@@ -59,7 +52,7 @@ export const updateTwilioSettings = createServerFn({ method: "POST" })
     notify_reminders: z.boolean(),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: existing } = await supabaseAdmin
       .from("app_settings").select("value").eq("key", SETTINGS_KEY).maybeSingle();
@@ -114,7 +107,7 @@ export const sendWhatsapp = createServerFn({ method: "POST" })
     body: z.string().trim().min(1).max(1600),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const cfg = await loadConfig();
     if (!cfg.enabled) return { skipped: true as const, reason: "disabled" };
     return await twilioSend(cfg, data.to, data.body);
@@ -124,7 +117,7 @@ export const testTwilio = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ to: z.string().trim().min(6).max(40) }).parse(d))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const cfg = await loadConfig();
     if (!cfg.enabled) throw new Error("Twilio is disabled. Enable it first in Settings.");
     const r = await twilioSend(cfg, data.to, "Vanguard test message ✅");

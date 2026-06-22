@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireAdmin } from "@/lib/require-admin";
 import { z } from "zod";
 import { createHmac } from "crypto";
 import { rateLimit } from "@/lib/rate-limit";
@@ -8,16 +9,10 @@ function signPayload(secret: string, body: string): string {
   return "sha256=" + createHmac("sha256", secret).update(body).digest("hex");
 }
 
-async function assertAdmin(ctx: any) {
-  const { data } = await ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "admin" });
-  const { data: sa } = await ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "super_admin" });
-  if (!data && !sa) throw new Response("Forbidden", { status: 403 });
-}
-
 export const listWebhooks = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const { data, error } = await context.supabase.from("webhooks").select("*").order("created_at", { ascending: false });
     if (error) throw error;
     return data ?? [];
@@ -32,7 +27,7 @@ export const upsertWebhook = createServerFn({ method: "POST" })
     enabled: z.boolean().default(true),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const row = { event: data.event, url: data.url, enabled: data.enabled, created_by: context.userId };
     const q = data.id
       ? context.supabase.from("webhooks").update(row).eq("id", data.id).select().single()
@@ -46,7 +41,7 @@ export const deleteWebhook = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const { error } = await context.supabase.from("webhooks").delete().eq("id", data.id);
     if (error) throw error;
     return { ok: true };
@@ -55,7 +50,7 @@ export const deleteWebhook = createServerFn({ method: "POST" })
 export const listDeliveries = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const { data, error } = await context.supabase
       .from("webhook_deliveries")
       .select("id, webhook_id, event, status, attempts, failed, response, created_at, next_retry_at")
@@ -103,7 +98,7 @@ export const emitWebhookEvent = createServerFn({ method: "POST" })
 export const retryFailedWebhooks = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const nowIso = new Date().toISOString();
     const { data: rows } = await supabaseAdmin
@@ -159,7 +154,7 @@ export const sendTestPing = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     await rateLimit(`sendTestPing:${context.userId}`, { capacity: 10, refillPerMin: 10 });
     const { data: hook, error } = await context.supabase
       .from("webhooks").select("id,url,event,secret").eq("id", data.id).maybeSingle();
