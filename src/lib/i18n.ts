@@ -25,6 +25,8 @@ export const dict = {
   coupons: { en: "Coupons", ar: "الكوبونات" },
   invoices: { en: "Invoices", ar: "الفواتير" },
   loyalty: { en: "Loyalty", ar: "الولاء" },
+  inventory: { en: "Inventory", ar: "المخزون" },
+  commissions: { en: "Commissions", ar: "العمولات" },
   docs: { en: "Documentation", ar: "التوثيق" },
   // generic
   search: { en: "Search", ar: "بحث" },
