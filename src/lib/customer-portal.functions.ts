@@ -79,6 +79,10 @@ export const cancelBookingByToken = createServerFn({ method: "POST" })
         .update({ status: "notified", notified_at: new Date().toISOString() })
         .in("id", w.map((x) => x.id));
     }
+    try {
+      const { invalidateReportCache } = await import("@/lib/report-cache.server");
+      await invalidateReportCache();
+    } catch { /* best-effort */ }
     return { ok: true as const };
   });
 
