@@ -22,6 +22,7 @@ import { Route as DisplayBranchRouteImport } from './routes/display.$branch'
 import { Route as AuthenticatedWebhooksRouteImport } from './routes/_authenticated/webhooks'
 import { Route as AuthenticatedWaitlistRouteImport } from './routes/_authenticated/waitlist'
 import { Route as AuthenticatedTenantsRouteImport } from './routes/_authenticated/tenants'
+import { Route as AuthenticatedShiftsRouteImport } from './routes/_authenticated/shifts'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedServicesRouteImport } from './routes/_authenticated/services'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
@@ -108,6 +109,11 @@ const AuthenticatedWaitlistRoute = AuthenticatedWaitlistRouteImport.update({
 const AuthenticatedTenantsRoute = AuthenticatedTenantsRouteImport.update({
   id: '/tenants',
   path: '/tenants',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedShiftsRoute = AuthenticatedShiftsRouteImport.update({
+  id: '/shifts',
+  path: '/shifts',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
@@ -255,6 +261,7 @@ export interface FileRoutesByFullPath {
   '/reports': typeof AuthenticatedReportsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/shifts': typeof AuthenticatedShiftsRoute
   '/tenants': typeof AuthenticatedTenantsRoute
   '/waitlist': typeof AuthenticatedWaitlistRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
@@ -291,6 +298,7 @@ export interface FileRoutesByTo {
   '/reports': typeof AuthenticatedReportsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/shifts': typeof AuthenticatedShiftsRoute
   '/tenants': typeof AuthenticatedTenantsRoute
   '/waitlist': typeof AuthenticatedWaitlistRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
@@ -330,6 +338,7 @@ export interface FileRoutesById {
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/services': typeof AuthenticatedServicesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/shifts': typeof AuthenticatedShiftsRoute
   '/_authenticated/tenants': typeof AuthenticatedTenantsRoute
   '/_authenticated/waitlist': typeof AuthenticatedWaitlistRoute
   '/_authenticated/webhooks': typeof AuthenticatedWebhooksRoute
@@ -370,6 +379,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/services'
     | '/settings'
+    | '/shifts'
     | '/tenants'
     | '/waitlist'
     | '/webhooks'
@@ -406,6 +416,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/services'
     | '/settings'
+    | '/shifts'
     | '/tenants'
     | '/waitlist'
     | '/webhooks'
@@ -444,6 +455,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reports'
     | '/_authenticated/services'
     | '/_authenticated/settings'
+    | '/_authenticated/shifts'
     | '/_authenticated/tenants'
     | '/_authenticated/waitlist'
     | '/_authenticated/webhooks'
@@ -566,6 +578,13 @@ declare module '@tanstack/react-router' {
       path: '/tenants'
       fullPath: '/tenants'
       preLoaderRoute: typeof AuthenticatedTenantsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/shifts': {
+      id: '/_authenticated/shifts'
+      path: '/shifts'
+      fullPath: '/shifts'
+      preLoaderRoute: typeof AuthenticatedShiftsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
@@ -751,6 +770,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedServicesRoute: typeof AuthenticatedServicesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedShiftsRoute: typeof AuthenticatedShiftsRoute
   AuthenticatedTenantsRoute: typeof AuthenticatedTenantsRoute
   AuthenticatedWaitlistRoute: typeof AuthenticatedWaitlistRoute
   AuthenticatedWebhooksRoute: typeof AuthenticatedWebhooksRoute
@@ -776,6 +796,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedServicesRoute: AuthenticatedServicesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedShiftsRoute: AuthenticatedShiftsRoute,
   AuthenticatedTenantsRoute: AuthenticatedTenantsRoute,
   AuthenticatedWaitlistRoute: AuthenticatedWaitlistRoute,
   AuthenticatedWebhooksRoute: AuthenticatedWebhooksRoute,
