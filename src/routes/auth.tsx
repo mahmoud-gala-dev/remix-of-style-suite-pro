@@ -297,6 +297,36 @@ function AuthPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={resetOpen} onOpenChange={setResetOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reset password</DialogTitle>
+            <DialogDescription>
+              Enter your email and we'll send you a secure reset link.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Label htmlFor="reset-email">Email</Label>
+            <Input
+              id="reset-email"
+              type="email"
+              autoComplete="email"
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
+              autoFocus
+            />
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" type="button" onClick={() => setResetOpen(false)} disabled={resetBusy}>
+                Cancel
+              </Button>
+              <Button type="button" onClick={onSendReset} disabled={resetBusy || !resetEmail.trim()}>
+                {resetBusy ? "Sending…" : "Send reset link"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
