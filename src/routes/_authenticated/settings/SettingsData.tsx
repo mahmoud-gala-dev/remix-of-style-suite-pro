@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -7,6 +7,7 @@ import { Surface } from "@/components/shell/page";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { claimSuperAdmin, seedDemoData } from "@/lib/admin.functions";
 import { exportTenantData } from "@/lib/export-tenant.functions";
+import { restoreTenantFromCsv } from "@/lib/restore.functions";
 import { useData } from "@/lib/store";
 import { useT } from "@/lib/i18n";
 
@@ -16,9 +17,11 @@ export function SettingsData() {
   const router = useRouter();
   const qc = useQueryClient();
   const [msg, setMsg] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
   const claim = useServerFn(claimSuperAdmin);
   const seed = useServerFn(seedDemoData);
   const exportFn = useServerFn(exportTenantData);
+  const restoreFn = useServerFn(restoreTenantFromCsv);
   const currentTenantId = useData((s) => s.currentTenantId);
   const claimMut = useMutation({
     mutationFn: () => claim(),
@@ -49,6 +52,31 @@ export function SettingsData() {
     },
     onError: (e: Error) => setMsg(e.message),
   });
+  const restoreMut = useMutation({
+    mutationFn: async (bundle: string) => {
+      if (!currentTenantId) throw new Error(t("noTenantSelected"));
+      return restoreFn({ data: { tenantId: currentTenantId, bundle } });
+    },
+    onSuccess: (r) => {
+      toast.success(`Restored ${r.inserted} rows, skipped ${r.skipped}`);
+      qc.invalidateQueries({ queryKey: ["hydrate"] });
+      router.invalidate();
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const handleFile = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = String(reader.result ?? "");
+      if (!text.includes("# ")) {
+        toast.error("Invalid export bundle format. Use a file exported from this app.");
+        return;
+      }
+      restoreMut.mutate(text);
+    };
+    reader.readAsText(file);
+  };
 
   return (
     <Surface>
@@ -69,6 +97,24 @@ export function SettingsData() {
         >
           {exportMut.isPending ? "…" : t("exportTenantData")}
         </button>
+        <button
+          onClick={() => fileRef.current?.click()}
+          disabled={restoreMut.isPending || !currentTenantId}
+          className="px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest border border-primary/40 text-primary hover:bg-primary/10 disabled:opacity-50"
+        >
+          {restoreMut.isPending ? "…" : t("restoreFromCsv")}
+        </button>
+        <input
+          ref={fileRef}
+          type="file"
+          accept=".csv,.txt"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) handleFile(f);
+            e.target.value = "";
+          }}
+        />
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <button className="px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest border border-destructive/40 text-destructive hover:bg-destructive/10">{t("resetLocal")}</button>
