@@ -6,6 +6,7 @@ import { SettingsGeneral } from "./settings/SettingsGeneral";
 import { SettingsLayout } from "./settings/SettingsLayout";
 import { SettingsData } from "./settings/SettingsData";
 import { SettingsNotifications } from "./settings/SettingsNotifications";
+import { SettingsTwilio } from "./settings/SettingsTwilio";
 import { SettingsBilling } from "./settings/SettingsBilling";
 import { Settings2FA } from "./settings/Settings2FA";
 
@@ -27,6 +28,7 @@ function Page() {
       <SettingsGeneral />
       <SettingsLayout />
       <SettingsNotifications />
+      <SettingsTwilio />
       <SettingsBilling />
       <Settings2FA />
       <SettingsData />
