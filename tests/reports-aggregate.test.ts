@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { aggregateReports } from "@/lib/reports-aggregate";
+import { aggregateReports, percentDelta, previousPeriod } from "@/lib/reports-aggregate";
 
 const branches = [
   { id: "b1", name_en: "Downtown Studio", name_ar: "وسط" },
@@ -63,5 +63,35 @@ describe("aggregateReports", () => {
     const scoped = aggregateReports({ bookings, branches, services, from, toExclusive, branchId: "b1" });
     expect(scoped.byBranch).toHaveLength(1);
     expect(scoped.byBranch[0].id).toBe("b1");
+  });
+});
+
+describe("percentDelta", () => {
+  it("rounds standard movement", () => {
+    expect(percentDelta(120, 100)).toBe(20);
+    expect(percentDelta(80, 100)).toBe(-20);
+  });
+  it("returns 0 when both are zero", () => {
+    expect(percentDelta(0, 0)).toBe(0);
+  });
+  it("returns 100 when prev is zero and cur > 0", () => {
+    expect(percentDelta(42, 0)).toBe(100);
+  });
+  it("rounds to nearest integer", () => {
+    expect(percentDelta(101, 99)).toBe(2);
+    expect(percentDelta(98, 99)).toBe(-1);
+  });
+});
+
+describe("previousPeriod", () => {
+  it("returns an equal-length range ending at the current start", () => {
+    const cur = {
+      from: new Date("2026-06-15T00:00:00Z"),
+      toExclusive: new Date("2026-06-22T00:00:00Z"), // 7 days
+    };
+    const prev = previousPeriod(cur);
+    expect(prev.toExclusive.toISOString()).toBe(cur.from.toISOString());
+    expect(prev.toExclusive.getTime() - prev.from.getTime()).toBe(cur.toExclusive.getTime() - cur.from.getTime());
+    expect(prev.from.toISOString()).toBe("2026-06-08T00:00:00.000Z");
   });
 });

@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { aggregateReports, REVENUE_STATUSES } from "@/lib/reports-aggregate";
+import { aggregateReports, REVENUE_STATUSES, percentDelta, previousPeriod } from "@/lib/reports-aggregate";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const inputSchema = z.object({
@@ -112,9 +112,9 @@ export const getReportsCompare = createServerFn({ method: "GET" })
   .handler(async ({ data, context }) => {
     const from = new Date(`${data.from}T00:00:00.000Z`);
     const toExclusive = addDays(new Date(`${data.to}T00:00:00.000Z`), 1);
-    const lengthMs = toExclusive.getTime() - from.getTime();
-    const prevFrom = new Date(from.getTime() - lengthMs);
-    const prevTo = from;
+    const prev = previousPeriod({ from, toExclusive });
+    const prevFrom = prev.from;
+    const prevTo = prev.toExclusive;
 
     async function totals(start: Date, end: Date) {
       let q = context.supabase
@@ -135,14 +135,12 @@ export const getReportsCompare = createServerFn({ method: "GET" })
       totals(from, toExclusive),
       totals(prevFrom, prevTo),
     ]);
-    const pct = (cur: number, prev: number) =>
-      prev === 0 ? (cur === 0 ? 0 : 100) : Math.round(((cur - prev) / prev) * 100);
     return {
       current,
       previous,
       delta: {
-        bookings: pct(current.bookings, previous.bookings),
-        revenue: pct(current.revenue, previous.revenue),
+        bookings: percentDelta(current.bookings, previous.bookings),
+        revenue: percentDelta(current.revenue, previous.revenue),
       },
       range: { from: data.from, to: data.to, prev_from: prevFrom.toISOString().slice(0, 10), prev_to: prevTo.toISOString().slice(0, 10) },
     };

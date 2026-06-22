@@ -1,3 +1,20 @@
+/** Percentage change between two scalar metrics, rounded to the nearest int.
+ *  - `prev === 0 && cur === 0` → 0 (no movement)
+ *  - `prev === 0 && cur > 0`  → 100 (treated as full delta, mirrors UI behavior)
+ *  - otherwise round((cur - prev) / prev * 100)
+ */
+export function percentDelta(cur: number, prev: number): number {
+  if (prev === 0) return cur === 0 ? 0 : 100;
+  return Math.round(((cur - prev) / prev) * 100);
+}
+
+export type PeriodRange = { from: Date; toExclusive: Date };
+
+/** Compute the previous equal-length period that ends exactly where `current` starts. */
+export function previousPeriod(current: PeriodRange): PeriodRange {
+  const length = current.toExclusive.getTime() - current.from.getTime();
+  return { from: new Date(current.from.getTime() - length), toExclusive: current.from };
+}
 /** Bookings statuses that count toward revenue totals. */
 export const REVENUE_STATUSES = new Set(["completed", "in_progress"]);
 
