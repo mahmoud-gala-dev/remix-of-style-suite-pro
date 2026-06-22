@@ -7,7 +7,7 @@ import { useTheme } from "@/lib/theme";
 import { useRole } from "@/lib/use-role";
 import { getBookingOtpEnabled, setBookingOtpEnabled } from "@/lib/otp.functions";
 import { getAppSettings, setAppSetting } from "@/lib/settings.functions";
-import { requestPushPermission, pushSupported, notify } from "@/lib/push";
+import { requestPushPermission, pushSupported, notify, webPushSupported, subscribeToPush, unsubscribeFromPush } from "@/lib/push";
 
 export function SettingsGeneral() {
   const t = useT();
@@ -207,7 +207,13 @@ export function SettingsGeneral() {
                   if (e.target.checked) {
                     const perm = await requestPushPermission();
                     if (perm !== "granted") { toast.error("Permission denied by browser"); return; }
+                    if (webPushSupported()) {
+                      const ok = await subscribeToPush();
+                      if (!ok) { toast.error("Failed to subscribe to push"); return; }
+                    }
                     notify("Notifications enabled", "You'll get alerts for queue and bookings.");
+                  } else {
+                    await unsubscribeFromPush().catch(() => {});
                   }
                   settingMut.mutate({ key: "push_notifications_enabled", value: e.target.checked });
                 }}
