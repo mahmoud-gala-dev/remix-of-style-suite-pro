@@ -37,7 +37,7 @@ function Page() {
           loading={q.isLoading}
           error={q.error}
           empty={!q.isLoading && (q.data?.users.length ?? 0) === 0}
-          emptyTitle="No staff accounts yet"
+          emptyTitle={t("noStaffAccounts")}
           retry={() => q.refetch()}
         >
           {q.data && (

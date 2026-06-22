@@ -103,7 +103,7 @@ export function SettingsGeneral() {
         <Surface>
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">Online Deposits (Stripe)</h3>
+              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">{t("onlineDeposits")}</h3>
               <p className="text-xs text-dim mt-1">عربون عبر Stripe — معطّل افتراضياً. فعّله بعد إضافة مفاتيح Stripe.</p>
             </div>
             <label className="inline-flex items-center gap-2 cursor-pointer">
@@ -119,19 +119,19 @@ export function SettingsGeneral() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="space-y-1.5 text-xs">
-              <span className="text-dim">Deposit Type</span>
+              <span className="text-dim">{t("depositType")}</span>
               <select
                 defaultValue={settingsQ.data?.deposit_type ?? "percent"}
                 disabled={!settingsQ.data?.deposits_enabled}
                 onChange={(e) => settingMut.mutate({ key: "deposit_type", value: e.target.value })}
                 className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm disabled:opacity-50"
               >
-                <option value="percent">% of service</option>
-                <option value="fixed">Fixed amount</option>
+                <option value="percent">{t("pctOfService")}</option>
+                <option value="fixed">{t("fixedAmount")}</option>
               </select>
             </label>
             <label className="space-y-1.5 text-xs">
-              <span className="text-dim">Deposit Amount</span>
+              <span className="text-dim">{t("depositAmount")}</span>
               <input
                 type="number"
                 min={0}
@@ -150,7 +150,7 @@ export function SettingsGeneral() {
         <Surface>
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">WhatsApp Reminders</h3>
+              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">{t("whatsappReminders")}</h3>
               <p className="text-xs text-dim mt-1">
                 widget على لوحة التحكم يعرض حجوزات الغد بأزرار WhatsApp جاهزة (افتراضي، يعمل بدون API).
               </p>
@@ -168,7 +168,7 @@ export function SettingsGeneral() {
           </div>
           <div className="flex items-center justify-between border-t border-border pt-3">
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">WhatsApp Business API</h4>
+              <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">{t("whatsappBusinessApi")}</h4>
               <p className="text-xs text-dim mt-1">
                 إرسال تلقائي للتذكيرات. معطّل افتراضياً — فعّله بعد إضافة مفتاح WhatsApp Business API.
                 عند التفعيل، يختفي widget يدوي.
@@ -192,7 +192,7 @@ export function SettingsGeneral() {
         <Surface>
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">Push Notifications</h3>
+              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">{t("pushNotifications")}</h3>
               <p className="text-xs text-dim mt-1">
                 إشعارات سطح المكتب للموظفين (نداء العميل التالي، حجز جديد). يتطلب إذن المتصفح.
               </p>
@@ -206,12 +206,12 @@ export function SettingsGeneral() {
                 onChange={async (e) => {
                   if (e.target.checked) {
                     const perm = await requestPushPermission();
-                    if (perm !== "granted") { toast.error("Permission denied by browser"); return; }
+                    if (perm !== "granted") { toast.error(t("permissionDenied")); return; }
                     if (webPushSupported()) {
                       const ok = await subscribeToPush();
-                      if (!ok) { toast.error("Failed to subscribe to push"); return; }
+                      if (!ok) { toast.error(t("failedToSubscribePush")); return; }
                     }
-                    notify("Notifications enabled", "You'll get alerts for queue and bookings.");
+                    notify(t("notificationsEnabled"), t("notificationsEnabledBody"));
                   } else {
                     await unsubscribeFromPush().catch(() => {});
                   }
