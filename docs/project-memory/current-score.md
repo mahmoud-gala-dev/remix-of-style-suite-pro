@@ -2,8 +2,8 @@
 
 | Category              | Score |
 | --------------------- | ----- |
-| UX / UI               | 8.2   |
-| User Experience       | 8.0   |
+| UX / UI               | 8.4   |
+| User Experience       | 8.2   |
 | Performance           | 7.0   |
 | Security              | 8.5   |
 | Scalability           | 8.0   |
@@ -19,11 +19,11 @@
 | Production Readiness  | 8.0   |
 | Maintainability       | 8.5   |
 
-**Overall: 8.2 / 10**
+**Overall: 8.3 / 10**
 
 ## Business Readiness
 - **Small Business**: 95% — full POS, bookings, loyalty, invoicing covered.
-- **Medium Business**: 90% — realtime + customer PDF + booking confirmations closed; calendar DnD remaining.
+- **Medium Business**: 93% — calendar DnD + shifts/days-off admin closed.
 - **Large Business**: 85% — Sentry APM + Slack alerts + uptime cron + geo-backup (admin-toggled) shipped this cycle.
 - **Enterprise**: 76% — observability stack closed (errors, latency, web vitals, uptime); SSO + audit chain + SCIM in place.
 
