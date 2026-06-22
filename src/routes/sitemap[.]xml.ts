@@ -27,7 +27,11 @@ export const Route = createFileRoute("/sitemap.xml")({
         return new Response(body, {
           headers: {
             "Content-Type": "application/xml; charset=utf-8",
-            "Cache-Control": "public, max-age=3600",
+            // Cycle #16, step 4 — geo-distributed reads via Cloudflare edge cache.
+            // s-maxage applies at the CDN PoP (closest to the visitor); stale-while-
+            // revalidate keeps the response instant while a background refresh runs.
+            "Cache-Control":
+              "public, max-age=600, s-maxage=3600, stale-while-revalidate=86400",
           },
         });
       },

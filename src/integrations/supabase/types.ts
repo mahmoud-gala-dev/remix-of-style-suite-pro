@@ -892,6 +892,42 @@ export type Database = {
           },
         ]
       }
+      notification_jobs: {
+        Row: {
+          attempts: number
+          created_at: string
+          id: string
+          kind: string
+          last_error: string | null
+          payload: Json
+          run_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          id?: string
+          kind: string
+          last_error?: string | null
+          payload: Json
+          run_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          id?: string
+          kind?: string
+          last_error?: string | null
+          payload?: Json
+          run_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       otp_codes: {
         Row: {
           code_hash: string
@@ -1221,6 +1257,27 @@ export type Database = {
           key?: string
           tokens?: number
           updated_at?: string
+        }
+        Relationships: []
+      }
+      report_cache: {
+        Row: {
+          created_at: string
+          expires_at: string
+          key: string
+          payload: Json
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          key: string
+          payload: Json
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          key?: string
+          payload?: Json
         }
         Relationships: []
       }
@@ -1798,6 +1855,7 @@ export type Database = {
         Returns: number
       }
       cleanup_rate_limit_buckets: { Args: never; Returns: number }
+      cleanup_report_cache: { Args: never; Returns: number }
       count_tenant_bookings_this_period: {
         Args: { _tenant_id: string }
         Returns: number

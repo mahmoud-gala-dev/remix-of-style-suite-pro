@@ -202,19 +202,21 @@ export const createBooking = createServerFn({ method: "POST" })
         );
       } catch { /* Twilio failures must not break booking */ }
     }
-    // Best-effort Resend email confirmation when notifications are enabled.
+    // Enqueue confirmation email — drained in batches by the cron worker
+    // /api/public/cron/drain-notifications (cycle #16, step 2). The booking
+    // request returns immediately instead of blocking on Resend.
     try {
       const { data: cust } = await supabaseAdmin
         .from("customers").select("name,email").eq("id", customerId!).maybeSingle();
       if (cust?.email) {
-        const { sendBookingConfirmationEmail } = await import("./notifications.server");
-        await sendBookingConfirmationEmail({
+        const { enqueueNotification } = await import("./notification-queue.server");
+        await enqueueNotification("booking_confirmation_email", {
           to: cust.email,
           customerName: cust.name ?? data.customerName ?? "there",
           whenIso: data.startAt,
           manageUrl: row.manage_token ? `/my/${row.manage_token}` : undefined,
         });
       }
-    } catch { /* email failures must not break booking */ }
+    } catch { /* enqueue failures must not break booking */ }
     return { ok: true as const, id: row.id, manageToken: row.manage_token as string };
   });
