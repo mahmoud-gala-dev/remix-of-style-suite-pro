@@ -33,6 +33,18 @@ export const Route = createFileRoute("/api/public/cron/geo-backup")({
       POST: async ({ request }) => {
         if (!authorized(request)) return new Response("Unauthorized", { status: 401 });
 
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+        // Off by default — admin must enable in Settings → Data.
+        const { data: flagRow } = await supabaseAdmin
+          .from("app_settings")
+          .select("value")
+          .eq("key", "geo_backup_enabled")
+          .maybeSingle();
+        if (!flagRow || flagRow.value !== true) {
+          return Response.json({ skipped: true, reason: "geo_backup_enabled is off" });
+        }
+
         const region = process.env.BACKUP_S3_REGION;
         const bucket = process.env.BACKUP_S3_BUCKET;
         const accessKeyId = process.env.BACKUP_S3_ACCESS_KEY_ID;
@@ -41,7 +53,6 @@ export const Route = createFileRoute("/api/public/cron/geo-backup")({
           return Response.json({ skipped: true, reason: "BACKUP_S3_* not configured" });
         }
 
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const stamp = new Date().toISOString().slice(0, 10);
         const uploaded: Record<string, number> = {};
         const errors: string[] = [];
