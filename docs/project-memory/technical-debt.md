@@ -2,7 +2,7 @@
 
 | # | Issue | Files | Priority | Severity |
 |---|---|---|---|---|
-| 1 | `DataState` adopted on 11 routes; remaining gaps: `bookings.tsx`, `customers.tsx`, `calendar.tsx`, `queue.tsx`, `services.tsx`, `employees.tsx`, `branches.tsx`, `settings.tsx`, `docs.tsx`, `index.tsx` | as listed | P3 | Low |
+| 1 | `DataState` adopted on async/`useQuery` routes (webhooks/waitlist/tenants/shifts). Remaining routes read from a single `hydrate` Zustand store (loading state already centralized at shell-level), so per-route `DataState` would duplicate UI without benefit. Closed by design. | — | — | — |
 | 2 | ~~No route code-splitting~~ — FIXED implicitly: TanStack Start auto code-splits each file-based route + heavy libs (`xlsx`, `jspdf`, `pdf-lib`) are dynamic-imported. Verified via `manualChunks` for `recharts`/`framer-motion`/`@sentry`. | `vite.config.ts` | — | — |
 | 3 | ~~3 PDF libs installed~~ — FIXED (`pdf-lib` removed; only `jspdf` + `jspdf-autotable` remain, both lazy-imported) | — | — | — |
 | 4 | Test coverage: 40 unit test files (booking-shift, customers, notifications, settings, profile-prefs, push-vapid, stripe-verify, webhooks-retry, etc.) + e2e + load. Expand as new server fns land. | `tests/` | P4 | Low |
