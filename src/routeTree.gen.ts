@@ -39,6 +39,7 @@ import { Route as AuthenticatedBookingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
 import { Route as AuthenticatedAccessRouteImport } from './routes/_authenticated/access'
 import { Route as ApiPublicHealthcheckRouteImport } from './routes/api/public/healthcheck'
+import { Route as ApiPublicClientErrorsRouteImport } from './routes/api/public/client-errors'
 import { Route as ApiPublicCronRetryWebhooksRouteImport } from './routes/api/public/cron/retry-webhooks'
 import { Route as ApiPublicCronProcessWebhooksRouteImport } from './routes/api/public/cron/process-webhooks'
 
@@ -193,6 +194,11 @@ const ApiPublicHealthcheckRoute = ApiPublicHealthcheckRouteImport.update({
   path: '/api/public/healthcheck',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicClientErrorsRoute = ApiPublicClientErrorsRouteImport.update({
+  id: '/api/public/client-errors',
+  path: '/api/public/client-errors',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCronRetryWebhooksRoute =
   ApiPublicCronRetryWebhooksRouteImport.update({
     id: '/api/public/cron/retry-webhooks',
@@ -235,6 +241,7 @@ export interface FileRoutesByFullPath {
   '/waitlist': typeof AuthenticatedWaitlistRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
   '/my/$token': typeof MyTokenRoute
+  '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
@@ -268,6 +275,7 @@ export interface FileRoutesByTo {
   '/webhooks': typeof AuthenticatedWebhooksRoute
   '/my/$token': typeof MyTokenRoute
   '/': typeof AuthenticatedIndexRoute
+  '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
@@ -303,6 +311,7 @@ export interface FileRoutesById {
   '/_authenticated/webhooks': typeof AuthenticatedWebhooksRoute
   '/my/$token': typeof MyTokenRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
@@ -338,6 +347,7 @@ export interface FileRouteTypes {
     | '/waitlist'
     | '/webhooks'
     | '/my/$token'
+    | '/api/public/client-errors'
     | '/api/public/healthcheck'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
@@ -371,6 +381,7 @@ export interface FileRouteTypes {
     | '/webhooks'
     | '/my/$token'
     | '/'
+    | '/api/public/client-errors'
     | '/api/public/healthcheck'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
@@ -405,6 +416,7 @@ export interface FileRouteTypes {
     | '/_authenticated/webhooks'
     | '/my/$token'
     | '/_authenticated/'
+    | '/api/public/client-errors'
     | '/api/public/healthcheck'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
@@ -418,6 +430,7 @@ export interface RootRouteChildren {
   SetupRoute: typeof SetupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   MyTokenRoute: typeof MyTokenRoute
+  ApiPublicClientErrorsRoute: typeof ApiPublicClientErrorsRoute
   ApiPublicHealthcheckRoute: typeof ApiPublicHealthcheckRoute
   ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
   ApiPublicCronRetryWebhooksRoute: typeof ApiPublicCronRetryWebhooksRoute
@@ -635,6 +648,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHealthcheckRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/client-errors': {
+      id: '/api/public/client-errors'
+      path: '/api/public/client-errors'
+      fullPath: '/api/public/client-errors'
+      preLoaderRoute: typeof ApiPublicClientErrorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/retry-webhooks': {
       id: '/api/public/cron/retry-webhooks'
       path: '/api/public/cron/retry-webhooks'
@@ -713,6 +733,7 @@ const rootRouteChildren: RootRouteChildren = {
   SetupRoute: SetupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   MyTokenRoute: MyTokenRoute,
+  ApiPublicClientErrorsRoute: ApiPublicClientErrorsRoute,
   ApiPublicHealthcheckRoute: ApiPublicHealthcheckRoute,
   ApiPublicCronProcessWebhooksRoute: ApiPublicCronProcessWebhooksRoute,
   ApiPublicCronRetryWebhooksRoute: ApiPublicCronRetryWebhooksRoute,

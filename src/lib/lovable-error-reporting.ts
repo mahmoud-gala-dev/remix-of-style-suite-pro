@@ -59,6 +59,25 @@ function forward(error: unknown, context: Record<string, unknown>, options: Lova
   if (typeof window === "undefined") return;
   window.__lovableEvents?.captureException?.(error, context, options);
   _sentry?.captureException(error, context);
+  // Best-effort POST to internal ingestion route. Fire-and-forget.
+  try {
+    const err = error as { message?: string; stack?: string };
+    const payload = {
+      message: err?.message ?? String(error),
+      stack: err?.stack,
+      route: typeof window !== "undefined" ? window.location.pathname : "",
+      source: String(context?.source ?? options.mechanism ?? "manual"),
+      userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "",
+    };
+    void fetch("/api/public/client-errors", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true,
+    }).catch(() => undefined);
+  } catch {
+    /* ignore */
+  }
 }
 
 // Attach window.onerror + unhandledrejection once; forwards to the same
