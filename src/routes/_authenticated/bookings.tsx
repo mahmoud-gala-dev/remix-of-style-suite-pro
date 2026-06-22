@@ -13,6 +13,7 @@ import { EmptyState } from "@/components/shell/empty-state";
 import { useState } from "react";
 import { BookingDialog } from "@/components/dialogs/booking-dialog";
 import {
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -34,6 +35,8 @@ import { downloadCsv, toCsv } from "@/lib/csv";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/bookings")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Bookings" }] }),
   component: () => (

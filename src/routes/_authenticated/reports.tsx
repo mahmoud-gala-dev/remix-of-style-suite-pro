@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { DataState } from "@/components/shell/data-state";
 import {
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
   Area,
   AreaChart,
   Bar,
@@ -27,6 +28,8 @@ import { useI18n } from "@/lib/i18n";
 import { useMemo, useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/reports")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Reports" }] }),
   component: () => (

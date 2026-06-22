@@ -9,12 +9,15 @@ import { Modal, Field, inputCls, ModalActions } from "@/components/ui/modal";
 import { useCurrentBranch, useData } from "@/lib/store";
 import { useT } from "@/lib/i18n";
 import { DataState } from "@/components/shell/data-state";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 type Txn = {
   id: string; customer_id: string; delta: number; reason: string; created_at: string;
 };
 
 export const Route = createFileRoute("/_authenticated/loyalty")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Loyalty" }] }),
   component: () => (

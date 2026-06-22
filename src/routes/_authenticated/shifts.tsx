@@ -8,6 +8,7 @@ import { DataState } from "@/components/shell/data-state";
 import { useCurrentBranch, useData } from "@/lib/store";
 import { useI18n, useT } from "@/lib/i18n";
 import {
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
   listShifts,
   addShift,
   deleteShift,
@@ -18,6 +19,8 @@ import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/shifts")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Shifts" }] }),
   component: () => (

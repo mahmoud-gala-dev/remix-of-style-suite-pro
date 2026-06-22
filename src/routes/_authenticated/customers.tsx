@@ -9,6 +9,7 @@ import { Plus, Search, Download, Upload, Phone, MessageCircle, Pencil, Trash2, C
 import { EmptyState } from "@/components/shell/empty-state";
 import { CustomerDialog } from "@/components/dialogs/customer-dialog";
 import {
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -35,6 +36,8 @@ import { bulkImportCustomers } from "@/lib/customers.functions";
 import { usePersistedState } from "@/hooks/use-persisted-state";
 
 export const Route = createFileRoute("/_authenticated/customers")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Customers" }] }),
   component: () => (

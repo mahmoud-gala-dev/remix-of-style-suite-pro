@@ -7,8 +7,11 @@ import { isToday, minutesSince } from "@/lib/format";
 import { DashboardKPIs } from "./dashboard/-DashboardKPIs";
 import { DashboardSchedule } from "./dashboard/-DashboardSchedule";
 import { DashboardSidebar } from "./dashboard/-DashboardSidebar";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 export const Route = createFileRoute("/_authenticated/")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({
     meta: [

@@ -10,8 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { listStaffAccess, setUserBranches } from "@/lib/access.functions";
 import { useI18n, useT } from "@/lib/i18n";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 export const Route = createFileRoute("/_authenticated/access")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Access Control" }] }),
   component: () => (

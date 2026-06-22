@@ -7,8 +7,11 @@ import { fmtTime } from "@/lib/format";
 import { useEffect, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 export const Route = createFileRoute("/_authenticated/calendar")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Calendar" }] }),
   component: () => (
