@@ -44,9 +44,7 @@ function Page() {
   const t = useT();
   const lang = useI18n((s) => s.lang);
   const branch = useCurrentBranch();
-  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  const employees = useData((s) => s.employees)
-    .filter((e) => e.branchId === branch.id && UUID_RE.test(e.id));
+  const employees = useData((s) => s.employees).filter((e) => e.branchId === branch.id);
   const [selected, setSelected] = useState<string | null>(employees[0]?.id ?? null);
 
   return (
@@ -67,7 +65,7 @@ function Page() {
             </button>
           ))}
           {employees.length === 0 && (
-            <div className="px-3 py-6 text-xs text-dim">No database-backed employees in this branch. Add real employees first.</div>
+            <div className="px-3 py-6 text-xs text-dim">No employees in this branch.</div>
           )}
         </Surface>
         {selected ? <Editor employeeId={selected} lang={lang} /> : null}

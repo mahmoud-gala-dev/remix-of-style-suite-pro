@@ -16,4 +16,4 @@
 | 12 | ~~No booking-confirmation email/SMS~~ — FIXED (Resend email + Twilio WhatsApp best-effort) | `bookings.functions.ts`, `notifications.server.ts` | — | — |
 | 13 | ~~Per-employee shifts / day-off~~ — FIXED (tables + admin UI at `/shifts` + enforced in `createBooking`) | `shifts.tsx`, `shifts.functions.ts` | — | — |
 | 14 | ~~Calendar drag-and-drop~~ — FIXED (HTML5 DnD + `rescheduleBooking` server fn with overlap check) | `calendar.tsx`, `reschedule.functions.ts` | — | — |
-| 15 | Seed/demo IDs are non-UUID (`em1`, `cu1`, `sv1`) and live alongside real DB rows in the same Zustand collections. Pages that pass these IDs straight to `z.string().uuid()` server fns will throw ZodError (cycle #9 hit this on `/shifts`; filtered locally). Cleaner fix: mint UUIDs at seed time. Watch-item, not blocking. | `src/lib/seed.ts` | P4 | Low |
+| 15 | ~~Seed/demo IDs non-UUID~~ — FIXED cycle #11: all seed branches/services/employees/customers/bookings now use stable UUIDs (`BR_*`, `SV(n)`, `EM(n)`, `CU(n)`, `BK(n)` helpers in `seed.ts`). Local UUID filter in `/shifts` reverted. | — | — | — |
