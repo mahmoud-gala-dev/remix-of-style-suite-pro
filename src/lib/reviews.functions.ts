@@ -78,3 +78,52 @@ export const getEmployeeRatings = createServerFn({ method: "GET" })
       count,
     }));
   });
+
+// P4 — Public branch reviews aggregator for /r/$branch reputation page.
+// Returns anonymized comments + aggregate stats. No auth required.
+export const getPublicBranchReviews = createServerFn({ method: "GET" })
+  .inputValidator((d) => z.object({ branchId: z.string().uuid(), limit: z.number().int().min(1).max(50).default(20) }).parse(d))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: branch } = await supabaseAdmin
+      .from("branches")
+      .select("id,name_en,name_ar,address,phone,logo_url,active")
+      .eq("id", data.branchId)
+      .maybeSingle();
+    if (!branch || !branch.active) throw new Response("Not found", { status: 404 });
+
+    const { data: rows, error } = await supabaseAdmin
+      .from("reviews")
+      .select("rating,comment,created_at")
+      .eq("branch_id", data.branchId)
+      .order("created_at", { ascending: false })
+      .limit(data.limit);
+    if (error) throw new Error(error.message);
+
+    const all = rows ?? [];
+    const count = all.length;
+    const avg = count > 0 ? all.reduce((s, r) => s + r.rating, 0) / count : 0;
+    const distribution = [1, 2, 3, 4, 5].map((star) => ({
+      star,
+      count: all.filter((r) => r.rating === star).length,
+    }));
+
+    return {
+      branch: {
+        id: branch.id,
+        name_en: branch.name_en,
+        name_ar: branch.name_ar,
+        address: branch.address,
+        phone: branch.phone,
+        logo_url: branch.logo_url,
+      },
+      avg,
+      count,
+      distribution,
+      reviews: all.map((r) => ({
+        rating: r.rating,
+        comment: r.comment,
+        created_at: r.created_at,
+      })),
+    };
+  });
