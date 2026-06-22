@@ -139,7 +139,7 @@ function Page() {
               </tr>
             </thead>
             <tbody>
-              {members.map((m: any) => {
+              {members.map((m: Member) => {
                 const cust = customers.find((c) => c.id === m.customer_id);
                 const plan = plans.find((p) => p.id === m.plan_id);
                 return (
