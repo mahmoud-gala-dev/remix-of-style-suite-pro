@@ -5,11 +5,13 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export const listCommissions = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) =>
     z.object({
-      branchId: z.string().uuid(),
+      branchId: z.string().min(1),
       from: z.string().datetime().optional(),
       to: z.string().datetime().optional(),
       employeeId: z.string().uuid().optional(),
@@ -17,6 +19,7 @@ export const listCommissions = createServerFn({ method: "GET" })
     }).parse(d),
   )
   .handler(async ({ data, context }) => {
+    if (!UUID_RE.test(data.branchId)) return [];
     let q = context.supabase
       .from("commissions")
       .select("id,booking_id,employee_id,service_price,commission_pct,amount,paid,paid_at,created_at")
