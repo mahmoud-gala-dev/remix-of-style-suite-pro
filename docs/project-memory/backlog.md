@@ -14,7 +14,7 @@
 - [x] Customer invoice PDF download from `/my/$token`. (cycle #3)
 - [x] Realtime for `queue_items` (already wired in `queue.tsx`).
 - [x] Realtime for `bookings` (calendar + bookings page wired via dedicated channels; hydrate also subscribes). (cycle #3)
-- [ ] `React.lazy()` for heavy routes (`reports`, `calendar`, dashboard) and PDF/Excel libs.
+- [x] Heavy libs lazy-loaded: `jspdf`/`jspdf-autotable` already dynamic-imported; `xlsx` now dynamic-imported in `src/lib/xlsx.ts`. Route splitting already handled per-file by TanStack Router. (cycle #3)
 - [x] Backfill `requireAdmin` shared helper across `webhooks`, `notifications`, `stripe`, `saml`, `twilio`. (cycle #2)
 
 ## P3 (improvements)
