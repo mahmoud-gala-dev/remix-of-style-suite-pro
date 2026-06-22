@@ -29,34 +29,36 @@ export const Route = createFileRoute("/api/public/cron/daily-digest")({
         const startOfYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1).toISOString();
 
         const { data: branches } = await supabaseAdmin
-          .from("branches").select("id, name").eq("active", true);
+          .from("branches").select("id, name_en").eq("active", true);
 
         let notified = 0;
         const { sendWhatsappInternal } = await import("@/lib/twilio.functions");
 
-        for (const br of (branches ?? []) as Array<{ id: string; name: string | null }>) {
-          const [{ count: todayCount }, { data: yPaid }, { count: noShows }, { count: lowStock }] = await Promise.all([
+        for (const br of (branches ?? []) as Array<{ id: string; name_en: string | null }>) {
+          const [{ count: todayCount }, { data: yPaid }, { count: noShows }, { data: prods }] = await Promise.all([
             supabaseAdmin.from("bookings").select("id", { count: "exact", head: true })
               .eq("branch_id", br.id).gte("start_at", startOfToday).lt("start_at", startOfTomorrow)
               .in("status", ["pending", "confirmed"]),
-            supabaseAdmin.from("invoices").select("total_cents")
+            supabaseAdmin.from("invoices").select("total")
               .eq("branch_id", br.id).eq("status", "paid")
               .gte("created_at", startOfYesterday).lt("created_at", startOfToday),
             supabaseAdmin.from("bookings").select("id", { count: "exact", head: true })
               .eq("branch_id", br.id).eq("status", "no_show")
               .gte("start_at", startOfYesterday).lt("start_at", startOfToday),
-            supabaseAdmin.from("products").select("id", { count: "exact", head: true })
-              .eq("branch_id", br.id).eq("active", true)
-              .filter("stock", "lte", "low_stock_threshold"),
+            supabaseAdmin.from("products").select("stock, low_stock_threshold")
+              .eq("branch_id", br.id).eq("active", true),
           ]);
 
-          const revenue = (yPaid ?? []).reduce((s, r: { total_cents: number | null }) => s + (r.total_cents ?? 0), 0);
+          const revenue = ((yPaid ?? []) as Array<{ total: number | null }>)
+            .reduce((s, r) => s + (Number(r.total) || 0), 0);
+          const lowStock = ((prods ?? []) as Array<{ stock: number; low_stock_threshold: number }>)
+            .filter((p) => Number(p.stock) <= Number(p.low_stock_threshold)).length;
           const body = [
-            `☀️ Daily digest${br.name ? ` — ${br.name}` : ""}`,
+            `☀️ Daily digest${br.name_en ? ` — ${br.name_en}` : ""}`,
             `• Today's bookings: ${todayCount ?? 0}`,
-            `• Yesterday revenue: ${(revenue / 100).toFixed(2)}`,
+            `• Yesterday revenue: ${revenue.toFixed(2)}`,
             `• Yesterday no-shows: ${noShows ?? 0}`,
-            `• Low-stock items: ${lowStock ?? 0}`,
+            `• Low-stock items: ${lowStock}`,
           ].join("\n");
 
           const { data: staff } = await supabaseAdmin
