@@ -16,6 +16,7 @@ import { Route as BookRouteImport } from './routes/book'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as RBranchRouteImport } from './routes/r.$branch'
 import { Route as MyTokenRouteImport } from './routes/my.$token'
 import { Route as DisplayBranchRouteImport } from './routes/display.$branch'
 import { Route as AuthenticatedWebhooksRouteImport } from './routes/_authenticated/webhooks'
@@ -77,6 +78,11 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const RBranchRoute = RBranchRouteImport.update({
+  id: '/r/$branch',
+  path: '/r/$branch',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const MyTokenRoute = MyTokenRouteImport.update({
   id: '/my/$token',
@@ -248,6 +254,7 @@ export interface FileRoutesByFullPath {
   '/webhooks': typeof AuthenticatedWebhooksRoute
   '/display/$branch': typeof DisplayBranchRoute
   '/my/$token': typeof MyTokenRoute
+  '/r/$branch': typeof RBranchRoute
   '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
@@ -282,6 +289,7 @@ export interface FileRoutesByTo {
   '/webhooks': typeof AuthenticatedWebhooksRoute
   '/display/$branch': typeof DisplayBranchRoute
   '/my/$token': typeof MyTokenRoute
+  '/r/$branch': typeof RBranchRoute
   '/': typeof AuthenticatedIndexRoute
   '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
@@ -319,6 +327,7 @@ export interface FileRoutesById {
   '/_authenticated/webhooks': typeof AuthenticatedWebhooksRoute
   '/display/$branch': typeof DisplayBranchRoute
   '/my/$token': typeof MyTokenRoute
+  '/r/$branch': typeof RBranchRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
@@ -357,6 +366,7 @@ export interface FileRouteTypes {
     | '/webhooks'
     | '/display/$branch'
     | '/my/$token'
+    | '/r/$branch'
     | '/api/public/client-errors'
     | '/api/public/healthcheck'
     | '/api/public/cron/process-webhooks'
@@ -391,6 +401,7 @@ export interface FileRouteTypes {
     | '/webhooks'
     | '/display/$branch'
     | '/my/$token'
+    | '/r/$branch'
     | '/'
     | '/api/public/client-errors'
     | '/api/public/healthcheck'
@@ -427,6 +438,7 @@ export interface FileRouteTypes {
     | '/_authenticated/webhooks'
     | '/display/$branch'
     | '/my/$token'
+    | '/r/$branch'
     | '/_authenticated/'
     | '/api/public/client-errors'
     | '/api/public/healthcheck'
@@ -443,6 +455,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   DisplayBranchRoute: typeof DisplayBranchRoute
   MyTokenRoute: typeof MyTokenRoute
+  RBranchRoute: typeof RBranchRoute
   ApiPublicClientErrorsRoute: typeof ApiPublicClientErrorsRoute
   ApiPublicHealthcheckRoute: typeof ApiPublicHealthcheckRoute
   ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
@@ -499,6 +512,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/r/$branch': {
+      id: '/r/$branch'
+      path: '/r/$branch'
+      fullPath: '/r/$branch'
+      preLoaderRoute: typeof RBranchRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/my/$token': {
       id: '/my/$token'
@@ -754,6 +774,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   DisplayBranchRoute: DisplayBranchRoute,
   MyTokenRoute: MyTokenRoute,
+  RBranchRoute: RBranchRoute,
   ApiPublicClientErrorsRoute: ApiPublicClientErrorsRoute,
   ApiPublicHealthcheckRoute: ApiPublicHealthcheckRoute,
   ApiPublicCronProcessWebhooksRoute: ApiPublicCronProcessWebhooksRoute,

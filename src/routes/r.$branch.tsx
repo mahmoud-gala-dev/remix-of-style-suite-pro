@@ -53,7 +53,7 @@ function Stars({ value, size = 16 }: { value: number; size?: number }) {
 }
 
 function ReviewsPage() {
-  const data = Route.useLoaderData();
+  const data = Route.useLoaderData() as Awaited<ReturnType<typeof getPublicBranchReviews>>;
   const { branch, avg, count, distribution, reviews } = data;
   const max = Math.max(1, ...distribution.map((d) => d.count));
 
@@ -95,7 +95,7 @@ function ReviewsPage() {
         <section className="rounded-2xl border border-border p-5">
           <h2 className="text-sm font-semibold mb-3">Rating breakdown</h2>
           <div className="space-y-1.5">
-            {[...distribution].reverse().map((d) => (
+              {[...distribution].reverse().map((d: { star: number; count: number }) => (
               <div key={d.star} className="flex items-center gap-3 text-xs">
                 <span className="w-8 tabular-nums">{d.star}★</span>
                 <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
@@ -113,7 +113,7 @@ function ReviewsPage() {
             <p className="text-sm text-muted-foreground">No reviews yet.</p>
           ) : (
             <ul className="space-y-4">
-              {reviews.map((r, i) => (
+              {reviews.map((r: typeof reviews[number], i: number) => (
                 <li key={i} className="rounded-2xl border border-border p-4">
                   <div className="flex items-center justify-between gap-3">
                     <Stars value={r.rating} size={14} />
