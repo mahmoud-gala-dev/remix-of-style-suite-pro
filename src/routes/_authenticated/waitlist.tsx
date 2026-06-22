@@ -46,7 +46,7 @@ function Page() {
 
   return (
     <div className="p-8 max-w-[1400px] mx-auto">
-      <PageHeader title="Waitlist" subtitle={`${rows.length} ${rows.length === 1 ? "entry" : "entries"}`} />
+      <PageHeader title={t("waitlist")} subtitle={t("waitlistEntries").replace("{n}", String(rows.length))} />
       <DataState
         loading={q.isLoading}
         error={q.error}
@@ -58,12 +58,12 @@ function Page() {
           <table className="w-full text-sm">
             <thead className="bg-muted/40 text-xs uppercase tracking-wider">
               <tr>
-                <th className="text-start p-3">Customer</th>
-                <th className="text-start p-3">Phone</th>
-                <th className="text-start p-3">Preferred</th>
-                <th className="text-start p-3">Status</th>
-                <th className="text-start p-3">Created</th>
-                <th className="text-end p-3">Actions</th>
+                <th className="text-start p-3">{t("customer")}</th>
+                <th className="text-start p-3">{t("phone")}</th>
+                <th className="text-start p-3">{t("preferred")}</th>
+                <th className="text-start p-3">{t("status")}</th>
+                <th className="text-start p-3">{t("createdAt")}</th>
+                <th className="text-end p-3">{t("actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -88,18 +88,18 @@ function Page() {
                     <td className="p-3">
                       <div className="flex justify-end gap-1">
                         <a href={waLink(r.customer_phone, msg)} target="_blank" rel="noopener noreferrer"
-                          title="WhatsApp" className="p-2 rounded-md hover:bg-accent">
+                          title={t("whatsapp")} className="p-2 rounded-md hover:bg-accent">
                           <MessageCircle className="size-4" />
                         </a>
-                        <button title="Mark notified" onClick={() => updMut.mutate({ id: r.id, status: "notified" })}
+                        <button title={t("markNotified")} onClick={() => updMut.mutate({ id: r.id, status: "notified" })}
                           className="p-2 rounded-md hover:bg-accent">
                           <Bell className="size-4" />
                         </button>
-                        <button title="Converted" onClick={() => updMut.mutate({ id: r.id, status: "converted" })}
+                        <button title={t("converted")} onClick={() => updMut.mutate({ id: r.id, status: "converted" })}
                           className="p-2 rounded-md hover:bg-accent text-primary">
                           <Check className="size-4" />
                         </button>
-                        <button title="Delete" onClick={() => delMut.mutate(r.id)}
+                        <button title={t("delete")} onClick={() => delMut.mutate(r.id)}
                           className="p-2 rounded-md hover:bg-accent text-destructive">
                           <Trash2 className="size-4" />
                         </button>
