@@ -29,16 +29,16 @@ export const suggestBestTime = createServerFn({ method: "POST" })
     const toIso = new Date(Date.now() + data.horizonDays * 86400_000).toISOString();
     const { data: bookings } = await context.supabase
       .from("bookings")
-      .select("starts_at,ends_at,status,employee_id,service_id")
+      .select("start_at,end_at,status,employee_id,service_id")
       .eq("branch_id", data.branchId)
-      .gte("starts_at", new Date(Date.now() - 30 * 86400_000).toISOString())
-      .order("starts_at", { ascending: true })
+      .gte("start_at", new Date(Date.now() - 30 * 86400_000).toISOString())
+      .order("start_at", { ascending: true })
       .limit(500);
 
     // Bucket density by (weekday, hour)
     const density: Record<string, number> = {};
     for (const b of bookings ?? []) {
-      const d = new Date(b.starts_at);
+      const d = new Date(b.start_at);
       const key = `${d.getDay()}-${d.getHours()}`;
       density[key] = (density[key] ?? 0) + 1;
     }
@@ -68,7 +68,7 @@ export const predictNoShow = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { data: b, error } = await context.supabase
       .from("bookings")
-      .select("id,customer_id,starts_at,status")
+      .select("id,customer_id,start_at,status")
       .eq("id", data.bookingId)
       .maybeSingle();
     if (error) throw new Error(error.message);
@@ -81,9 +81,9 @@ export const predictNoShow = createServerFn({ method: "POST" })
       .maybeSingle();
     const { data: history } = await context.supabase
       .from("bookings")
-      .select("status,starts_at")
+      .select("status,start_at")
       .eq("customer_id", b.customer_id)
-      .order("starts_at", { ascending: false })
+      .order("start_at", { ascending: false })
       .limit(20);
 
     const total = history?.length ?? 0;
@@ -116,10 +116,13 @@ export const suggestServices = createServerFn({ method: "POST" })
     if (!customer) throw new Response("Not found", { status: 404 });
 
     const { data: history } = await context.supabase
-      .from("invoice_items")
-      .select("service_id,services(name_en,name_ar)")
+      .from("invoices")
+      .select("invoice_items(service_id,services(name_en,name_ar))")
       .eq("customer_id", data.customerId)
-      .limit(50);
+      .limit(30);
+    const pastServices = (history ?? []).flatMap((inv) =>
+      (inv.invoice_items ?? []).map((it) => it.services),
+    );
 
     const { data: catalog } = await context.supabase
       .from("services")
@@ -141,7 +144,7 @@ export const suggestServices = createServerFn({ method: "POST" })
         }),
       }),
       prompt: `Salon services catalog: ${JSON.stringify(catalog ?? [])}.
-Customer past services: ${JSON.stringify(history?.map((h) => h.services) ?? [])}.
+Customer past services: ${JSON.stringify(pastServices)}.
 Customer gender: ${customer.gender ?? "unspecified"}.
 Recommend up to 3 services from the catalog (use exact service_id from catalog). Brief practical reason each.`,
     });
