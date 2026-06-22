@@ -3,6 +3,7 @@ import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader } from "@/components/shell/page";
 import { useT } from "@/lib/i18n";
 import { SettingsGeneral } from "./settings/-SettingsGeneral";
+import { SettingsSalonType } from "./settings/-SettingsSalonType";
 import { SettingsLayout } from "./settings/-SettingsLayout";
 import { SettingsData } from "./settings/-SettingsData";
 import { SettingsNotifications } from "./settings/-SettingsNotifications";
@@ -28,6 +29,7 @@ function Page() {
     <div className="p-8 max-w-3xl mx-auto space-y-6">
       <PageHeader title={t("settings")} subtitle={t("configurePreferences")} />
       <SettingsGeneral />
+      <SettingsSalonType />
       <SettingsLayout />
       <SettingsNotifications />
       <SettingsTwilio />
