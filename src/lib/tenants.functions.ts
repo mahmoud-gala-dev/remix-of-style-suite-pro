@@ -1,8 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
-async function assertSuperAdmin(ctx: { supabase: any; userId: string }) {
+async function assertSuperAdmin(ctx: { supabase: SupabaseClient; userId: string }) {
   const { data } = await ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "super_admin" });
   if (!data) throw new Response("Forbidden", { status: 403 });
 }
