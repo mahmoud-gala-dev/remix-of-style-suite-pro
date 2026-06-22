@@ -1224,6 +1224,27 @@ export type Database = {
         }
         Relationships: []
       }
+      report_cache: {
+        Row: {
+          created_at: string
+          expires_at: string
+          key: string
+          payload: Json
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          key: string
+          payload: Json
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          key?: string
+          payload?: Json
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           booking_id: string
@@ -1798,6 +1819,7 @@ export type Database = {
         Returns: number
       }
       cleanup_rate_limit_buckets: { Args: never; Returns: number }
+      cleanup_report_cache: { Args: never; Returns: number }
       count_tenant_bookings_this_period: {
         Args: { _tenant_id: string }
         Returns: number
