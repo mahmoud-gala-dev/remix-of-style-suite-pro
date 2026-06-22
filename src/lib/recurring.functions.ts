@@ -4,6 +4,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { expandRecurrence } from "@/lib/recurring";
 
 const schema = z.object({
   branchId: z.string().uuid(),
@@ -16,14 +17,6 @@ const schema = z.object({
   pattern: z.enum(["weekly", "biweekly", "monthly"]),
   occurrences: z.number().int().min(2).max(26),
 });
-
-function addInterval(d: Date, pattern: "weekly" | "biweekly" | "monthly", n: number) {
-  const out = new Date(d);
-  if (pattern === "weekly") out.setDate(out.getDate() + 7 * n);
-  else if (pattern === "biweekly") out.setDate(out.getDate() + 14 * n);
-  else out.setMonth(out.getMonth() + n);
-  return out;
-}
 
 export const createRecurringSeries = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -39,25 +32,23 @@ export const createRecurringSeries = createServerFn({ method: "POST" })
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const groupId = crypto.randomUUID();
-    const startBase = new Date(data.startAt);
-    const endBase = new Date(data.endAt);
-    const duration = endBase.getTime() - startBase.getTime();
-
-    const rows = Array.from({ length: data.occurrences }, (_, i) => {
-      const s = addInterval(startBase, data.pattern, i);
-      const e = new Date(s.getTime() + duration);
-      return {
+    const instances = expandRecurrence(
+      new Date(data.startAt),
+      new Date(data.endAt),
+      data.pattern,
+      data.occurrences,
+    );
+    const rows = instances.map(({ start, end }) => ({
         branch_id: data.branchId,
         customer_id: data.customerId,
         employee_id: data.employeeId,
         service_id: data.serviceId,
-        start_at: s.toISOString(),
-        end_at: e.toISOString(),
+        start_at: start.toISOString(),
+        end_at: end.toISOString(),
         status: "confirmed" as const,
         price: data.price,
         recurrence_group_id: groupId,
-      };
-    });
+    }));
 
     const { data: created, error } = await supabaseAdmin
       .from("bookings")
