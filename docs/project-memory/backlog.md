@@ -22,7 +22,7 @@
 - [ ] Recurring bookings UI hooked to existing `recurring.functions.ts`.
 - [ ] Saved filters on bookings, invoices, customers.
 - [ ] Expand test coverage: bookings, invoices, loyalty, 2FA, OTP, Stripe webhook.
-- [ ] Remove residual `any` types (11 locations).
+- [~] Removed `any` in webhooks/tenants/memberships routes (cycle #3). Residual: `admin.functions.ts` supabase dynamic table, `restore.functions.ts`, `lovable-error-reporting.ts` (Sentry dynamic import), `tenants.functions.ts` ctx typing, `coupons.tsx` select cast — all intentional dynamic boundaries.
 
 ## P4 (nice-to-have / future)
 - [ ] Consolidate PDF libraries (keep one of jspdf / pdf-lib).
