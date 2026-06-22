@@ -1396,6 +1396,8 @@ export type Database = {
           id: string
           name: string
           plan: string
+          salon_type: string
+          staff_photos_public: boolean
           status: string
           updated_at: string
         }
@@ -1404,6 +1406,8 @@ export type Database = {
           id?: string
           name: string
           plan?: string
+          salon_type?: string
+          staff_photos_public?: boolean
           status?: string
           updated_at?: string
         }
@@ -1412,6 +1416,8 @@ export type Database = {
           id?: string
           name?: string
           plan?: string
+          salon_type?: string
+          staff_photos_public?: boolean
           status?: string
           updated_at?: string
         }
@@ -1747,6 +1753,10 @@ export type Database = {
       }
       refresh_mv_daily_revenue: { Args: never; Returns: undefined }
       request_otp: { Args: { p_phone: string }; Returns: string }
+      seed_service_templates: {
+        Args: { _branch_id: string; _salon_type?: string; _tenant_id: string }
+        Returns: number
+      }
       user_has_branch: {
         Args: { _bid: string; _uid: string }
         Returns: boolean
