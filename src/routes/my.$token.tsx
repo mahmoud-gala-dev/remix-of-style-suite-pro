@@ -3,8 +3,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Calendar, MapPin, Scissors, User, XCircle, MessageCircle, CheckCircle2, Star } from "lucide-react";
-import { getBookingByToken, cancelBookingByToken } from "@/lib/customer-portal.functions";
+import { Calendar, MapPin, Scissors, User, XCircle, MessageCircle, CheckCircle2, Star, FileDown } from "lucide-react";
+import { getBookingByToken, cancelBookingByToken, getInvoiceByBookingToken } from "@/lib/customer-portal.functions";
 import { submitReview, getReviewForBooking } from "@/lib/reviews.functions";
 import { useDir, useI18n } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
@@ -24,6 +24,7 @@ function MyBookingPage() {
   const cancelFn = useServerFn(cancelBookingByToken);
   const fetchReview = useServerFn(getReviewForBooking);
   const submitReviewFn = useServerFn(submitReview);
+  const fetchInvoice = useServerFn(getInvoiceByBookingToken);
   const qc = useQueryClient();
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [rating, setRating] = useState(0);
@@ -40,6 +41,44 @@ function MyBookingPage() {
     queryFn: () => fetchReview({ data: { token } }),
     retry: false,
   });
+
+  const invoiceQ = useQuery({
+    queryKey: ["portal-invoice", token],
+    queryFn: () => fetchInvoice({ data: { token } }),
+    retry: false,
+  });
+
+  async function downloadInvoicePdf() {
+    const inv = invoiceQ.data;
+    if (!inv) return;
+    const { jsPDF } = await import("jspdf");
+    const autoTable = (await import("jspdf-autotable")).default;
+    const doc = new jsPDF({ unit: "pt", format: "a4" });
+    const branchName = lang === "ar" ? inv.branch?.name_ar : inv.branch?.name_en;
+    doc.setFontSize(18); doc.text(branchName ?? "", 40, 50);
+    doc.setFontSize(10); doc.setTextColor(120);
+    doc.text("TAX INVOICE", 40, 68); doc.setTextColor(0);
+    doc.setFontSize(12); doc.text(`# ${inv.number}`, 555, 50, { align: "right" });
+    doc.setFontSize(10); doc.setTextColor(120);
+    doc.text(new Date(inv.issuedAt).toLocaleDateString(), 555, 65, { align: "right" });
+    doc.setTextColor(0);
+    doc.text(`Billed to: ${inv.customer?.name ?? "—"}`, 40, 100);
+    autoTable(doc, {
+      startY: 120,
+      head: [["Description", "Qty", "Unit", "Total"]],
+      body: inv.items.map((it) => [it.description, String(it.qty), fmtMoney(it.unitPrice), fmtMoney(it.total)]),
+      headStyles: { fillColor: [30, 30, 30] },
+      columnStyles: { 1: { halign: "right" }, 2: { halign: "right" }, 3: { halign: "right" } },
+    });
+    const finalY = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 20;
+    const right = 555; const labelX = 400;
+    doc.text("Subtotal", labelX, finalY); doc.text(fmtMoney(inv.subtotal), right, finalY, { align: "right" });
+    if (inv.discount > 0) { doc.text("Discount", labelX, finalY + 15); doc.text(`- ${fmtMoney(inv.discount)}`, right, finalY + 15, { align: "right" }); }
+    doc.text("Tax", labelX, finalY + 30); doc.text(fmtMoney(inv.tax), right, finalY + 30, { align: "right" });
+    doc.setFontSize(12).setFont(undefined as unknown as string, "bold");
+    doc.text("Total", labelX, finalY + 52); doc.text(fmtMoney(inv.total), right, finalY + 52, { align: "right" });
+    doc.save(`${inv.number}.pdf`);
+  }
 
   const reviewMut = useMutation({
     mutationFn: () => submitReviewFn({ data: { token, rating, comment: comment.trim() || undefined } }),
