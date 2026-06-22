@@ -6,6 +6,7 @@ import { PageHeader, Surface } from "@/components/shell/page";
 import { useCurrentBranch, useData } from "@/lib/store";
 import { supabase } from "@/integrations/supabase/client";
 import { useT } from "@/lib/i18n";
+import { notify } from "@/lib/push";
 import { minutesSince } from "@/lib/format";
 import { ArrowRight, CheckCircle2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -46,8 +47,11 @@ function Page() {
   const removeQueue = useData((s) => s.removeQueue);
 
   const startServing = async (id: string) => {
+    const item = allQueue.find((q) => q.id === id);
+    const c = customers.find((x) => x.id === item?.customerId);
     updateQueue(id, { status: "inProgress" });
     await supabase.from("queue_items").update({ status: "in_progress" }).eq("id", id);
+    notify("Next customer", c?.name ? `${c.name} — please come in` : "Calling next customer");
   };
   const completeOrCancel = async (id: string) => {
     removeQueue(id);
