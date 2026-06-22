@@ -46,6 +46,7 @@ import { Route as ApiPublicHealthcheckRouteImport } from './routes/api/public/he
 import { Route as ApiPublicClientErrorsRouteImport } from './routes/api/public/client-errors'
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 import { Route as ApiPublicCronWebVitalsAlertRouteImport } from './routes/api/public/cron/web-vitals-alert'
+import { Route as ApiPublicCronReviewRequestsRouteImport } from './routes/api/public/cron/review-requests'
 import { Route as ApiPublicCronRetryWebhooksRouteImport } from './routes/api/public/cron/retry-webhooks'
 import { Route as ApiPublicCronProcessWebhooksRouteImport } from './routes/api/public/cron/process-webhooks'
 import { Route as ApiPublicCronBookingRemindersRouteImport } from './routes/api/public/cron/booking-reminders'
@@ -239,6 +240,12 @@ const ApiPublicCronWebVitalsAlertRoute =
     path: '/api/public/cron/web-vitals-alert',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronReviewRequestsRoute =
+  ApiPublicCronReviewRequestsRouteImport.update({
+    id: '/api/public/cron/review-requests',
+    path: '/api/public/cron/review-requests',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCronRetryWebhooksRoute =
   ApiPublicCronRetryWebhooksRouteImport.update({
     id: '/api/public/cron/retry-webhooks',
@@ -306,6 +313,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
+  '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
   '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRouteWithChildren
@@ -349,6 +357,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
+  '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
   '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRouteWithChildren
@@ -394,6 +403,7 @@ export interface FileRoutesById {
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
+  '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
   '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRouteWithChildren
@@ -439,6 +449,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
+    | '/api/public/cron/review-requests'
     | '/api/public/cron/web-vitals-alert'
     | '/api/public/webhooks/stripe'
     | '/api/public/scim/v2/Users'
@@ -482,6 +493,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
+    | '/api/public/cron/review-requests'
     | '/api/public/cron/web-vitals-alert'
     | '/api/public/webhooks/stripe'
     | '/api/public/scim/v2/Users'
@@ -526,6 +538,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
+    | '/api/public/cron/review-requests'
     | '/api/public/cron/web-vitals-alert'
     | '/api/public/webhooks/stripe'
     | '/api/public/scim/v2/Users'
@@ -548,6 +561,7 @@ export interface RootRouteChildren {
   ApiPublicCronBookingRemindersRoute: typeof ApiPublicCronBookingRemindersRoute
   ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
   ApiPublicCronRetryWebhooksRoute: typeof ApiPublicCronRetryWebhooksRoute
+  ApiPublicCronReviewRequestsRoute: typeof ApiPublicCronReviewRequestsRoute
   ApiPublicCronWebVitalsAlertRoute: typeof ApiPublicCronWebVitalsAlertRoute
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
   ApiPublicScimV2UsersRoute: typeof ApiPublicScimV2UsersRouteWithChildren
@@ -814,6 +828,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronWebVitalsAlertRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/review-requests': {
+      id: '/api/public/cron/review-requests'
+      path: '/api/public/cron/review-requests'
+      fullPath: '/api/public/cron/review-requests'
+      preLoaderRoute: typeof ApiPublicCronReviewRequestsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/retry-webhooks': {
       id: '/api/public/cron/retry-webhooks'
       path: '/api/public/cron/retry-webhooks'
@@ -934,6 +955,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronBookingRemindersRoute: ApiPublicCronBookingRemindersRoute,
   ApiPublicCronProcessWebhooksRoute: ApiPublicCronProcessWebhooksRoute,
   ApiPublicCronRetryWebhooksRoute: ApiPublicCronRetryWebhooksRoute,
+  ApiPublicCronReviewRequestsRoute: ApiPublicCronReviewRequestsRoute,
   ApiPublicCronWebVitalsAlertRoute: ApiPublicCronWebVitalsAlertRoute,
   ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
   ApiPublicScimV2UsersRoute: ApiPublicScimV2UsersRouteWithChildren,
