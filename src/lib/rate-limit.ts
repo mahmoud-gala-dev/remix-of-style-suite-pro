@@ -61,6 +61,18 @@ export async function rateLimit(key: string, opts: RateLimitOptions = {}): Promi
   }
 }
 
+/** Extract the best-effort client IP from a request's headers.
+ *  Honors Cloudflare's `cf-connecting-ip` first, then the leftmost entry
+ *  of `x-forwarded-for`. Falls back to "unknown" when neither is present.
+ */
+export function getClientIp(request: Request): string {
+  return (
+    request.headers.get("cf-connecting-ip") ??
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    "unknown"
+  );
+}
+
 /**
  * IP-based distributed rate limit for public HTTP routes.
  * Reads cf-connecting-ip / x-forwarded-for from the incoming Request.
@@ -70,9 +82,5 @@ export async function rateLimitByIp(
   scope: string,
   opts: RateLimitOptions = {},
 ): Promise<void> {
-  const ip =
-    request.headers.get("cf-connecting-ip") ??
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    "unknown";
-  await rateLimit(`${scope}:${ip}`, opts);
+  await rateLimit(`${scope}:${getClientIp(request)}`, opts);
 }
