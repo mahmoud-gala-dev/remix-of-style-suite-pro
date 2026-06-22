@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useData } from "@/lib/store";
 import { useServerFn } from "@tanstack/react-start";
@@ -122,6 +122,7 @@ async function fetchAll() {
 
 export function useHydrate() {
   const fetchSettings = useServerFn(getAppSettings);
+  const queryClient = useQueryClient();
   const settings = useQuery({
     queryKey: ["app-settings"],
     queryFn: () => fetchSettings(),
@@ -150,6 +151,22 @@ export function useHydrate() {
         branches.find((b) => b.id === s.currentBranchId)?.id ?? branches[0]?.id ?? s.currentBranchId,
     }));
   }, [query.data]);
+
+  // Realtime: refetch when bookings or queue change anywhere.
+  useEffect(() => {
+    const channel = supabase
+      .channel("realtime:bookings-queue")
+      .on("postgres_changes", { event: "*", schema: "public", table: "bookings" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["hydrate"] });
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "queue_items" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["hydrate"] });
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   return query;
 }
