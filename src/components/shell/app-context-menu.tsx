@@ -56,22 +56,22 @@ export function AppContextMenu({ children }: { children: ReactNode }) {
         <div className="contents">{children}</div>
       </ContextMenuTrigger>
       <ContextMenuContent className="w-64">
-        <ContextMenuLabel>{t("navigation")}</ContextMenuLabel>
+        <ContextMenuLabel>{lang === "ar" ? "التنقل" : "Navigation"}</ContextMenuLabel>
         <ContextMenuItem onSelect={() => router.history.back()}>
           {lang === "ar" ? <ArrowRight className="size-4 me-2" /> : <ArrowLeft className="size-4 me-2" />}
-          {t("back")}
+          {lang === "ar" ? "رجوع" : "Back"}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => router.history.forward()}>
           {lang === "ar" ? <ArrowLeft className="size-4 me-2" /> : <ArrowRight className="size-4 me-2" />}
-          {t("forward")}
+          {lang === "ar" ? "تقدّم" : "Forward"}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => router.invalidate()}>
           <RotateCw className="size-4 me-2" />
-          {t("refresh")}
+          {lang === "ar" ? "تحديث" : "Refresh"}
         </ContextMenuItem>
         <ContextMenuItem onSelect={openPalette}>
           <Command className="size-4 me-2" />
-          {t("commandPalette")}
+          {lang === "ar" ? "لوحة الأوامر" : "Command palette"}
           <ContextMenuShortcut>⌘K</ContextMenuShortcut>
         </ContextMenuItem>
 
@@ -102,7 +102,7 @@ export function AppContextMenu({ children }: { children: ReactNode }) {
 
         <ContextMenuItem onSelect={themeToggle}>
           {themeMode === "dark" ? <Sun className="size-4 me-2" /> : <Moon className="size-4 me-2" />}
-          {t("toggleTheme")}
+          {lang === "ar" ? "تبديل المظهر" : "Toggle theme"}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => setLang(lang === "ar" ? "en" : "ar")}>
           <Languages className="size-4 me-2" />
