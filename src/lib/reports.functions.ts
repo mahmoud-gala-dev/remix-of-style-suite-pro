@@ -118,8 +118,9 @@ export const getReportsCompare = createServerFn({ method: "GET" })
     const prev = previousPeriod({ from, toExclusive });
     const prevFrom = prev.from;
     const prevTo = prev.toExclusive;
-
-    async function totals(start: Date, end: Date) {
+    const key = reportKey("reports.compare", { from: data.from, to: data.to, branchId: data.branchId });
+    return cached(key, 60, async () => {
+      async function totals(start: Date, end: Date) {
       let q = context.supabase
         .from("bookings")
         .select("price,status")
@@ -132,13 +133,13 @@ export const getReportsCompare = createServerFn({ method: "GET" })
         .filter((r) => revenueStatuses.has(r.status))
         .reduce((s, r) => s + Number(r.price), 0);
       return { bookings: rows?.length ?? 0, revenue };
-    }
+      }
 
-    const [current, previous] = await Promise.all([
+      const [current, previous] = await Promise.all([
       totals(from, toExclusive),
       totals(prevFrom, prevTo),
     ]);
-    return {
+      return {
       current,
       previous,
       delta: {
@@ -146,7 +147,8 @@ export const getReportsCompare = createServerFn({ method: "GET" })
         revenue: percentDelta(current.revenue, previous.revenue),
       },
       range: { from: data.from, to: data.to, prev_from: prevFrom.toISOString().slice(0, 10), prev_to: prevTo.toISOString().slice(0, 10) },
-    };
+      };
+    });
   });
 
 // P6 — Server-rendered PDF summary. Returns a base64 PDF so the client can
