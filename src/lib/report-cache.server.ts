@@ -51,3 +51,17 @@ export function reportKey(
     .join("&");
   return `${name}|${ordered}`;
 }
+
+/**
+ * Cycle #18 — invalidate report-cache entries after a booking mutation so the
+ * next read recomputes instead of serving a 60-second-stale summary.
+ * Best-effort: failures must never break the originating write.
+ */
+export async function invalidateReportCache(prefix = "reports."): Promise<void> {
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await supabaseAdmin.from("report_cache").delete().like("key", `${prefix}%`);
+  } catch {
+    /* swallow — invalidation is best-effort */
+  }
+}
