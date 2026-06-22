@@ -10,8 +10,11 @@ import { getAuditLog } from "@/lib/audit.functions";
 import { downloadCsv, toCsv } from "@/lib/csv";
 import { downloadXlsx } from "@/lib/xlsx";
 import { useT } from "@/lib/i18n";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 export const Route = createFileRoute("/_authenticated/audit")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Audit Log" }] }),
   component: () => (

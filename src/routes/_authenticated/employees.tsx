@@ -7,8 +7,11 @@ import { initials } from "@/lib/format";
 import { Phone, Plus, Star } from "lucide-react";
 import { useState } from "react";
 import { EmployeeDialog } from "@/components/dialogs/employee-dialog";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 export const Route = createFileRoute("/_authenticated/employees")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Employees" }] }),
   component: () => (

@@ -13,8 +13,11 @@ import { DataState } from "@/components/shell/data-state";
 import { InvoiceForm } from "./invoices/-InvoiceForm";
 import { InvoiceView } from "./invoices/-InvoiceView";
 import type { Invoice } from "./invoices/-types";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 export const Route = createFileRoute("/_authenticated/invoices")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Invoices" }] }),
   component: () => (

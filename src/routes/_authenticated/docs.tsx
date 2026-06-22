@@ -3,8 +3,11 @@ import { useMemo, useState } from "react";
 import { DocsNav } from "./docs/-DocsNav";
 import { DocsTimeline } from "./docs/-DocsTimeline";
 import { MODULES } from "./docs/-modules-data";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 export const Route = createFileRoute("/_authenticated/docs")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   component: DocsPage,
 });
 

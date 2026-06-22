@@ -9,6 +9,7 @@ import { Modal, Field, inputCls, ModalActions } from "@/components/ui/modal";
 import { useCurrentBranch } from "@/lib/store";
 import { useT } from "@/lib/i18n";
 import { DataState } from "@/components/shell/data-state";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 type Coupon = {
   id: string; code: string; kind: "percent" | "fixed"; value: number;
@@ -16,6 +17,8 @@ type Coupon = {
 };
 
 export const Route = createFileRoute("/_authenticated/coupons")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Coupons" }] }),
   component: () => (

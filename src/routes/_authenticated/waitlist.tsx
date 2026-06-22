@@ -10,8 +10,11 @@ import { listWaitlist, updateWaitlistStatus, deleteWaitlistEntry } from "@/lib/w
 import { waLink, buildWaitlistOpenSlotMsg } from "@/lib/whatsapp";
 import { MessageCircle, Trash2, Check, Bell } from "lucide-react";
 import { toast } from "sonner";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 export const Route = createFileRoute("/_authenticated/waitlist")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Waitlist" }] }),
   component: () => (<AppShell><Page /></AppShell>),

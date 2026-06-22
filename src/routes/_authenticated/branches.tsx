@@ -7,8 +7,11 @@ import { Clock, MapPin, Phone, Plus, Store } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { BranchDialog } from "@/components/dialogs/branch-dialog";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 export const Route = createFileRoute("/_authenticated/branches")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Branches" }] }),
   component: () => (

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/shell/app-shell";
@@ -27,6 +28,8 @@ import { useI18n } from "@/lib/i18n";
 import { useMemo, useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/reports")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Reports" }] }),
   component: () => (

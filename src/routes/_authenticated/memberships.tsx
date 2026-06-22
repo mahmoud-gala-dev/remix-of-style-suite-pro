@@ -11,6 +11,7 @@ import { useCurrentBranch, useData } from "@/lib/store";
 import { useI18n, useT } from "@/lib/i18n";
 import { DataState } from "@/components/shell/data-state";
 import type { Tables } from "@/integrations/supabase/types";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 type Member = Tables<"customer_memberships">;
 
@@ -27,6 +28,8 @@ type Plan = {
 };
 
 export const Route = createFileRoute("/_authenticated/memberships")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Memberships" }] }),
   component: () => (

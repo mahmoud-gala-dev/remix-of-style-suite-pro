@@ -12,8 +12,11 @@ import { SettingsStripe } from "./settings/-SettingsStripe";
 import { SettingsSAML } from "./settings/-SettingsSAML";
 import { SettingsBilling } from "./settings/-SettingsBilling";
 import { Settings2FA } from "./settings/-Settings2FA";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 export const Route = createFileRoute("/_authenticated/settings")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Settings" }] }),
   component: () => (

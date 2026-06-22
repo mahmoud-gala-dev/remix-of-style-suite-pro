@@ -10,8 +10,11 @@ import { useCurrentBranch } from "@/lib/store";
 import { listProducts, upsertProduct, recordStockMovement, type Product } from "@/lib/products.functions";
 import { fmtMoney } from "@/lib/format";
 import { useT } from "@/lib/i18n";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 export const Route = createFileRoute("/_authenticated/inventory")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Inventory — Vanguard Salon OS" }] }),
   component: () => <AppShell><InventoryPage /></AppShell>,

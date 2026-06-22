@@ -10,8 +10,11 @@ import { useRole } from "@/lib/use-role";
 import { listCommissions, markCommissionPaid } from "@/lib/commissions.functions";
 import { fmtMoney } from "@/lib/format";
 import { useT } from "@/lib/i18n";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 export const Route = createFileRoute("/_authenticated/commissions")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Commissions — Vanguard Salon OS" }] }),
   component: () => <AppShell><CommissionsPage /></AppShell>,

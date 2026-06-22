@@ -10,10 +10,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { listTenants, upsertTenant, deleteTenant } from "@/lib/tenants.functions";
 import { useT } from "@/lib/i18n";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 type Tenant = Awaited<ReturnType<typeof listTenants>>[number];
 
 export const Route = createFileRoute("/_authenticated/tenants")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Tenants" }] }),
   component: () => (

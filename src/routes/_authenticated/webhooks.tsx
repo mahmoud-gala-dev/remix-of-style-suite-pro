@@ -11,11 +11,14 @@ import { Input } from "@/components/ui/input";
 import { listWebhooks, upsertWebhook, deleteWebhook, listDeliveries, retryFailedWebhooks, sendTestPing } from "@/lib/webhooks.functions";
 import { useT } from "@/lib/i18n";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { RouteError, RouteNotFound } from "@/components/shell/route-error";
 
 type Hook = Awaited<ReturnType<typeof listWebhooks>>[number];
 type Delivery = Awaited<ReturnType<typeof listDeliveries>>[number];
 
 export const Route = createFileRoute("/_authenticated/webhooks")({
+  errorComponent: RouteError,
+  notFoundComponent: RouteNotFound,
   ssr: false,
   head: () => ({ meta: [{ title: "Webhooks" }] }),
   component: () => (
