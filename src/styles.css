@@ -64,7 +64,7 @@
   --font-sans: "Inter", system-ui, sans-serif;
   --font-display: "Syne", "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
-  --font-arabic: "IBM Plex Sans Arabic", "Inter", system-ui, sans-serif;
+  --font-arabic: "Tajawal", "IBM Plex Sans Arabic", "Inter", system-ui, sans-serif;
 }
 
 /* Default to dark theme */
