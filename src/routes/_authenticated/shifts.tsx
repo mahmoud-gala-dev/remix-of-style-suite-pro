@@ -83,6 +83,7 @@ function Editor({ employeeId, lang }: { employeeId: string; lang: string }) {
     queryKey: ["shifts", employeeId],
     queryFn: () => list({ data: { employeeId } }),
   });
+  const data = q.data ?? { shifts: [], daysOff: [] };
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["shifts", employeeId] });
   const onErr = (e: unknown) => toast.error(e instanceof Error ? e.message : "Failed");
@@ -119,9 +120,8 @@ function Editor({ employeeId, lang }: { employeeId: string; lang: string }) {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <Surface>
         <div className="text-sm font-semibold mb-3">Weekly shifts</div>
-        <DataState query={q}>
-          {(data) => (
-            <>
+        <DataState loading={q.isLoading} error={q.error} retry={() => q.refetch()}>
+          <>
               <ul className="space-y-1 mb-4">
                 {data.shifts.map((s) => (
                   <li key={s.id} className="flex items-center justify-between text-sm bg-surface-2 rounded-md px-3 py-2">
@@ -152,16 +152,14 @@ function Editor({ employeeId, lang }: { employeeId: string; lang: string }) {
                   <Plus className="size-3.5" /> Add
                 </button>
               </div>
-            </>
-          )}
+          </>
         </DataState>
       </Surface>
 
       <Surface>
         <div className="text-sm font-semibold mb-3">Days off</div>
-        <DataState query={q}>
-          {(data) => (
-            <>
+        <DataState loading={q.isLoading} error={q.error} retry={() => q.refetch()}>
+          <>
               <ul className="space-y-1 mb-4">
                 {data.daysOff.map((d) => (
                   <li key={d.id} className="flex items-center justify-between text-sm bg-surface-2 rounded-md px-3 py-2">
@@ -192,8 +190,7 @@ function Editor({ employeeId, lang }: { employeeId: string; lang: string }) {
                   <Plus className="size-3.5" /> Add
                 </button>
               </div>
-            </>
-          )}
+          </>
         </DataState>
       </Surface>
     </div>
