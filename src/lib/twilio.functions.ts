@@ -130,3 +130,25 @@ export const testTwilio = createServerFn({ method: "POST" })
     const r = await twilioSend(cfg, data.to, "Vanguard test message ✅");
     return { ok: true, sid: r.sid };
   });
+
+/**
+ * Internal helper for other server functions (e.g. OTP send).
+ * Returns `{ sent: false, reason }` instead of throwing when Twilio is
+ * disabled or not configured, so callers can fall back gracefully.
+ */
+export async function sendWhatsappInternal(
+  to: string,
+  body: string,
+): Promise<{ sent: true; sid: string } | { sent: false; reason: string }> {
+  try {
+    const cfg = await loadConfig();
+    if (!cfg.enabled) return { sent: false, reason: "disabled" };
+    if (!cfg.account_sid || !cfg.auth_token || !cfg.from_whatsapp) {
+      return { sent: false, reason: "not_configured" };
+    }
+    const r = await twilioSend(cfg, to, body);
+    return { sent: true, sid: r.sid };
+  } catch (e) {
+    return { sent: false, reason: e instanceof Error ? e.message : "send_failed" };
+  }
+}
