@@ -3,7 +3,7 @@ import { Printer, FileDown, Receipt } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { supabase } from "@/integrations/supabase/client";
 import { fmtMoney } from "@/lib/format";
-import type { Invoice, InvoiceItem } from "./types";
+import type { Invoice, InvoiceItem } from "./-types";
 
 type Props = {
   invoice: Invoice;
