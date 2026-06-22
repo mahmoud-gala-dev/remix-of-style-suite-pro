@@ -59,6 +59,7 @@ export const restoreTenantFromCsv = createServerFn({ method: "POST" })
     }
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { insertDynamic } = await import("@/lib/dynamic-table.server");
     let inserted = 0;
     let skipped = 0;
 
@@ -98,7 +99,6 @@ export const restoreTenantFromCsv = createServerFn({ method: "POST" })
           record.tenant_id = data.tenantId;
         }
         // Insert via admin client to bypass RLS — dynamic table name (see dynamic-table.server.ts)
-        const { insertDynamic } = await import("@/lib/dynamic-table.server");
         const { error } = await insertDynamic(supabaseAdmin, table, record);
         if (error) {
           skipped++;
