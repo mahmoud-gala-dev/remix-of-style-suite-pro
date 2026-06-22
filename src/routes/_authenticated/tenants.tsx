@@ -77,7 +77,7 @@ function Page() {
               <tr><th className="py-2">{t("tenantName")}</th><th></th></tr>
             </thead>
             <tbody>
-              {q.data?.map((tn: any) => (
+              {q.data?.map((tn: Tenant) => (
                 <tr key={tn.id} className="border-t border-border/40">
                   <td className="py-2">
                     {editingId === tn.id ? (

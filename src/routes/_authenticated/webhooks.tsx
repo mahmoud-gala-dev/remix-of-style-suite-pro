@@ -141,7 +141,7 @@ function Page() {
                     <tr key={d.id} className="border-t border-border/40">
                       <td className="py-2 font-mono text-xs">{d.event}</td>
                       <td>
-                        <span className={d.failed ? "text-destructive" : d.status >= 200 && d.status < 400 ? "text-primary" : "text-dim"}>
+                        <span className={d.failed ? "text-destructive" : (d.status ?? 0) >= 200 && (d.status ?? 0) < 400 ? "text-primary" : "text-dim"}>
                           {d.failed ? t("failed") : d.status || "—"}
                         </span>
                       </td>
