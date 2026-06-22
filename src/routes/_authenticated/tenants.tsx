@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { listTenants, upsertTenant, deleteTenant } from "@/lib/tenants.functions";
 import { useT } from "@/lib/i18n";
 
+type Tenant = Awaited<ReturnType<typeof listTenants>>[number];
+
 export const Route = createFileRoute("/_authenticated/tenants")({
   ssr: false,
   head: () => ({ meta: [{ title: "Tenants" }] }),
