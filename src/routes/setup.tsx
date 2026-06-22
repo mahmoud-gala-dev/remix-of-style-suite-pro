@@ -34,15 +34,17 @@ function genPassword() {
 
 function SetupWizard() {
   const navigate = useNavigate();
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [dbMode, setDbMode] = useState<"cloud" | "external">("cloud");
   const [extUrl, setExtUrl] = useState("");
   const [extKey, setExtKey] = useState("");
 
   const [email, setEmail] = useState("admin@salon.local");
   const [password, setPassword] = useState(genPassword());
+  const [pwMode, setPwMode] = useState<"auto" | "manual">("auto");
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState<"email" | "password" | "all" | null>(null);
+  const [savedAck, setSavedAck] = useState(false);
 
   const copy = async (text: string, key: "email" | "password" | "all") => {
     await navigator.clipboard.writeText(text);
@@ -57,8 +59,14 @@ function SetupWizard() {
         toast.error("Enter URL and key");
         return;
       }
-      toast.message("External database noted", {
-        description: "Update VITE_SUPABASE_URL / KEY in env to switch backends.",
+      try {
+        localStorage.setItem(
+          "external_supabase",
+          JSON.stringify({ url: extUrl.trim(), key: extKey.trim() }),
+        );
+      } catch {}
+      toast.message("External database saved (reference only)", {
+        description: "Backend remains on Lovable Cloud until env vars are updated.",
       });
     }
     setStep(2);
@@ -80,7 +88,7 @@ function SetupWizard() {
         return;
       }
       toast.success("Admin account created");
-      navigate({ to: "/" });
+      setStep(3);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed");
     } finally {
