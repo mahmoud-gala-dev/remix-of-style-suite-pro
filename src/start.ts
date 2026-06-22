@@ -2,15 +2,22 @@ import { createStart, createMiddleware } from "@tanstack/react-start";
 
 import { renderErrorPage } from "./lib/error-page";
 import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
+import { captureServerException, captureServerMetric } from "./lib/sentry.server";
 
 const errorMiddleware = createMiddleware().server(async ({ next }) => {
+  const startedAt = Date.now();
   try {
-    return await next();
+    const res = await next();
+    void captureServerMetric("server.request.duration_ms", Date.now() - startedAt, { status: "ok" });
+    return res;
   } catch (error) {
     if (error != null && typeof error === "object" && "statusCode" in error) {
+      void captureServerException(error, { kind: "http_status_error" });
       throw error;
     }
     console.error(error);
+    void captureServerException(error, { kind: "unhandled_server_error" });
+    void captureServerMetric("server.request.duration_ms", Date.now() - startedAt, { status: "error" });
     return new Response(renderErrorPage(), {
       status: 500,
       headers: { "content-type": "text/html; charset=utf-8" },
