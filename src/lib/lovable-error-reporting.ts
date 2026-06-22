@@ -10,6 +10,11 @@ type LovableEvents = {
     context?: Record<string, unknown>,
     options?: LovableErrorOptions,
   ) => void;
+  captureMetric?: (
+    name: string,
+    value: number,
+    context?: Record<string, unknown>,
+  ) => void;
 };
 
 declare global {
