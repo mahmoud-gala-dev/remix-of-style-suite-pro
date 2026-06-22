@@ -1,5 +1,9 @@
 import { b64urlToUint8, uint8ToB64url, VAPID_PUBLIC_KEY_B64URL } from "./push-vapid";
 
+// Auto-generated VAPID keypair baked in so push works without secret setup.
+// The public half also lives in `push-vapid.ts` (shipped to the browser).
+// Override with VAPID_PRIVATE_KEY / VAPID_SUBJECT env vars to rotate.
+const DEFAULT_VAPID_PRIVATE_KEY = "k04qZxb_P2lK7B_14twzpN7TGtu_kJFs2b17P84-SHs";
 const VAPID_SUBJECT = process.env.VAPID_SUBJECT || "mailto:admin@example.com";
 
 function concat(...parts: Uint8Array[]): Uint8Array {
@@ -11,8 +15,7 @@ function concat(...parts: Uint8Array[]): Uint8Array {
 }
 
 async function importVapidPrivateKey(): Promise<CryptoKey> {
-  const priv = process.env.VAPID_PRIVATE_KEY;
-  if (!priv) throw new Error("VAPID_PRIVATE_KEY not configured");
+  const priv = process.env.VAPID_PRIVATE_KEY || DEFAULT_VAPID_PRIVATE_KEY;
   const pubRaw = b64urlToUint8(VAPID_PUBLIC_KEY_B64URL); // 65 bytes uncompressed
   const x = uint8ToB64url(pubRaw.slice(1, 33));
   const y = uint8ToB64url(pubRaw.slice(33, 65));
@@ -115,7 +118,6 @@ export async function sendWebPush(target: PushTarget, payload: { title: string; 
 // Server-side broadcast: send to every stored subscription, prune dead ones.
 // Safe to call from other server handlers without going through auth middleware.
 export async function broadcastWebPush(payload: { title: string; body?: string; url?: string; tag?: string }): Promise<{ sent: number }> {
-  if (!process.env.VAPID_PRIVATE_KEY) return { sent: 0 };
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data: subs, error } = await supabaseAdmin
     .from("push_subscriptions")
