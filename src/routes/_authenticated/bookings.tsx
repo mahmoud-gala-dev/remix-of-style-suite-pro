@@ -133,7 +133,7 @@ function Page() {
       <Surface padded={false} className="overflow-hidden">
         {selected.size > 0 && (
           <div className="flex items-center gap-2 px-4 py-2 border-b border-border bg-surface-2/50 text-xs">
-            <span className="font-mono">{selected.size} {t("selected") || "selected"}</span>
+            <span className="font-mono">{selected.size} selected</span>
             <div className="flex-1" />
             <button onClick={() => bulkSet("confirmed")} className="px-2 py-1 rounded border border-white/10 hover:bg-surface-2">{t("confirm")}</button>
             <button onClick={() => bulkSet("completed")} className="px-2 py-1 rounded border border-white/10 hover:bg-surface-2">{t("complete")}</button>
