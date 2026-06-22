@@ -1,18 +1,15 @@
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig } from "@playwright/test";
 
+// Smoke tests. Enable in CI after `bun add -d @playwright/test`
+// and `bunx playwright install chromium`.
 export default defineConfig({
-  testDir: "./tests/e2e",
-  timeout: 60_000,
-  expect: { timeout: 10_000 },
-  fullyParallel: false,
-  retries: process.env.CI ? 1 : 0,
+  testDir: "./e2e",
+  fullyParallel: true,
+  retries: process.env.CI ? 2 : 0,
   reporter: "list",
   use: {
     baseURL: process.env.E2E_BASE_URL ?? "http://localhost:8080",
     headless: true,
     viewport: { width: 1280, height: 800 },
-    trace: "retain-on-failure",
-    screenshot: "only-on-failure",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 });
