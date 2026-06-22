@@ -50,7 +50,7 @@ describe("bulkImportCustomers", () => {
   });
 
   it("normalises phones and dedupes against existing", async () => {
-    const { ctx, inserts } = makeCtx([{ phone: "+966 50 123 4567" }]);
+    const { ctx, inserts } = makeCtx([{ phone: "0501234567" }]);
     const out = await fn._handler({
       data: {
         branchId,
