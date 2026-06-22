@@ -97,8 +97,8 @@ export const restoreTenantFromCsv = createServerFn({ method: "POST" })
         if (table === "branches" && !record.tenant_id) {
           record.tenant_id = data.tenantId;
         }
-        // Insert via admin client to bypass RLS
-        const { error } = await supabaseAdmin.from(table as "branches").insert(record);
+        // Insert via admin client to bypass RLS — cast to any because tables vary at runtime
+        const { error } = await (supabaseAdmin.from(table as any).insert(record as any));
         if (error) {
           skipped++;
           console.warn(`[restore] skipped ${table} row:`, error.message);
