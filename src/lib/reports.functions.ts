@@ -4,6 +4,25 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { aggregateReports, REVENUE_STATUSES, percentDelta, previousPeriod } from "@/lib/reports-aggregate";
 import { cached, reportKey } from "@/lib/report-cache.server";
 
+// Cycle #16, step 3 — fast daily-revenue read from materialized view
+// `mv_daily_revenue`, refreshed every 10 minutes by pg_cron. Beats the
+// per-request aggregation in getReportsSummary by ~100× on large date ranges.
+export const getDailyRevenue = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => inputSchema.parse(data))
+  .handler(async ({ data, context }) => {
+    let q = context.supabase
+      .from("mv_daily_revenue")
+      .select("day,branch_id,invoice_count,total_revenue,total_tax,total_discount")
+      .gte("day", data.from)
+      .lte("day", data.to)
+      .order("day");
+    if (data.branchId) q = q.eq("branch_id", data.branchId);
+    const { data: rows, error } = await q;
+    if (error) throw new Error(error.message);
+    return { rows: rows ?? [] };
+  });
+
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const inputSchema = z.object({
   from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
