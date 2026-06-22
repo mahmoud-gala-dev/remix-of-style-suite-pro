@@ -11,7 +11,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { broadcastPush } from "@/lib/push.functions";
 import { minutesSince } from "@/lib/format";
 import { ArrowRight, CheckCircle2, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 
 export const Route = createFileRoute("/_authenticated/queue")({
   ssr: false,
@@ -85,15 +84,11 @@ function Page() {
             {t("inProgress")}
           </h2>
           <div className="space-y-3">
-            <AnimatePresence>
-              {inProgress.map((q) => {
+            {inProgress.map((q) => {
                 const c = customers.find((x) => x.id === q.customerId);
                 return (
-                  <motion.div
+                  <div
                     key={q.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
                     className="flex items-center justify-between bg-primary/5 border border-primary/30 rounded-lg p-4"
                   >
                     <div>
@@ -109,10 +104,9 @@ function Page() {
                       <CheckCircle2 className="size-3" />
                       {t("completed")}
                     </button>
-                  </motion.div>
+                  </div>
                 );
               })}
-            </AnimatePresence>
             {inProgress.length === 0 && <p className="text-xs text-dim">{t("noData")}</p>}
           </div>
         </Surface>
@@ -122,16 +116,11 @@ function Page() {
             {t("waiting")}
           </h2>
           <div className="space-y-3">
-            <AnimatePresence>
-              {waiting.map((q, i) => {
+            {waiting.map((q, i) => {
                 const c = customers.find((x) => x.id === q.customerId);
                 return (
-                  <motion.div
+                  <div
                     key={q.id}
-                    layout
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
                     className="flex items-center justify-between bg-background border border-border rounded-lg p-4"
                   >
                     <div className="flex items-center gap-3">
@@ -161,10 +150,9 @@ function Page() {
                         <X className="size-3.5" />
                       </button>
                     </div>
-                  </motion.div>
+                  </div>
                 );
               })}
-            </AnimatePresence>
             {waiting.length === 0 && <p className="text-xs text-dim">{t("noData")}</p>}
           </div>
         </Surface>
