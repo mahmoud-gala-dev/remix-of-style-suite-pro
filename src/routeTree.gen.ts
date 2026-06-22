@@ -41,6 +41,7 @@ import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedBookingsRouteImport } from './routes/_authenticated/bookings'
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
 import { Route as AuthenticatedAccessRouteImport } from './routes/_authenticated/access'
+import { Route as ApiPublicWebVitalsRouteImport } from './routes/api/public/web-vitals'
 import { Route as ApiPublicHealthcheckRouteImport } from './routes/api/public/healthcheck'
 import { Route as ApiPublicClientErrorsRouteImport } from './routes/api/public/client-errors'
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
@@ -208,6 +209,11 @@ const AuthenticatedAccessRoute = AuthenticatedAccessRouteImport.update({
   path: '/access',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicWebVitalsRoute = ApiPublicWebVitalsRouteImport.update({
+  id: '/api/public/web-vitals',
+  path: '/api/public/web-vitals',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHealthcheckRoute = ApiPublicHealthcheckRouteImport.update({
   id: '/api/public/healthcheck',
   path: '/api/public/healthcheck',
@@ -270,6 +276,7 @@ export interface FileRoutesByFullPath {
   '/r/$branch': typeof RBranchRoute
   '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
+  '/api/public/web-vitals': typeof ApiPublicWebVitalsRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
@@ -308,6 +315,7 @@ export interface FileRoutesByTo {
   '/': typeof AuthenticatedIndexRoute
   '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
+  '/api/public/web-vitals': typeof ApiPublicWebVitalsRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
@@ -348,6 +356,7 @@ export interface FileRoutesById {
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
+  '/api/public/web-vitals': typeof ApiPublicWebVitalsRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
@@ -388,6 +397,7 @@ export interface FileRouteTypes {
     | '/r/$branch'
     | '/api/public/client-errors'
     | '/api/public/healthcheck'
+    | '/api/public/web-vitals'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/webhooks/stripe'
@@ -426,6 +436,7 @@ export interface FileRouteTypes {
     | '/'
     | '/api/public/client-errors'
     | '/api/public/healthcheck'
+    | '/api/public/web-vitals'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/webhooks/stripe'
@@ -465,6 +476,7 @@ export interface FileRouteTypes {
     | '/_authenticated/'
     | '/api/public/client-errors'
     | '/api/public/healthcheck'
+    | '/api/public/web-vitals'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/webhooks/stripe'
@@ -482,6 +494,7 @@ export interface RootRouteChildren {
   RBranchRoute: typeof RBranchRoute
   ApiPublicClientErrorsRoute: typeof ApiPublicClientErrorsRoute
   ApiPublicHealthcheckRoute: typeof ApiPublicHealthcheckRoute
+  ApiPublicWebVitalsRoute: typeof ApiPublicWebVitalsRoute
   ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
   ApiPublicCronRetryWebhooksRoute: typeof ApiPublicCronRetryWebhooksRoute
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
@@ -713,6 +726,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccessRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/web-vitals': {
+      id: '/api/public/web-vitals'
+      path: '/api/public/web-vitals'
+      fullPath: '/api/public/web-vitals'
+      preLoaderRoute: typeof ApiPublicWebVitalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/healthcheck': {
       id: '/api/public/healthcheck'
       path: '/api/public/healthcheck'
@@ -818,6 +838,7 @@ const rootRouteChildren: RootRouteChildren = {
   RBranchRoute: RBranchRoute,
   ApiPublicClientErrorsRoute: ApiPublicClientErrorsRoute,
   ApiPublicHealthcheckRoute: ApiPublicHealthcheckRoute,
+  ApiPublicWebVitalsRoute: ApiPublicWebVitalsRoute,
   ApiPublicCronProcessWebhooksRoute: ApiPublicCronProcessWebhooksRoute,
   ApiPublicCronRetryWebhooksRoute: ApiPublicCronRetryWebhooksRoute,
   ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,

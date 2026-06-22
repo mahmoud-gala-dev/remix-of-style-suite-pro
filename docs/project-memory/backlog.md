@@ -28,6 +28,9 @@
 - [~] Removed `any` in webhooks/tenants/memberships routes (cycle #3). Residual: `admin.functions.ts` supabase dynamic table, `restore.functions.ts`, `lovable-error-reporting.ts` (Sentry dynamic import), `tenants.functions.ts` ctx typing, `coupons.tsx` select cast — all intentional dynamic boundaries.
 
 ## P4 (nice-to-have / future)
+- [x] **Cycle #4 — server-fn coverage**: added direct handler tests for `profile-prefs.functions` (6), `customers.functions` / `bulkImportCustomers` (5), `settings.functions` / `getAppSettings` + `setAppSetting` (6), and `notifications.functions` (6) via a tiny `@tanstack/react-start` + auth-middleware mock. +23 tests covering 8 server fns (validators + handlers + auth gates). Total suite: **238 tests**.
+- [x] **Cycle #4 — `<OptimizedImage>`**: new React component (`src/components/OptimizedImage.tsx`) builds a multi-width WebP `srcset` from `optimizedImageUrl`, sets `loading="lazy"` + `decoding="async"` by default, and forwards `sizes`/`width`/`height` to prevent CLS.
+- [x] **Cycle #4 — Web Vitals + Sentry performance**: `initGlobalErrorReporting` now also dynamic-imports `web-vitals` and forwards CLS/INP/LCP/FCP/TTFB to (1) `window.__lovableEvents.captureMetric` (LOVABLE_ERROR_REPORTING), (2) Sentry `metrics.distribution` / breadcrumb when `VITE_SENTRY_DSN` is set, with `browserTracingIntegration` auto-enabled when bundled, and (3) `/api/public/web-vitals` via `sendBeacon` (rate-limited, structured-log endpoint).
 - [x] PDF stack consolidated on `jspdf` + `jspdf-autotable`. `pdf-lib` removed from deps; reports server-fn rewritten to use jspdf. (cycle #3)
 - [x] WhatsApp brand color tokenized as `--color-whatsapp` / `bg-whatsapp` / `text-whatsapp-foreground`; `book.tsx` and `reminders-widget` updated. (cycle #3)
 - [x] `sitemap.xml` now derives origin from the request URL (works on preview, prod, custom domain) and emits priority + changefreq per page. (cycle #3)
