@@ -185,5 +185,19 @@ export const createBooking = createServerFn({ method: "POST" })
         );
       } catch { /* Twilio failures must not break booking */ }
     }
+    // Best-effort Resend email confirmation when notifications are enabled.
+    try {
+      const { data: cust } = await supabaseAdmin
+        .from("customers").select("name,email").eq("id", customerId!).maybeSingle();
+      if (cust?.email) {
+        const { sendBookingConfirmationEmail } = await import("./notifications.server");
+        await sendBookingConfirmationEmail({
+          to: cust.email,
+          customerName: cust.name ?? data.customerName ?? "there",
+          whenIso: data.startAt,
+          manageUrl: row.manage_token ? `/my/${row.manage_token}` : undefined,
+        });
+      }
+    } catch { /* email failures must not break booking */ }
     return { ok: true as const, id: row.id, manageToken: row.manage_token as string };
   });
