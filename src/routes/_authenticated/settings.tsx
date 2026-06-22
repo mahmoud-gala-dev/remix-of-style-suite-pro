@@ -7,6 +7,8 @@ import { SettingsLayout } from "./settings/SettingsLayout";
 import { SettingsData } from "./settings/SettingsData";
 import { SettingsNotifications } from "./settings/SettingsNotifications";
 import { SettingsTwilio } from "./settings/SettingsTwilio";
+import { SettingsStripe } from "./settings/SettingsStripe";
+import { SettingsSAML } from "./settings/SettingsSAML";
 import { SettingsBilling } from "./settings/SettingsBilling";
 import { Settings2FA } from "./settings/Settings2FA";
 
@@ -29,6 +31,8 @@ function Page() {
       <SettingsLayout />
       <SettingsNotifications />
       <SettingsTwilio />
+      <SettingsStripe />
+      <SettingsSAML />
       <SettingsBilling />
       <Settings2FA />
       <SettingsData />

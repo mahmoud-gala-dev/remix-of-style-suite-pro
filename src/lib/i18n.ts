@@ -173,6 +173,13 @@ export const dict = {
   alreadyClaimedByOther: { en: "Already claimed by another user.", ar: "تمت المطالبة بها من مستخدم آخر." },
   demoDataLoaded: { en: "Demo data loaded.", ar: "تم تحميل البيانات التجريبية." },
   branchesExistSkipped: { en: "Branches already exist — skipped.", ar: "الفروع موجودة بالفعل — تم التخطي." },
+  restoreFromCsv: { en: "Restore from CSV", ar: "استعادة من CSV" },
+  stripeSettingsSaved: { en: "Stripe settings saved", ar: "تم حفظ إعدادات Stripe" },
+  samlSettingsSaved: { en: "SAML settings saved", ar: "تم حفظ إعدادات SAML" },
+  perBranchMo: { en: "/branch/mo", ar: "\/فرع\/شهر" },
+  estimatedMonthly: { en: "Estimated monthly", ar: "التكلفة الشهرية التقديرية" },
+  upgradeNow: { en: "Upgrade now", ar: "ترقية الآن" },
+  stripeBillingDisabled: { en: "Stripe billing is disabled. Enable it in Settings → Stripe Billing to accept payments.", ar: "فوترة Stripe معطّلة. فعّلها من الإعدادات → Stripe Billing لقبول المدفوعات." },
   // general extras
   saved: { en: "Saved", ar: "تم الحفظ" },
   otpHelp: { en: "When enabled, guests must verify their phone with a 6-digit code before a booking is accepted.", ar: "عند التفعيل، يجب على الزوار التحقق من هاتفهم بكود من 6 أرقام قبل قبول الحجز." },
