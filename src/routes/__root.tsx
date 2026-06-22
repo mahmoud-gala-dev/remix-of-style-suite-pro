@@ -17,6 +17,9 @@ import "@fontsource/syne/700.css";
 import "@fontsource-variable/jetbrains-mono/index.css";
 import "@fontsource/ibm-plex-sans-arabic/400.css";
 import "@fontsource/ibm-plex-sans-arabic/600.css";
+import "@fontsource/tajawal/400.css";
+import "@fontsource/tajawal/500.css";
+import "@fontsource/tajawal/700.css";
 
 import appCss from "../styles.css?url";
 import { reportLovableError, initGlobalErrorReporting } from "../lib/lovable-error-reporting";
