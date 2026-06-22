@@ -61,10 +61,12 @@ function Page() {
     <div className="p-8 max-w-[1600px] mx-auto space-y-8">
       <PageHeader
         title={t("loyalty")}
-        subtitle={`${txns.length} transactions · ${txns.reduce((s, t) => s + t.delta, 0)} pts awarded`}
+        subtitle={t("loyaltySubtitle")
+          .replace("{tx}", String(txns.length))
+          .replace("{pts}", String(txns.reduce((s, x) => s + x.delta, 0)))}
         actions={
           <button onClick={() => setOpen(true)} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest">
-            <Plus className="size-3.5" /> Award points
+            <Plus className="size-3.5" /> {t("awardPoints")}
           </button>
         }
       />
@@ -72,7 +74,7 @@ function Page() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Surface className="lg:col-span-1">
           <h3 className="font-display uppercase tracking-tight text-sm mb-3 flex items-center gap-2">
-            <Sparkles className="size-4 text-primary" /> Top earners
+            <Sparkles className="size-4 text-primary" /> {t("topEarners")}
           </h3>
           <ul className="space-y-2">
             {totals.map((row) => (
@@ -96,10 +98,10 @@ function Page() {
           <table className="w-full text-sm">
             <thead className="text-[10px] uppercase tracking-widest text-dim">
               <tr>
-                <Th>Date</Th>
-                <Th>Customer</Th>
-                <Th>Reason</Th>
-                <Th>Points</Th>
+                <Th>{t("date")}</Th>
+                <Th>{t("customer")}</Th>
+                <Th>{t("reason")}</Th>
+                <Th>{t("points")}</Th>
               </tr>
             </thead>
             <tbody>
@@ -128,6 +130,7 @@ function Page() {
         branchId={branch.id}
         customers={customers}
         onCreated={() => qc.invalidateQueries({ queryKey: ["points_transactions"] })}
+        t={t}
       />
     </div>
   );
