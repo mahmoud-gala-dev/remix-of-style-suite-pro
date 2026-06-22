@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { CATEGORIES, type DocCategory } from "./modules-data";
+import { CATEGORIES, type DocCategory } from "./-modules-data";
 
 type Props = { q: string; onQueryChange: (v: string) => void };
 

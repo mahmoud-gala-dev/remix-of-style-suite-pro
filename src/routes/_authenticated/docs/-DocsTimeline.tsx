@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CATEGORIES, type DocModule } from "./modules-data";
+import { CATEGORIES, type DocModule } from "./-modules-data";
 
 export function DocsTimeline({ items }: { items: DocModule[] }) {
   if (items.length === 0) {
