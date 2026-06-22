@@ -417,6 +417,7 @@ export type Database = {
           created_at: string
           customer_id: string
           expires_at: string
+          expiry_reminder_sent_at: string | null
           id: string
           plan_id: string
           remaining_visits: number
@@ -429,6 +430,7 @@ export type Database = {
           created_at?: string
           customer_id: string
           expires_at?: string
+          expiry_reminder_sent_at?: string | null
           id?: string
           plan_id: string
           remaining_visits?: number
@@ -441,6 +443,7 @@ export type Database = {
           created_at?: string
           customer_id?: string
           expires_at?: string
+          expiry_reminder_sent_at?: string | null
           id?: string
           plan_id?: string
           remaining_visits?: number

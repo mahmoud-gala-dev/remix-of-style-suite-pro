@@ -51,6 +51,7 @@ import { Route as ApiPublicCronReviewRequestsRouteImport } from './routes/api/pu
 import { Route as ApiPublicCronRetryWebhooksRouteImport } from './routes/api/public/cron/retry-webhooks'
 import { Route as ApiPublicCronReengagementRouteImport } from './routes/api/public/cron/reengagement'
 import { Route as ApiPublicCronProcessWebhooksRouteImport } from './routes/api/public/cron/process-webhooks'
+import { Route as ApiPublicCronMembershipExpiryRouteImport } from './routes/api/public/cron/membership-expiry'
 import { Route as ApiPublicCronInventoryLowStockRouteImport } from './routes/api/public/cron/inventory-low-stock'
 import { Route as ApiPublicCronDepositNoshowCaptureRouteImport } from './routes/api/public/cron/deposit-noshow-capture'
 import { Route as ApiPublicCronDailyDigestRouteImport } from './routes/api/public/cron/daily-digest'
@@ -277,6 +278,12 @@ const ApiPublicCronProcessWebhooksRoute =
     path: '/api/public/cron/process-webhooks',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronMembershipExpiryRoute =
+  ApiPublicCronMembershipExpiryRouteImport.update({
+    id: '/api/public/cron/membership-expiry',
+    path: '/api/public/cron/membership-expiry',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCronInventoryLowStockRoute =
   ApiPublicCronInventoryLowStockRouteImport.update({
     id: '/api/public/cron/inventory-low-stock',
@@ -365,6 +372,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
+  '/api/public/cron/membership-expiry': typeof ApiPublicCronMembershipExpiryRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/reengagement': typeof ApiPublicCronReengagementRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
@@ -416,6 +424,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
+  '/api/public/cron/membership-expiry': typeof ApiPublicCronMembershipExpiryRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/reengagement': typeof ApiPublicCronReengagementRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
@@ -469,6 +478,7 @@ export interface FileRoutesById {
   '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
+  '/api/public/cron/membership-expiry': typeof ApiPublicCronMembershipExpiryRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
   '/api/public/cron/reengagement': typeof ApiPublicCronReengagementRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
@@ -522,6 +532,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/daily-digest'
     | '/api/public/cron/deposit-noshow-capture'
     | '/api/public/cron/inventory-low-stock'
+    | '/api/public/cron/membership-expiry'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/reengagement'
     | '/api/public/cron/retry-webhooks'
@@ -573,6 +584,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/daily-digest'
     | '/api/public/cron/deposit-noshow-capture'
     | '/api/public/cron/inventory-low-stock'
+    | '/api/public/cron/membership-expiry'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/reengagement'
     | '/api/public/cron/retry-webhooks'
@@ -625,6 +637,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/daily-digest'
     | '/api/public/cron/deposit-noshow-capture'
     | '/api/public/cron/inventory-low-stock'
+    | '/api/public/cron/membership-expiry'
     | '/api/public/cron/process-webhooks'
     | '/api/public/cron/reengagement'
     | '/api/public/cron/retry-webhooks'
@@ -655,6 +668,7 @@ export interface RootRouteChildren {
   ApiPublicCronDailyDigestRoute: typeof ApiPublicCronDailyDigestRoute
   ApiPublicCronDepositNoshowCaptureRoute: typeof ApiPublicCronDepositNoshowCaptureRoute
   ApiPublicCronInventoryLowStockRoute: typeof ApiPublicCronInventoryLowStockRoute
+  ApiPublicCronMembershipExpiryRoute: typeof ApiPublicCronMembershipExpiryRoute
   ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
   ApiPublicCronReengagementRoute: typeof ApiPublicCronReengagementRoute
   ApiPublicCronRetryWebhooksRoute: typeof ApiPublicCronRetryWebhooksRoute
@@ -961,6 +975,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronProcessWebhooksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/membership-expiry': {
+      id: '/api/public/cron/membership-expiry'
+      path: '/api/public/cron/membership-expiry'
+      fullPath: '/api/public/cron/membership-expiry'
+      preLoaderRoute: typeof ApiPublicCronMembershipExpiryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/inventory-low-stock': {
       id: '/api/public/cron/inventory-low-stock'
       path: '/api/public/cron/inventory-low-stock'
@@ -1106,6 +1127,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronDepositNoshowCaptureRoute:
     ApiPublicCronDepositNoshowCaptureRoute,
   ApiPublicCronInventoryLowStockRoute: ApiPublicCronInventoryLowStockRoute,
+  ApiPublicCronMembershipExpiryRoute: ApiPublicCronMembershipExpiryRoute,
   ApiPublicCronProcessWebhooksRoute: ApiPublicCronProcessWebhooksRoute,
   ApiPublicCronReengagementRoute: ApiPublicCronReengagementRoute,
   ApiPublicCronRetryWebhooksRoute: ApiPublicCronRetryWebhooksRoute,
