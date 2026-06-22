@@ -314,6 +314,27 @@ export const dict = {
   importResult: { en: "Imported {ok}, skipped {skip} of {total}", ar: "تم استيراد {ok}، تم تخطي {skip} من {total}" },
   deleteCustomerConfirm: { en: "Delete {name}?", ar: "حذف {name}؟" },
   deleteCustomerDesc: { en: "This removes the customer from the current list.", ar: "سيُزال هذا العميل من القائمة الحالية." },
+  // shared
+  newBookingShort: { en: "New booking", ar: "حجز جديد" },
+  newProductShort: { en: "New product", ar: "منتج جديد" },
+  noProducts: { en: "No products yet.", ar: "لا توجد منتجات بعد." },
+  kind: { en: "Kind", ar: "النوع" },
+  note: { en: "Note", ar: "ملاحظة" },
+  quantityNeg: { en: "Quantity (use negative for adjustment down)", ar: "الكمية (سالب للتخفيض)" },
+  stockMovementTitle: { en: "Stock movement — {name}", ar: "حركة مخزون — {name}" },
+  // invoices page
+  invoiceCount: { en: "{n} total · {amt} on page", ar: "الإجمالي: {n} · {amt} في الصفحة" },
+  invoiceNumberCol: { en: "Number", ar: "الرقم" },
+  pageOf: { en: "Page {p} / {t}", ar: "الصفحة {p} / {t}" },
+  // services dialog
+  nameEn: { en: "Name (EN)", ar: "الاسم (إنجليزي)" },
+  nameAr: { en: "Name (AR)", ar: "الاسم (عربي)" },
+  durationMin: { en: "Duration (min)", ar: "المدة (دقيقة)" },
+  addService: { en: "Add service", ar: "إضافة خدمة" },
+  // employees
+  onStaff: { en: "{n} on staff", ar: "{n} في الفريق" },
+  // inventory subtitle
+  inventory: { en: "Inventory", ar: "المخزون" },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;
