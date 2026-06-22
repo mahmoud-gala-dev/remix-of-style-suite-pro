@@ -2,15 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader } from "@/components/shell/page";
 import { useT } from "@/lib/i18n";
-import { SettingsGeneral } from "./settings/SettingsGeneral";
-import { SettingsLayout } from "./settings/SettingsLayout";
-import { SettingsData } from "./settings/SettingsData";
-import { SettingsNotifications } from "./settings/SettingsNotifications";
-import { SettingsTwilio } from "./settings/SettingsTwilio";
-import { SettingsStripe } from "./settings/SettingsStripe";
-import { SettingsSAML } from "./settings/SettingsSAML";
-import { SettingsBilling } from "./settings/SettingsBilling";
-import { Settings2FA } from "./settings/Settings2FA";
+import { SettingsGeneral } from "./settings/-SettingsGeneral";
+import { SettingsLayout } from "./settings/-SettingsLayout";
+import { SettingsData } from "./settings/-SettingsData";
+import { SettingsNotifications } from "./settings/-SettingsNotifications";
+import { SettingsTwilio } from "./settings/-SettingsTwilio";
+import { SettingsStripe } from "./settings/-SettingsStripe";
+import { SettingsSAML } from "./settings/-SettingsSAML";
+import { SettingsBilling } from "./settings/-SettingsBilling";
+import { Settings2FA } from "./settings/-Settings2FA";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   ssr: false,
