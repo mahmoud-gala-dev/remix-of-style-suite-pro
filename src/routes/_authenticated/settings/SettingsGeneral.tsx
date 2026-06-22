@@ -24,7 +24,14 @@ export function SettingsGeneral() {
   const settingsQ = useQuery({ queryKey: ["app-settings"], queryFn: () => fetchSettings() });
   const settingMut = useMutation({
     mutationFn: (v: {
-      key: "default_tax_pct" | "refresh_interval" | "deposits_enabled" | "deposit_type" | "deposit_amount";
+      key:
+        | "default_tax_pct"
+        | "refresh_interval"
+        | "deposits_enabled"
+        | "deposit_type"
+        | "deposit_amount"
+        | "whatsapp_reminders_enabled"
+        | "whatsapp_api_enabled";
       value: number | boolean | string;
     }) => saveSetting({ data: v }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["app-settings"] }); toast.success(t("save")); },
