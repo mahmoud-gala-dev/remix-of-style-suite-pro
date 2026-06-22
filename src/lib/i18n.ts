@@ -221,6 +221,15 @@ export function useT() {
   return (key: DictKey, fallback?: string) => dict[key]?.[lang] ?? fallback ?? key;
 }
 
+// Dev-only: warn once per missing i18n key to catch untranslated strings.
+const _missingKeysWarned = new Set<string>();
+export function warnMissingKey(key: string) {
+  if (import.meta.env.DEV && !_missingKeysWarned.has(key)) {
+    _missingKeysWarned.add(key);
+    console.warn(`[i18n] missing key: "${key}"`);
+  }
+}
+
 export function useDir(): "ltr" | "rtl" {
   return useI18n((s) => s.lang) === "ar" ? "rtl" : "ltr";
 }
