@@ -72,10 +72,10 @@ function Page() {
     <div className="p-8 max-w-[1600px] mx-auto">
       <PageHeader
         title={t("invoices")}
-        subtitle={`${total} total · ${fmtMoney(billed)} on page`}
+        subtitle={t("invoiceCount").replace("{n}", String(total)).replace("{amt}", fmtMoney(billed))}
         actions={
           <button onClick={() => setOpen(true)} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest">
-            <Plus className="size-3.5" /> New invoice
+            <Plus className="size-3.5" /> {t("newInvoice")}
           </button>
         }
       />
@@ -86,28 +86,28 @@ function Page() {
           onChange={(e) => { setStatus(e.target.value as typeof status); setPage(0); }}
           className="bg-surface border border-border rounded-md px-2 py-1.5 text-xs"
         >
-          <option value="all">All statuses</option>
-          <option value="paid">Paid</option>
-          <option value="partial">Partial</option>
-          <option value="unpaid">Unpaid</option>
+          <option value="all">{t("allStatuses")}</option>
+          <option value="paid">{t("paid")}</option>
+          <option value="partial">{t("partial")}</option>
+          <option value="unpaid">{t("unpaid")}</option>
         </select>
         <input
           type="date" value={from}
           onChange={(e) => { setFrom(e.target.value); setPage(0); }}
           className="bg-surface border border-border rounded-md px-2 py-1.5 text-xs"
-          aria-label="From date"
+          aria-label={t("fromDate")}
         />
         <input
           type="date" value={to}
           onChange={(e) => { setTo(e.target.value); setPage(0); }}
           className="bg-surface border border-border rounded-md px-2 py-1.5 text-xs"
-          aria-label="To date"
+          aria-label={t("toDate")}
         />
         {(status !== "all" || from || to) && (
           <button
             onClick={() => { setStatus("all"); setFrom(""); setTo(""); setPage(0); }}
             className="text-xs text-dim hover:text-foreground underline"
-          >Clear</button>
+          >{t("clear")}</button>
         )}
       </div>
 
@@ -122,8 +122,8 @@ function Page() {
           <table className="w-full text-sm">
             <thead className="text-[10px] uppercase tracking-widest text-dim">
               <tr>
-                <Th>Number</Th><Th>Date</Th><Th>Customer</Th>
-                <Th>Total</Th><Th>Status</Th><Th>{" "}</Th>
+                <Th>{t("invoiceNumberCol")}</Th><Th>{t("date")}</Th><Th>{t("customer")}</Th>
+                <Th>{t("total")}</Th><Th>{t("status")}</Th><Th>{" "}</Th>
               </tr>
             </thead>
             <tbody>
@@ -145,11 +145,11 @@ function Page() {
                     <Td>
                       <div className="flex justify-end gap-2">
                         <button onClick={() => setViewing(inv)} className="text-xs text-dim hover:text-foreground inline-flex items-center gap-1">
-                          <Printer className="size-3.5" /> View
+                          <Printer className="size-3.5" /> {t("view")}
                         </button>
                         {inv.status !== "paid" && (
                           <button onClick={() => markPaid(inv)} className="text-xs text-primary hover:brightness-110 inline-flex items-center gap-1">
-                            <CheckCircle2 className="size-3.5" /> Mark paid
+                            <CheckCircle2 className="size-3.5" /> {t("markPaid")}
                           </button>
                         )}
                       </div>
@@ -164,18 +164,18 @@ function Page() {
 
       {total > PAGE_SIZE && (
         <div className="flex items-center justify-between mt-3 text-xs text-dim">
-          <span>Page {page + 1} / {totalPages}</span>
+          <span>{t("pageOf").replace("{p}", String(page + 1)).replace("{t}", String(totalPages))}</span>
           <div className="flex gap-2">
             <button
               onClick={() => setPage((p) => Math.max(0, p - 1))}
               disabled={page === 0}
               className="px-3 py-1.5 border border-border rounded-md disabled:opacity-40"
-            >Prev</button>
+            >{t("prev")}</button>
             <button
               onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
               disabled={page + 1 >= totalPages}
               className="px-3 py-1.5 border border-border rounded-md disabled:opacity-40"
-            >Next</button>
+            >{t("next")}</button>
           </div>
         </div>
       )}

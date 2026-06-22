@@ -69,14 +69,14 @@ function Page() {
         }))
         .filter((r) => r.name && r.phone);
       if (!staged.length) {
-        toast.error("No valid rows (need name + phone)");
+        toast.error(t("importNoValidRows"));
         return;
       }
       const res = await importFn({ data: { branchId, rows: staged } });
       await qc.invalidateQueries({ queryKey: ["hydrate"] });
-      toast.success(`Imported ${res.added}, skipped ${res.skipped} of ${res.total}`);
+      toast.success(t("importResult").replace("{ok}", String(res.added)).replace("{skip}", String(res.skipped)).replace("{total}", String(res.total)));
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Import failed");
+      toast.error(e instanceof Error ? e.message : t("importFailed"));
     }
   };
 
@@ -90,7 +90,7 @@ function Page() {
     <div className="p-8 max-w-[1600px] mx-auto">
       <PageHeader
         title={t("customers")}
-        subtitle={`${all.length} total`}
+        subtitle={t("totalCount").replace("{n}", String(all.length))}
         actions={
           <div className="flex items-center gap-2">
           <input
@@ -109,20 +109,20 @@ function Page() {
             className="inline-flex items-center gap-2 border border-border px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest hover:bg-surface-2/40"
           >
             <Upload className="size-3.5" />
-            Import
+            {t("importBtn")}
           </button>
           <button
             onClick={() =>
               downloadCsv(
                 `customers-${Date.now()}.csv`,
                 toCsv(list, [
-                  { key: "name", label: "Name" },
-                  { key: "phone", label: "Phone" },
-                  { key: "email", label: "Email" },
-                  { key: "visits", label: "Visits" },
-                  { key: "totalSpend", label: "Spend" },
-                  { key: "points", label: "Points" },
-                  { key: "lastVisit", label: "Last Visit" },
+                  { key: "name", label: t("name") },
+                  { key: "phone", label: t("phone") },
+                  { key: "email", label: t("email") },
+                  { key: "visits", label: t("visits") },
+                  { key: "totalSpend", label: t("spend") },
+                  { key: "points", label: t("points") },
+                  { key: "lastVisit", label: t("lastVisit") },
                 ]),
               )
             }
@@ -186,7 +186,7 @@ function Page() {
                   <Td className="font-mono">{fmtMoney(c.totalSpend)}</Td>
                   <Td>
                   <span className="px-2 py-0.5 rounded-sm bg-primary/10 text-primary text-[10px] font-bold">
-                    {c.points} pts
+                    {c.points} {t("points")}
                   </span>
                   </Td>
                   <Td className="text-dim text-xs">{c.lastVisit ? fmtDate(c.lastVisit) : "—"}</Td>
@@ -194,7 +194,7 @@ function Page() {
                 </ContextMenuTrigger>
                 <ContextMenuContent>
                   <ContextMenuItem onSelect={() => window.open(`tel:${c.phone}`)}>
-                    <Phone className="size-3.5 me-2" /> Call
+                    <Phone className="size-3.5 me-2" /> {t("call")}
                   </ContextMenuItem>
                   <ContextMenuItem
                     onSelect={() =>
@@ -206,33 +206,33 @@ function Page() {
                       )
                     }
                   >
-                    <MessageCircle className="size-3.5 me-2" /> WhatsApp
+                    <MessageCircle className="size-3.5 me-2" /> {t("whatsapp")}
                   </ContextMenuItem>
                   <ContextMenuSeparator />
                   <ContextMenuItem onSelect={() => updateCustomer(c.id, { points: c.points + 10 })}>
-                    <Sparkles className="size-3.5 me-2" /> +10 points
+                    <Sparkles className="size-3.5 me-2" /> {t("addTenPoints")}
                   </ContextMenuItem>
                   <ContextMenuItem disabled>
-                    <CalendarPlus className="size-3.5 me-2" /> New booking
+                    <CalendarPlus className="size-3.5 me-2" /> {t("newBookingShort")}
                   </ContextMenuItem>
                   <ContextMenuItem disabled>
-                    <Pencil className="size-3.5 me-2" /> Edit
+                    <Pencil className="size-3.5 me-2" /> {t("edit")}
                   </ContextMenuItem>
                   <ContextMenuSeparator />
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <ContextMenuItem onSelect={(e) => e.preventDefault()} className="text-red-500 focus:text-red-500">
-                        <Trash2 className="size-3.5 me-2" /> Delete
+                        <Trash2 className="size-3.5 me-2" /> {t("delete")}
                       </ContextMenuItem>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Delete {c.name}?</AlertDialogTitle>
-                        <AlertDialogDescription>This removes the customer from this device's current list.</AlertDialogDescription>
+                        <AlertDialogTitle>{t("deleteCustomerConfirm").replace("{name}", c.name)}</AlertDialogTitle>
+                        <AlertDialogDescription>{t("deleteCustomerDesc")}</AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => { removeCustomer(c.id); toast.success("Deleted"); }}>Delete</AlertDialogAction>
+                        <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => { removeCustomer(c.id); toast.success(t("deleted")); }}>{t("delete")}</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
