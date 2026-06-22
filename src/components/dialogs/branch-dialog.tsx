@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useData } from "@/lib/store";
 import { Modal, Field, inputCls, ModalActions } from "@/components/ui/modal";
+import { useT } from "@/lib/i18n";
 
 export function BranchDialog({
   open,
@@ -12,6 +13,7 @@ export function BranchDialog({
   onClose: () => void;
 }) {
   const qc = useQueryClient();
+  const t = useT();
   const addBranch = useData((s) => s.addBranch);
   const [nameEn, setNameEn] = useState("");
   const [nameAr, setNameAr] = useState("");
@@ -59,20 +61,20 @@ export function BranchDialog({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="New branch">
+    <Modal open={open} onClose={onClose} title={t("newBranch")}>
       <form onSubmit={submit} className="space-y-3">
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Name (EN)"><input required value={nameEn} onChange={(e) => setNameEn(e.target.value)} className={inputCls} /></Field>
-          <Field label="Name (AR)"><input value={nameAr} onChange={(e) => setNameAr(e.target.value)} className={inputCls} /></Field>
+          <Field label={t("nameEn")}><input required value={nameEn} onChange={(e) => setNameEn(e.target.value)} className={inputCls} /></Field>
+          <Field label={t("nameAr")}><input value={nameAr} onChange={(e) => setNameAr(e.target.value)} className={inputCls} /></Field>
         </div>
-        <Field label="Address"><input value={address} onChange={(e) => setAddress(e.target.value)} className={inputCls} /></Field>
+        <Field label={t("address")}><input value={address} onChange={(e) => setAddress(e.target.value)} className={inputCls} /></Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Phone"><input value={phone} onChange={(e) => setPhone(e.target.value)} className={inputCls} /></Field>
-          <Field label="Chairs"><input type="number" min={1} value={chairs} onChange={(e) => setChairs(+e.target.value)} className={inputCls} /></Field>
+          <Field label={t("phone")}><input value={phone} onChange={(e) => setPhone(e.target.value)} className={inputCls} /></Field>
+          <Field label={t("chairs")}><input type="number" min={1} value={chairs} onChange={(e) => setChairs(+e.target.value)} className={inputCls} /></Field>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Opens"><input type="time" value={hoursOpen} onChange={(e) => setHoursOpen(e.target.value)} className={inputCls} /></Field>
-          <Field label="Closes"><input type="time" value={hoursClose} onChange={(e) => setHoursClose(e.target.value)} className={inputCls} /></Field>
+          <Field label={t("opens")}><input type="time" value={hoursOpen} onChange={(e) => setHoursOpen(e.target.value)} className={inputCls} /></Field>
+          <Field label={t("closes")}><input type="time" value={hoursClose} onChange={(e) => setHoursClose(e.target.value)} className={inputCls} /></Field>
         </div>
         {err && <p className="text-xs text-red-400">{err}</p>}
         <ModalActions onCancel={onClose} saving={saving} />

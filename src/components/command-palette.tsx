@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { useData } from "@/lib/store";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, useT } from "@/lib/i18n";
 
 type Cmd = {
   id: string;
@@ -15,6 +15,7 @@ export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const navigate = useNavigate();
+  const t = useT();
   const setLang = useI18n((s) => s.setLang);
   const branches = useData((s) => s.branches);
   const customers = useData((s) => s.customers);
@@ -86,7 +87,7 @@ export function CommandPalette() {
             autoFocus
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Type a command or search…"
+            placeholder={t("typeCommandOrSearch")}
             className="flex-1 bg-transparent outline-none text-sm"
           />
           <kbd className="text-[10px] text-dim border border-white/10 rounded px-1.5 py-0.5">ESC</kbd>

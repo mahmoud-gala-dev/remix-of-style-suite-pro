@@ -104,7 +104,7 @@ function Page() {
                   <td className="truncate max-w-[420px]">{h.url}</td>
                   <td>{h.enabled ? t("enabled") : t("disabled")}</td>
                   <td className="text-right">
-                    <Button size="sm" variant="ghost" onClick={() => pingHook.mutate(h.id)} disabled={pingHook.isPending}>Test</Button>
+                    <Button size="sm" variant="ghost" onClick={() => pingHook.mutate(h.id)} disabled={pingHook.isPending}>{t("test")}</Button>
                     <Button size="sm" variant="ghost" onClick={() => remove.mutate(h.id)}>{t("delete")}</Button>
                   </td>
                 </tr>

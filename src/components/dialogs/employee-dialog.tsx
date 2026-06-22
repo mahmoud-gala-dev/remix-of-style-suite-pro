@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useData } from "@/lib/store";
 import { Modal, Field, inputCls, ModalActions } from "@/components/ui/modal";
 import type { Employee } from "@/types/domain";
+import { useT } from "@/lib/i18n";
 
 export function EmployeeDialog({
   branchId,
@@ -15,6 +16,7 @@ export function EmployeeDialog({
   onClose: () => void;
 }) {
   const qc = useQueryClient();
+  const t = useT();
   const addEmployee = useData((s) => s.addEmployee);
   const [nameEn, setNameEn] = useState("");
   const [nameAr, setNameAr] = useState("");
@@ -62,26 +64,26 @@ export function EmployeeDialog({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="New employee">
+    <Modal open={open} onClose={onClose} title={t("newEmployee")}>
       <form onSubmit={submit} className="space-y-3">
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Name (EN)"><input required value={nameEn} onChange={(e) => setNameEn(e.target.value)} className={inputCls} /></Field>
-          <Field label="Name (AR)"><input value={nameAr} onChange={(e) => setNameAr(e.target.value)} className={inputCls} /></Field>
+          <Field label={t("nameEn")}><input required value={nameEn} onChange={(e) => setNameEn(e.target.value)} className={inputCls} /></Field>
+          <Field label={t("nameAr")}><input value={nameAr} onChange={(e) => setNameAr(e.target.value)} className={inputCls} /></Field>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Phone"><input value={phone} onChange={(e) => setPhone(e.target.value)} className={inputCls} /></Field>
-          <Field label="Email"><input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} /></Field>
+          <Field label={t("phone")}><input value={phone} onChange={(e) => setPhone(e.target.value)} className={inputCls} /></Field>
+          <Field label={t("email")}><input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} /></Field>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Role">
+          <Field label={t("role")}>
             <select value={role} onChange={(e) => setRole(e.target.value as Employee["role"])} className={inputCls}>
-              <option value="barber">Barber</option>
-              <option value="stylist">Stylist</option>
-              <option value="reception">Reception</option>
-              <option value="admin">Admin</option>
+              <option value="barber">{t("barber")}</option>
+              <option value="stylist">{t("stylist")}</option>
+              <option value="reception">{t("receptionRole")}</option>
+              <option value="admin">{t("admin")}</option>
             </select>
           </Field>
-          <Field label="Commission %">
+          <Field label={`${t("commission")} %`}>
             <input type="number" min={0} max={100} value={commissionPct} onChange={(e) => setCommissionPct(+e.target.value)} className={inputCls} />
           </Field>
         </div>
