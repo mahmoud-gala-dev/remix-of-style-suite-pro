@@ -365,6 +365,7 @@ export const dict = {
   plan: { en: "Plan", ar: "الخطة" },
   expires: { en: "Expires", ar: "ينتهي" },
   couponCodeOptional: { en: "Coupon code (optional)", ar: "رمز الكوبون (اختياري)" },
+  birthday: { en: "Birthday", ar: "تاريخ الميلاد" },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;
