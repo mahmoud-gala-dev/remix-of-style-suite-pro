@@ -4,6 +4,10 @@ import { useT, useI18n } from "@/lib/i18n";
 import { fmtMoney, initials, minutesSince } from "@/lib/format";
 import type { Employee, Service, QueueItem } from "@/types/domain";
 import { AlertsWidget } from "@/components/shell/alerts-widget";
+import { RemindersWidget } from "@/components/shell/reminders-widget";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
+import { getAppSettings } from "@/lib/settings.functions";
 
 type Props = {
   queue: QueueItem[];
@@ -15,9 +19,14 @@ type Props = {
 export function DashboardSidebar({ queue, topEmployees, topServices, customerName }: Props) {
   const t = useT();
   const lang = useI18n((s) => s.lang);
+  const fetchSettings = useServerFn(getAppSettings);
+  const settingsQ = useQuery({ queryKey: ["app-settings"], queryFn: () => fetchSettings() });
+  const showReminders =
+    (settingsQ.data?.whatsapp_reminders_enabled ?? true) && !(settingsQ.data?.whatsapp_api_enabled ?? false);
   return (
     <div className="space-y-4">
       <AlertsWidget />
+      {showReminders && <RemindersWidget />}
       <div className="flex items-center justify-between">
         <h2 className="font-display text-xl uppercase tracking-tight">{t("liveQueue")}</h2>
         <span className="size-2 bg-destructive rounded-full animate-pulse" />
