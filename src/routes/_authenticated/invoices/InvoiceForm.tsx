@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { fmtMoney } from "@/lib/format";
 import { emitWebhookEvent } from "@/lib/webhooks.functions";
 import { calcSubtotal, calcInvoice, type Coupon } from "@/lib/billing";
+import { useT } from "@/lib/i18n";
 
 type Props = {
   open: boolean;
@@ -16,6 +17,7 @@ type Props = {
 };
 
 export function InvoiceForm({ open, onClose, branchId, customers, services, onCreated }: Props) {
+  const t = useT();
   const [customerId, setCustomerId] = useState(customers[0]?.id ?? "");
   const [serviceId, setServiceId] = useState(services[0]?.id ?? "");
   const [qty, setQty] = useState(1);
@@ -71,9 +73,9 @@ export function InvoiceForm({ open, onClose, branchId, customers, services, onCr
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="New invoice" size="lg">
+    <Modal open={open} onClose={onClose} title={t("newInvoice")} size="lg">
       <form onSubmit={submit} className="space-y-3">
-        <Field label="Customer">
+        <Field label={t("customer")}>
           <select required value={customerId} onChange={(e) => setCustomerId(e.target.value)} className={inputCls}>
             <option value="">—</option>
             {customers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -81,26 +83,26 @@ export function InvoiceForm({ open, onClose, branchId, customers, services, onCr
         </Field>
         <div className="grid grid-cols-3 gap-3">
           <div className="col-span-2">
-            <Field label="Service">
+            <Field label={t("service")}>
               <select required value={serviceId} onChange={(e) => setServiceId(e.target.value)} className={inputCls}>
                 <option value="">—</option>
                 {services.map((s) => <option key={s.id} value={s.id}>{s.nameEn} · {fmtMoney(s.price)}</option>)}
               </select>
             </Field>
           </div>
-          <Field label="Qty"><input type="number" min={1} value={qty} onChange={(e) => setQty(+e.target.value)} className={inputCls} /></Field>
+          <Field label={t("qty")}><input type="number" min={1} value={qty} onChange={(e) => setQty(+e.target.value)} className={inputCls} /></Field>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Coupon code (optional)"><input value={couponCode} onChange={(e) => setCouponCode(e.target.value)} className={inputCls} placeholder="WELCOME10" /></Field>
-          <Field label="Tax %"><input type="number" min={0} value={taxPct} onChange={(e) => setTaxPct(+e.target.value)} className={inputCls} /></Field>
+          <Field label={t("couponCodeOptional")}><input value={couponCode} onChange={(e) => setCouponCode(e.target.value)} className={inputCls} placeholder="WELCOME10" /></Field>
+          <Field label={`${t("tax")} %`}><input type="number" min={0} value={taxPct} onChange={(e) => setTaxPct(+e.target.value)} className={inputCls} /></Field>
         </div>
         <div className="bg-surface-2/50 rounded-md p-4 text-sm space-y-1">
-          <SummaryRow label="Subtotal" value={fmtMoney(subtotal)} />
-          <SummaryRow label={`Tax (${taxPct}%)`} value={fmtMoney((subtotal * taxPct) / 100)} />
-          <SummaryRow label="Estimated total" value={fmtMoney(subtotal + (subtotal * taxPct) / 100)} bold />
+          <SummaryRow label={t("subtotal")} value={fmtMoney(subtotal)} />
+          <SummaryRow label={`${t("tax")} (${taxPct}%)`} value={fmtMoney((subtotal * taxPct) / 100)} />
+          <SummaryRow label={t("estimatedTotal")} value={fmtMoney(subtotal + (subtotal * taxPct) / 100)} bold />
         </div>
         {err && <p className="text-xs text-red-400">{err}</p>}
-        <ModalActions onCancel={onClose} saving={saving} saveLabel="Create invoice" />
+        <ModalActions onCancel={onClose} saving={saving} saveLabel={t("createInvoice")} />
       </form>
     </Modal>
   );
