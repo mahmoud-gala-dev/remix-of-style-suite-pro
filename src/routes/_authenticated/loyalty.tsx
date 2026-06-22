@@ -29,8 +29,12 @@ function Page() {
   const [open, setOpen] = useState(false);
   const customers = useData((s) => s.customers).filter((c) => c.branchId === branch.id);
 
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const isUuid = UUID_RE.test(branch.id);
+
   const q = useQuery({
     queryKey: ["points_transactions", branch.id],
+    enabled: isUuid,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("points_transactions")
