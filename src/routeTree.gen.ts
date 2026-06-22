@@ -54,6 +54,7 @@ import { Route as ApiPublicCronQueueStaleCleanupRouteImport } from './routes/api
 import { Route as ApiPublicCronProcessWebhooksRouteImport } from './routes/api/public/cron/process-webhooks'
 import { Route as ApiPublicCronMembershipExpiryRouteImport } from './routes/api/public/cron/membership-expiry'
 import { Route as ApiPublicCronInventoryLowStockRouteImport } from './routes/api/public/cron/inventory-low-stock'
+import { Route as ApiPublicCronGeoBackupRouteImport } from './routes/api/public/cron/geo-backup'
 import { Route as ApiPublicCronDepositNoshowCaptureRouteImport } from './routes/api/public/cron/deposit-noshow-capture'
 import { Route as ApiPublicCronDailyDigestRouteImport } from './routes/api/public/cron/daily-digest'
 import { Route as ApiPublicCronBookingRemindersRouteImport } from './routes/api/public/cron/booking-reminders'
@@ -297,6 +298,11 @@ const ApiPublicCronInventoryLowStockRoute =
     path: '/api/public/cron/inventory-low-stock',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronGeoBackupRoute = ApiPublicCronGeoBackupRouteImport.update({
+  id: '/api/public/cron/geo-backup',
+  path: '/api/public/cron/geo-backup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCronDepositNoshowCaptureRoute =
   ApiPublicCronDepositNoshowCaptureRouteImport.update({
     id: '/api/public/cron/deposit-noshow-capture',
@@ -378,6 +384,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
+  '/api/public/cron/geo-backup': typeof ApiPublicCronGeoBackupRoute
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/membership-expiry': typeof ApiPublicCronMembershipExpiryRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
@@ -431,6 +438,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
+  '/api/public/cron/geo-backup': typeof ApiPublicCronGeoBackupRoute
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/membership-expiry': typeof ApiPublicCronMembershipExpiryRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
@@ -486,6 +494,7 @@ export interface FileRoutesById {
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
   '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
+  '/api/public/cron/geo-backup': typeof ApiPublicCronGeoBackupRoute
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/membership-expiry': typeof ApiPublicCronMembershipExpiryRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
@@ -541,6 +550,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/daily-digest'
     | '/api/public/cron/deposit-noshow-capture'
+    | '/api/public/cron/geo-backup'
     | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/membership-expiry'
     | '/api/public/cron/process-webhooks'
@@ -594,6 +604,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/daily-digest'
     | '/api/public/cron/deposit-noshow-capture'
+    | '/api/public/cron/geo-backup'
     | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/membership-expiry'
     | '/api/public/cron/process-webhooks'
@@ -648,6 +659,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/booking-reminders'
     | '/api/public/cron/daily-digest'
     | '/api/public/cron/deposit-noshow-capture'
+    | '/api/public/cron/geo-backup'
     | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/membership-expiry'
     | '/api/public/cron/process-webhooks'
@@ -680,6 +692,7 @@ export interface RootRouteChildren {
   ApiPublicCronBookingRemindersRoute: typeof ApiPublicCronBookingRemindersRoute
   ApiPublicCronDailyDigestRoute: typeof ApiPublicCronDailyDigestRoute
   ApiPublicCronDepositNoshowCaptureRoute: typeof ApiPublicCronDepositNoshowCaptureRoute
+  ApiPublicCronGeoBackupRoute: typeof ApiPublicCronGeoBackupRoute
   ApiPublicCronInventoryLowStockRoute: typeof ApiPublicCronInventoryLowStockRoute
   ApiPublicCronMembershipExpiryRoute: typeof ApiPublicCronMembershipExpiryRoute
   ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
@@ -1010,6 +1023,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronInventoryLowStockRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/geo-backup': {
+      id: '/api/public/cron/geo-backup'
+      path: '/api/public/cron/geo-backup'
+      fullPath: '/api/public/cron/geo-backup'
+      preLoaderRoute: typeof ApiPublicCronGeoBackupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/deposit-noshow-capture': {
       id: '/api/public/cron/deposit-noshow-capture'
       path: '/api/public/cron/deposit-noshow-capture'
@@ -1147,6 +1167,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronDailyDigestRoute: ApiPublicCronDailyDigestRoute,
   ApiPublicCronDepositNoshowCaptureRoute:
     ApiPublicCronDepositNoshowCaptureRoute,
+  ApiPublicCronGeoBackupRoute: ApiPublicCronGeoBackupRoute,
   ApiPublicCronInventoryLowStockRoute: ApiPublicCronInventoryLowStockRoute,
   ApiPublicCronMembershipExpiryRoute: ApiPublicCronMembershipExpiryRoute,
   ApiPublicCronProcessWebhooksRoute: ApiPublicCronProcessWebhooksRoute,
@@ -1162,13 +1183,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
