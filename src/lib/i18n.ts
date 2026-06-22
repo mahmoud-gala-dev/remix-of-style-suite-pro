@@ -370,6 +370,10 @@ export const dict = {
   closes: { en: "Closes", ar: "يغلق" },
   tier: { en: "Tier", ar: "المستوى" },
   validityDays: { en: "Validity (days)", ar: "الصلاحية (أيام)" },
+  codeLabel: { en: "Code", ar: "الرمز" },
+  valueLabel: { en: "Value", ar: "القيمة" },
+  maxUsesOptional: { en: "Max uses (optional)", ar: "الحد الأقصى للاستخدام (اختياري)" },
+  validUntil: { en: "Valid until", ar: "صالح حتى" },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;

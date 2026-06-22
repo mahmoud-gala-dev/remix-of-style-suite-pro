@@ -90,6 +90,7 @@ function Page() {
 }
 
 function CouponDialog({ open, onClose, branchId, onCreated }: { open: boolean; onClose: () => void; branchId: string; onCreated: () => void }) {
+  const t = useT();
   const [code, setCode] = useState("");
   const [kind, setKind] = useState<"percent" | "fixed">("percent");
   const [value, setValue] = useState(10);
@@ -113,21 +114,21 @@ function CouponDialog({ open, onClose, branchId, onCreated }: { open: boolean; o
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="New coupon">
+    <Modal open={open} onClose={onClose} title={t("newCoupon")}>
       <form onSubmit={submit} className="space-y-3">
-        <Field label="Code"><input required value={code} onChange={(e) => setCode(e.target.value)} className={inputCls} placeholder="WELCOME10" /></Field>
+        <Field label={t("codeLabel")}><input required value={code} onChange={(e) => setCode(e.target.value)} className={inputCls} placeholder="WELCOME10" /></Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Kind">
+          <Field label={t("kind")}>
             <select value={kind} onChange={(e) => setKind(e.target.value as any)} className={inputCls}>
-              <option value="percent">Percent</option>
-              <option value="fixed">Fixed amount</option>
+              <option value="percent">{t("percentDiscount")}</option>
+              <option value="fixed">{t("fixedAmount")}</option>
             </select>
           </Field>
-          <Field label="Value"><input type="number" min={0} step="0.01" value={value} onChange={(e) => setValue(+e.target.value)} className={inputCls} /></Field>
+          <Field label={t("valueLabel")}><input type="number" min={0} step="0.01" value={value} onChange={(e) => setValue(+e.target.value)} className={inputCls} /></Field>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Max uses (optional)"><input type="number" min={1} value={maxUses} onChange={(e) => setMaxUses(e.target.value === "" ? "" : +e.target.value)} className={inputCls} /></Field>
-          <Field label="Valid until"><input type="date" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} className={inputCls} /></Field>
+          <Field label={t("maxUsesOptional")}><input type="number" min={1} value={maxUses} onChange={(e) => setMaxUses(e.target.value === "" ? "" : +e.target.value)} className={inputCls} /></Field>
+          <Field label={t("validUntil")}><input type="date" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} className={inputCls} /></Field>
         </div>
         {err && <p className="text-xs text-red-400">{err}</p>}
         <ModalActions onCancel={onClose} saving={saving} />
