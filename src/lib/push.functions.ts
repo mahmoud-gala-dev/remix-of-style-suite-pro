@@ -55,27 +55,6 @@ export const broadcastPush = createServerFn({ method: "POST" })
     }).parse(d),
   )
   .handler(async ({ data }) => {
-    if (!process.env.VAPID_PRIVATE_KEY) return { sent: 0, skipped: "VAPID not configured" as const };
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { sendWebPush } = await import("./push.server");
-    const { data: subs, error } = await supabaseAdmin
-      .from("push_subscriptions")
-      .select("endpoint,p256dh,auth");
-    if (error) throw new Error(error.message);
-    if (!subs?.length) return { sent: 0 };
-    let sent = 0;
-    const stale: string[] = [];
-    await Promise.all(
-      subs.map(async (s) => {
-        try {
-          const res = await sendWebPush(s, data);
-          if (res.ok) sent += 1;
-          else if (res.status === 404 || res.status === 410) stale.push(s.endpoint);
-        } catch { /* swallow individual delivery errors */ }
-      }),
-    );
-    if (stale.length) {
-      await supabaseAdmin.from("push_subscriptions").delete().in("endpoint", stale);
-    }
-    return { sent };
+    const { broadcastWebPush } = await import("./push.server");
+    return await broadcastWebPush(data);
   });
