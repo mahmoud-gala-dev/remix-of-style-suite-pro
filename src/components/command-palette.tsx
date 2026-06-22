@@ -20,6 +20,7 @@ export function CommandPalette() {
   const branches = useData((s) => s.branches);
   const customers = useData((s) => s.customers);
   const services = useData((s) => s.services);
+  const bookings = useData((s) => s.bookings);
   const setBranch = useData((s) => s.setCurrentBranch);
 
   useEffect(() => {
@@ -60,20 +61,34 @@ export function CommandPalette() {
       run: () => { setBranch(b.id); close(); },
     }));
     const customerCmds: Cmd[] = customers.slice(0, 50).map((c) => ({
-      id: `cust:${c.id}`, label: c.name, hint: "Customer",
+      id: `cust:${c.id}`, label: `${c.name} · ${c.phone}`, hint: "Customer",
       run: () => { navigate({ to: "/customers" }); close(); },
     }));
     const serviceCmds: Cmd[] = services.slice(0, 50).map((s) => ({
       id: `svc:${s.id}`, label: s.nameEn, hint: "Service",
       run: () => { navigate({ to: "/services" }); close(); },
     }));
-    return [...base, ...branchCmds, ...customerCmds, ...serviceCmds];
-  }, [branches, customers, services, navigate, setLang, setBranch]);
+    const bookingCmds: Cmd[] = bookings.slice(-100).map((b) => {
+      const cust = customers.find((c) => c.id === b.customerId);
+      return {
+        id: `bk:${b.id}`,
+        label: `${cust?.name ?? "—"} · ${new Date(b.start).toLocaleString()} · ${b.status}`,
+        hint: "Booking",
+        run: () => { navigate({ to: "/bookings" }); close(); },
+      };
+    });
+    return [...base, ...branchCmds, ...customerCmds, ...serviceCmds, ...bookingCmds];
+  }, [branches, customers, services, bookings, navigate, setLang, setBranch]);
 
   const filtered = useMemo(() => {
     if (!q.trim()) return cmds.slice(0, 12);
     const lo = q.toLowerCase();
-    return cmds.filter((c) => c.label.toLowerCase().includes(lo)).slice(0, 30);
+    const digits = q.replace(/\D/g, "");
+    return cmds.filter((c) => {
+      if (c.label.toLowerCase().includes(lo)) return true;
+      if (digits && c.label.replace(/\D/g, "").includes(digits)) return true;
+      return false;
+    }).slice(0, 30);
   }, [q, cmds]);
 
   if (!open) return null;
