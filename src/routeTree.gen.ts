@@ -49,6 +49,7 @@ import { Route as ApiPublicCronWebVitalsAlertRouteImport } from './routes/api/pu
 import { Route as ApiPublicCronWaitlistPromoteRouteImport } from './routes/api/public/cron/waitlist-promote'
 import { Route as ApiPublicCronReviewRequestsRouteImport } from './routes/api/public/cron/review-requests'
 import { Route as ApiPublicCronRetryWebhooksRouteImport } from './routes/api/public/cron/retry-webhooks'
+import { Route as ApiPublicCronReengagementRouteImport } from './routes/api/public/cron/reengagement'
 import { Route as ApiPublicCronProcessWebhooksRouteImport } from './routes/api/public/cron/process-webhooks'
 import { Route as ApiPublicCronInventoryLowStockRouteImport } from './routes/api/public/cron/inventory-low-stock'
 import { Route as ApiPublicCronDepositNoshowCaptureRouteImport } from './routes/api/public/cron/deposit-noshow-capture'
@@ -263,6 +264,12 @@ const ApiPublicCronRetryWebhooksRoute =
     path: '/api/public/cron/retry-webhooks',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronReengagementRoute =
+  ApiPublicCronReengagementRouteImport.update({
+    id: '/api/public/cron/reengagement',
+    path: '/api/public/cron/reengagement',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCronProcessWebhooksRoute =
   ApiPublicCronProcessWebhooksRouteImport.update({
     id: '/api/public/cron/process-webhooks',
@@ -351,6 +358,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
+  '/api/public/cron/reengagement': typeof ApiPublicCronReengagementRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
   '/api/public/cron/waitlist-promote': typeof ApiPublicCronWaitlistPromoteRoute
@@ -400,6 +408,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
+  '/api/public/cron/reengagement': typeof ApiPublicCronReengagementRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
   '/api/public/cron/waitlist-promote': typeof ApiPublicCronWaitlistPromoteRoute
@@ -451,6 +460,7 @@ export interface FileRoutesById {
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
+  '/api/public/cron/reengagement': typeof ApiPublicCronReengagementRoute
   '/api/public/cron/retry-webhooks': typeof ApiPublicCronRetryWebhooksRoute
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
   '/api/public/cron/waitlist-promote': typeof ApiPublicCronWaitlistPromoteRoute
@@ -502,6 +512,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/deposit-noshow-capture'
     | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/process-webhooks'
+    | '/api/public/cron/reengagement'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/cron/review-requests'
     | '/api/public/cron/waitlist-promote'
@@ -551,6 +562,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/deposit-noshow-capture'
     | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/process-webhooks'
+    | '/api/public/cron/reengagement'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/cron/review-requests'
     | '/api/public/cron/waitlist-promote'
@@ -601,6 +613,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/deposit-noshow-capture'
     | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/process-webhooks'
+    | '/api/public/cron/reengagement'
     | '/api/public/cron/retry-webhooks'
     | '/api/public/cron/review-requests'
     | '/api/public/cron/waitlist-promote'
@@ -629,6 +642,7 @@ export interface RootRouteChildren {
   ApiPublicCronDepositNoshowCaptureRoute: typeof ApiPublicCronDepositNoshowCaptureRoute
   ApiPublicCronInventoryLowStockRoute: typeof ApiPublicCronInventoryLowStockRoute
   ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
+  ApiPublicCronReengagementRoute: typeof ApiPublicCronReengagementRoute
   ApiPublicCronRetryWebhooksRoute: typeof ApiPublicCronRetryWebhooksRoute
   ApiPublicCronReviewRequestsRoute: typeof ApiPublicCronReviewRequestsRoute
   ApiPublicCronWaitlistPromoteRoute: typeof ApiPublicCronWaitlistPromoteRoute
@@ -919,6 +933,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronRetryWebhooksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/reengagement': {
+      id: '/api/public/cron/reengagement'
+      path: '/api/public/cron/reengagement'
+      fullPath: '/api/public/cron/reengagement'
+      preLoaderRoute: typeof ApiPublicCronReengagementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/process-webhooks': {
       id: '/api/public/cron/process-webhooks'
       path: '/api/public/cron/process-webhooks'
@@ -1064,6 +1085,7 @@ const rootRouteChildren: RootRouteChildren = {
     ApiPublicCronDepositNoshowCaptureRoute,
   ApiPublicCronInventoryLowStockRoute: ApiPublicCronInventoryLowStockRoute,
   ApiPublicCronProcessWebhooksRoute: ApiPublicCronProcessWebhooksRoute,
+  ApiPublicCronReengagementRoute: ApiPublicCronReengagementRoute,
   ApiPublicCronRetryWebhooksRoute: ApiPublicCronRetryWebhooksRoute,
   ApiPublicCronReviewRequestsRoute: ApiPublicCronReviewRequestsRoute,
   ApiPublicCronWaitlistPromoteRoute: ApiPublicCronWaitlistPromoteRoute,
