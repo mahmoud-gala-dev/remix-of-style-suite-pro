@@ -1542,6 +1542,36 @@ export type Database = {
           },
         ]
       }
+      web_vitals_samples: {
+        Row: {
+          at: string
+          id: number
+          ip: string | null
+          name: string
+          rating: string | null
+          route: string | null
+          value: number
+        }
+        Insert: {
+          at?: string
+          id?: number
+          ip?: string | null
+          name: string
+          rating?: string | null
+          route?: string | null
+          value: number
+        }
+        Update: {
+          at?: string
+          id?: number
+          ip?: string | null
+          name?: string
+          rating?: string | null
+          route?: string | null
+          value?: number
+        }
+        Relationships: []
+      }
       webhook_deliveries: {
         Row: {
           attempts: number
@@ -1724,6 +1754,14 @@ export type Database = {
       verify_otp: {
         Args: { p_code: string; p_phone: string }
         Returns: boolean
+      }
+      web_vitals_p75: {
+        Args: { p_window_minutes?: number }
+        Returns: {
+          name: string
+          p75: number
+          samples: number
+        }[]
       }
     }
     Enums: {

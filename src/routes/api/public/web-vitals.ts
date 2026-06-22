@@ -35,6 +35,21 @@ export const Route = createFileRoute("/api/public/web-vitals")({
             at: new Date().toISOString(),
           };
           console.log("[web-vital]", JSON.stringify(safe));
+          // Persist to DB so the alerting cron can compute p75.
+          if (safe.value !== null && safe.name) {
+            try {
+              const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+              await supabaseAdmin.from("web_vitals_samples").insert({
+                name: safe.name,
+                value: safe.value,
+                rating: safe.rating || null,
+                route: safe.route || null,
+                ip: safe.ip,
+              });
+            } catch {
+              /* swallow — logging already happened */
+            }
+          }
           return Response.json({ ok: true });
         } catch {
           return new Response("bad request", { status: 400 });
