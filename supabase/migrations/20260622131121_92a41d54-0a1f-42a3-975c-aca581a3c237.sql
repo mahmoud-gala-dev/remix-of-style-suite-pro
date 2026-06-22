@@ -1,0 +1,2 @@
+ALTER TABLE public.bookings ADD COLUMN IF NOT EXISTS review_request_sent_at timestamptz;
+CREATE INDEX IF NOT EXISTS bookings_review_request_idx ON public.bookings (status, review_request_sent_at, end_at);
