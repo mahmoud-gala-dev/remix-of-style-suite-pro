@@ -6,6 +6,7 @@ import { useData } from "@/lib/store";
 import { createBooking } from "@/lib/bookings.functions";
 import { createRecurringSeries } from "@/lib/recurring.functions";
 import { Modal, Field, inputCls, ModalActions } from "@/components/ui/modal";
+import { notify } from "@/lib/push";
 
 export function BookingDialog({
   branchId,
@@ -49,6 +50,8 @@ export function BookingDialog({
             startAt: start.toISOString(), endAt: end.toISOString(), price: service.price,
           },
         });
+        const customer = customers.find((c) => c.id === customerId);
+        notify("New booking", `${customer?.name ?? "Customer"} · ${service.nameEn} @ ${time}`);
       } else {
         const res = await createSeriesFn({
           data: {
@@ -58,6 +61,7 @@ export function BookingDialog({
           },
         });
         toast.success(`Created ${res.count} bookings in series`);
+        notify("Recurring bookings created", `${res.count} appointments scheduled`);
       }
     } catch (error) {
       const message = error instanceof Error && error.message ? error.message : "Slot taken";
