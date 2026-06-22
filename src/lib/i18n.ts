@@ -333,8 +333,6 @@ export const dict = {
   addService: { en: "Add service", ar: "إضافة خدمة" },
   // employees
   onStaff: { en: "{n} on staff", ar: "{n} في الفريق" },
-  // inventory subtitle
-  inventory: { en: "Inventory", ar: "المخزون" },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;
