@@ -34,6 +34,11 @@ export function SettingsData() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["app-settings"] }); toast.success(t("saved")); },
     onError: (e: Error) => toast.error(e.message),
   });
+  const slackMut = useMutation({
+    mutationFn: (enabled: boolean) => saveSetting({ data: { key: "slack_alerts_enabled", value: enabled } }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["app-settings"] }); toast.success(t("saved")); },
+    onError: (e: Error) => toast.error(e.message),
+  });
   const claimMut = useMutation({
     mutationFn: () => claim(),
     onSuccess: (r) => setMsg(r.ok ? (r.alreadyOwner ? t("alreadySuperAdmin") : t("superAdminGranted")) : t("alreadyClaimedByOther")),
@@ -164,6 +169,29 @@ export function SettingsData() {
               checked={Boolean(settingsQ.data?.geo_backup_enabled)}
               disabled={geoMut.isPending || settingsQ.isLoading}
               onChange={(e) => geoMut.mutate(e.target.checked)}
+              className="size-4 accent-primary"
+            />
+          </label>
+        </div>
+      </Surface>
+    )}
+    {isAdmin && (
+      <Surface>
+        <div className="flex items-center justify-between mb-2">
+          <div>
+            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-dim">Slack Alerts</h3>
+            <p className="text-xs text-dim mt-1">
+              تنبيهات Slack للأخطاء الحرجة على الخادم. معطّل افتراضياً — فعّله بعد إضافة سر{" "}
+              <code>SLACK_WEBHOOK_URL</code> (Incoming Webhook من Slack).
+            </p>
+          </div>
+          <label className="inline-flex items-center gap-2 cursor-pointer">
+            <span className="text-xs text-dim">{settingsQ.data?.slack_alerts_enabled ? t("active") : t("disabled")}</span>
+            <input
+              type="checkbox"
+              checked={Boolean(settingsQ.data?.slack_alerts_enabled)}
+              disabled={slackMut.isPending || settingsQ.isLoading}
+              onChange={(e) => slackMut.mutate(e.target.checked)}
               className="size-4 accent-primary"
             />
           </label>
