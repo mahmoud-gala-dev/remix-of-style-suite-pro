@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireAdmin } from "@/lib/require-admin";
 
 const SETTINGS_KEY = "stripe_billing";
 
@@ -53,7 +54,7 @@ async function loadConfig(): Promise<StripeSettings> {
 export const getStripeSettings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<StripeSettings> => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const cfg = await loadConfig();
     return redact(cfg);
   });
@@ -72,7 +73,7 @@ export const updateStripeSettings = createServerFn({ method: "POST" })
     }).parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: existing } = await supabaseAdmin
       .from("app_settings")

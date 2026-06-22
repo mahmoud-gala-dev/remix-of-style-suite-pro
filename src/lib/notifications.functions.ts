@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireAdmin } from "@/lib/require-admin";
 
 const SETTINGS_KEY = "notification_settings";
 
@@ -44,7 +45,7 @@ export const updateNotificationSettings = createServerFn({ method: "POST" })
     notify_booking_created: z.boolean(),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("app_settings").upsert({
       key: SETTINGS_KEY,
@@ -90,7 +91,7 @@ export const sendNotification = createServerFn({ method: "POST" })
     html: z.string().min(1),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row } = await supabaseAdmin
       .from("app_settings").select("value").eq("key", SETTINGS_KEY).maybeSingle();

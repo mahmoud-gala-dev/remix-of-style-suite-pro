@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireAdmin } from "@/lib/require-admin";
 
 const SETTINGS_KEY = "saml_sso";
 
@@ -27,7 +28,7 @@ async function assertAdmin(ctx: { supabase: any; userId: string }) {
 export const getSAMLSettings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<SAMLSettings> => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await supabaseAdmin
       .from("app_settings")
@@ -47,7 +48,7 @@ export const updateSAMLSettings = createServerFn({ method: "POST" })
     }).parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await requireAdmin(context);
     if (data.enabled && !data.metadata_url) {
       throw new Error("Metadata URL is required to enable SAML SSO.");
     }
