@@ -110,7 +110,7 @@ function Page() {
           loading={q.isLoading}
           error={q.error}
           empty={!q.isLoading && rows.length === 0}
-          emptyTitle="No audit events for this filter"
+          emptyTitle={t("noAuditEvents")}
           retry={() => q.refetch()}
         >
           <div className="overflow-x-auto">

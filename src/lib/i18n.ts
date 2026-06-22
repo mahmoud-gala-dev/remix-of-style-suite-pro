@@ -375,6 +375,8 @@ export const dict = {
   maxUsesOptional: { en: "Max uses (optional)", ar: "الحد الأقصى للاستخدام (اختياري)" },
   validUntil: { en: "Valid until", ar: "صالح حتى" },
   tax: { en: "Tax", ar: "الضريبة" },
+  noAuditEvents: { en: "No audit events for this filter", ar: "لا توجد أحداث تدقيق لهذا الفلتر" },
+  noStaffAccounts: { en: "No staff accounts yet", ar: "لا توجد حسابات موظفين بعد" },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;
