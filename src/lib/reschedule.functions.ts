@@ -49,5 +49,7 @@ export const rescheduleBooking = createServerFn({ method: "POST" })
       if (code === "23P01") throw new Response("Slot taken", { status: 409 });
       throw new Error(error.message);
     }
+    const { invalidateReportCache } = await import("@/lib/report-cache.server");
+    await invalidateReportCache();
     return { ok: true as const };
   });
