@@ -62,7 +62,9 @@ export type Database = {
           actor: string | null
           at: string
           diff: Json | null
+          hash: string | null
           id: string
+          prev_hash: string | null
           row_id: string | null
           table_name: string
         }
@@ -71,7 +73,9 @@ export type Database = {
           actor?: string | null
           at?: string
           diff?: Json | null
+          hash?: string | null
           id?: string
+          prev_hash?: string | null
           row_id?: string | null
           table_name: string
         }
@@ -80,7 +84,9 @@ export type Database = {
           actor?: string | null
           at?: string
           diff?: Json | null
+          hash?: string | null
           id?: string
+          prev_hash?: string | null
           row_id?: string | null
           table_name?: string
         }
@@ -1814,6 +1820,14 @@ export type Database = {
       user_has_branch: {
         Args: { _bid: string; _uid: string }
         Returns: boolean
+      }
+      verify_audit_chain: {
+        Args: { p_limit?: number }
+        Returns: {
+          at: string
+          id: string
+          reason: string
+        }[]
       }
       verify_otp: {
         Args: { p_code: string; p_phone: string }
