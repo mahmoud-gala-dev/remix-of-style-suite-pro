@@ -377,6 +377,17 @@ export const dict = {
   tax: { en: "Tax", ar: "الضريبة" },
   noAuditEvents: { en: "No audit events for this filter", ar: "لا توجد أحداث تدقيق لهذا الفلتر" },
   noStaffAccounts: { en: "No staff accounts yet", ar: "لا توجد حسابات موظفين بعد" },
+  onlineDeposits: { en: "Online Deposits (Stripe)", ar: "العربون عبر الإنترنت (Stripe)" },
+  depositType: { en: "Deposit Type", ar: "نوع العربون" },
+  depositAmount: { en: "Deposit Amount", ar: "قيمة العربون" },
+  pctOfService: { en: "% of service", ar: "% من الخدمة" },
+  whatsappReminders: { en: "WhatsApp Reminders", ar: "تذكيرات واتساب" },
+  whatsappBusinessApi: { en: "WhatsApp Business API", ar: "واجهة WhatsApp للأعمال" },
+  pushNotifications: { en: "Push Notifications", ar: "الإشعارات الفورية" },
+  permissionDenied: { en: "Permission denied by browser", ar: "تم رفض الإذن من المتصفح" },
+  failedToSubscribePush: { en: "Failed to subscribe to push", ar: "فشل الاشتراك في الإشعارات" },
+  notificationsEnabled: { en: "Notifications enabled", ar: "تم تفعيل الإشعارات" },
+  notificationsEnabledBody: { en: "You'll get alerts for queue and bookings.", ar: "ستصلك تنبيهات لقائمة الانتظار والحجوزات." },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;
