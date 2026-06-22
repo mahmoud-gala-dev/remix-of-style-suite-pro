@@ -52,6 +52,7 @@ import { Route as ApiPublicCronRetryWebhooksRouteImport } from './routes/api/pub
 import { Route as ApiPublicCronProcessWebhooksRouteImport } from './routes/api/public/cron/process-webhooks'
 import { Route as ApiPublicCronInventoryLowStockRouteImport } from './routes/api/public/cron/inventory-low-stock'
 import { Route as ApiPublicCronDepositNoshowCaptureRouteImport } from './routes/api/public/cron/deposit-noshow-capture'
+import { Route as ApiPublicCronDailyDigestRouteImport } from './routes/api/public/cron/daily-digest'
 import { Route as ApiPublicCronBookingRemindersRouteImport } from './routes/api/public/cron/booking-reminders'
 import { Route as ApiPublicCronBirthdayCouponsRouteImport } from './routes/api/public/cron/birthday-coupons'
 import { Route as ApiPublicScimV2UsersRouteImport } from './routes/api/public/scim/v2/Users'
@@ -280,6 +281,12 @@ const ApiPublicCronDepositNoshowCaptureRoute =
     path: '/api/public/cron/deposit-noshow-capture',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronDailyDigestRoute =
+  ApiPublicCronDailyDigestRouteImport.update({
+    id: '/api/public/cron/daily-digest',
+    path: '/api/public/cron/daily-digest',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCronBookingRemindersRoute =
   ApiPublicCronBookingRemindersRouteImport.update({
     id: '/api/public/cron/booking-reminders',
@@ -340,6 +347,7 @@ export interface FileRoutesByFullPath {
   '/api/public/web-vitals': typeof ApiPublicWebVitalsRoute
   '/api/public/cron/birthday-coupons': typeof ApiPublicCronBirthdayCouponsRoute
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
+  '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
@@ -388,6 +396,7 @@ export interface FileRoutesByTo {
   '/api/public/web-vitals': typeof ApiPublicWebVitalsRoute
   '/api/public/cron/birthday-coupons': typeof ApiPublicCronBirthdayCouponsRoute
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
+  '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
@@ -438,6 +447,7 @@ export interface FileRoutesById {
   '/api/public/web-vitals': typeof ApiPublicWebVitalsRoute
   '/api/public/cron/birthday-coupons': typeof ApiPublicCronBirthdayCouponsRoute
   '/api/public/cron/booking-reminders': typeof ApiPublicCronBookingRemindersRoute
+  '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/deposit-noshow-capture': typeof ApiPublicCronDepositNoshowCaptureRoute
   '/api/public/cron/inventory-low-stock': typeof ApiPublicCronInventoryLowStockRoute
   '/api/public/cron/process-webhooks': typeof ApiPublicCronProcessWebhooksRoute
@@ -488,6 +498,7 @@ export interface FileRouteTypes {
     | '/api/public/web-vitals'
     | '/api/public/cron/birthday-coupons'
     | '/api/public/cron/booking-reminders'
+    | '/api/public/cron/daily-digest'
     | '/api/public/cron/deposit-noshow-capture'
     | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/process-webhooks'
@@ -536,6 +547,7 @@ export interface FileRouteTypes {
     | '/api/public/web-vitals'
     | '/api/public/cron/birthday-coupons'
     | '/api/public/cron/booking-reminders'
+    | '/api/public/cron/daily-digest'
     | '/api/public/cron/deposit-noshow-capture'
     | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/process-webhooks'
@@ -585,6 +597,7 @@ export interface FileRouteTypes {
     | '/api/public/web-vitals'
     | '/api/public/cron/birthday-coupons'
     | '/api/public/cron/booking-reminders'
+    | '/api/public/cron/daily-digest'
     | '/api/public/cron/deposit-noshow-capture'
     | '/api/public/cron/inventory-low-stock'
     | '/api/public/cron/process-webhooks'
@@ -612,6 +625,7 @@ export interface RootRouteChildren {
   ApiPublicWebVitalsRoute: typeof ApiPublicWebVitalsRoute
   ApiPublicCronBirthdayCouponsRoute: typeof ApiPublicCronBirthdayCouponsRoute
   ApiPublicCronBookingRemindersRoute: typeof ApiPublicCronBookingRemindersRoute
+  ApiPublicCronDailyDigestRoute: typeof ApiPublicCronDailyDigestRoute
   ApiPublicCronDepositNoshowCaptureRoute: typeof ApiPublicCronDepositNoshowCaptureRoute
   ApiPublicCronInventoryLowStockRoute: typeof ApiPublicCronInventoryLowStockRoute
   ApiPublicCronProcessWebhooksRoute: typeof ApiPublicCronProcessWebhooksRoute
@@ -926,6 +940,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronDepositNoshowCaptureRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/daily-digest': {
+      id: '/api/public/cron/daily-digest'
+      path: '/api/public/cron/daily-digest'
+      fullPath: '/api/public/cron/daily-digest'
+      preLoaderRoute: typeof ApiPublicCronDailyDigestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/booking-reminders': {
       id: '/api/public/cron/booking-reminders'
       path: '/api/public/cron/booking-reminders'
@@ -1038,6 +1059,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicWebVitalsRoute: ApiPublicWebVitalsRoute,
   ApiPublicCronBirthdayCouponsRoute: ApiPublicCronBirthdayCouponsRoute,
   ApiPublicCronBookingRemindersRoute: ApiPublicCronBookingRemindersRoute,
+  ApiPublicCronDailyDigestRoute: ApiPublicCronDailyDigestRoute,
   ApiPublicCronDepositNoshowCaptureRoute:
     ApiPublicCronDepositNoshowCaptureRoute,
   ApiPublicCronInventoryLowStockRoute: ApiPublicCronInventoryLowStockRoute,
