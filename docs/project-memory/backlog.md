@@ -4,8 +4,8 @@
 - [x] Rate-limit OTP `request`/`verify` (5/10min, 10/min). → done in this audit.
 - [x] Stop returning OTP code from `requestOtp` outside dev. → done in this audit.
 - [x] Require `x-cron-secret` header on `/api/public/cron/*` endpoints. → done in this audit.
-- [ ] Wire OTP send through Twilio when Twilio settings are enabled (today the code is silently discarded).
-- [ ] Replace hardcoded VAPID private-key fallback with a startup error when `VAPID_PRIVATE_KEY` is unset in production.
+- [x] Wire OTP send through Twilio when Twilio settings are enabled. (cycle #2)
+- [x] VAPID throws in production when `VAPID_PRIVATE_KEY` env is unset; dev fallback retained. (cycle #2)
 
 ## P2 (important)
 - [ ] Add `<DataState>` wrappers (loading / error / empty) to: bookings, customers, calendar, queue, reports, services, employees, branches, settings, docs, dashboard.

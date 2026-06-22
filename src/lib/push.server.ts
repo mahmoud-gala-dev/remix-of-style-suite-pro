@@ -1,9 +1,10 @@
 import { b64urlToUint8, uint8ToB64url, VAPID_PUBLIC_KEY_B64URL } from "./push-vapid";
 
-// Auto-generated VAPID keypair baked in so push works without secret setup.
-// The public half also lives in `push-vapid.ts` (shipped to the browser).
-// Override with VAPID_PRIVATE_KEY / VAPID_SUBJECT env vars to rotate.
-const DEFAULT_VAPID_PRIVATE_KEY = "k04qZxb_P2lK7B_14twzpN7TGtu_kJFs2b17P84-SHs";
+// Dev-only VAPID keypair so push works locally without secrets.
+// In production you MUST set `VAPID_PRIVATE_KEY` (rotated key) and
+// `VAPID_SUBJECT` env vars — otherwise sending push throws.
+// The public half lives in `push-vapid.ts` (shipped to the browser).
+const DEV_VAPID_PRIVATE_KEY = "k04qZxb_P2lK7B_14twzpN7TGtu_kJFs2b17P84-SHs";
 const VAPID_SUBJECT = process.env.VAPID_SUBJECT || "mailto:admin@example.com";
 
 function concat(...parts: Uint8Array[]): Uint8Array {
@@ -15,7 +16,13 @@ function concat(...parts: Uint8Array[]): Uint8Array {
 }
 
 async function importVapidPrivateKey(): Promise<CryptoKey> {
-  const priv = process.env.VAPID_PRIVATE_KEY || DEFAULT_VAPID_PRIVATE_KEY;
+  const envKey = process.env.VAPID_PRIVATE_KEY;
+  if (!envKey && process.env.NODE_ENV === "production") {
+    throw new Error(
+      "VAPID_PRIVATE_KEY is not configured. Set the env var (and rotate VAPID_PUBLIC_KEY_B64URL) before enabling push in production.",
+    );
+  }
+  const priv = envKey || DEV_VAPID_PRIVATE_KEY;
   const pubRaw = b64urlToUint8(VAPID_PUBLIC_KEY_B64URL); // 65 bytes uncompressed
   const x = uint8ToB64url(pubRaw.slice(1, 33));
   const y = uint8ToB64url(pubRaw.slice(33, 65));

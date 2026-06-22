@@ -33,12 +33,20 @@ export const requestOtp = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: code, error } = await supabaseAdmin.rpc("request_otp", { p_phone: data.phone });
     if (error) throw new Error(error.message);
-    // Never leak the OTP code in production. Dev preview can expose it for tests.
+    // Try delivering via Twilio WhatsApp (if admin enabled it in Settings).
+    const { sendWhatsappInternal } = await import("@/lib/twilio.functions");
+    const send = await sendWhatsappInternal(
+      data.phone,
+      `Vanguard verification code: ${code}`,
+    );
+    // In production never leak the code; expose only when Twilio isn't
+    // delivering (dev preview, or tests with EXPOSE_OTP_FOR_TESTS=1).
     const exposeCode =
-      process.env.NODE_ENV !== "production" || process.env.EXPOSE_OTP_FOR_TESTS === "1";
+      !send.sent &&
+      (process.env.NODE_ENV !== "production" || process.env.EXPOSE_OTP_FOR_TESTS === "1");
     return exposeCode
-      ? { ok: true as const, code: code as string }
-      : { ok: true as const };
+      ? { ok: true as const, sent: send.sent, code: code as string }
+      : { ok: true as const, sent: send.sent };
   });
 
 // Public — verify a 6-digit OTP for a phone.
