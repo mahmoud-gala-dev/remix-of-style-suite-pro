@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { ImageTransform } from "./images";
 
 const BUCKET = "avatars";
 
@@ -21,9 +22,20 @@ export async function uploadAvatar(
   return path;
 }
 
-export async function getAvatarUrl(path: string | null | undefined): Promise<string | null> {
+export async function getAvatarUrl(
+  path: string | null | undefined,
+  transform: ImageTransform = { width: 128, format: "webp", quality: 75 },
+): Promise<string | null> {
   if (!path) return null;
-  const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 60 * 60);
+  const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 60 * 60, {
+    transform: {
+      width: transform.width,
+      height: transform.height,
+      quality: transform.quality ?? 75,
+      resize: transform.resize ?? "cover",
+      format: (transform.format ?? "webp") as "origin",
+    },
+  });
   if (error) return null;
   return data.signedUrl;
 }
@@ -54,9 +66,18 @@ export async function uploadImage(
 export async function getImageUrl(
   bucket: ImageBucket,
   path: string | null | undefined,
+  transform: ImageTransform = { width: 512, format: "webp", quality: 75 },
 ): Promise<string | null> {
   if (!path) return null;
-  const { data, error } = await supabase.storage.from(bucket).createSignedUrl(path, 60 * 60);
+  const { data, error } = await supabase.storage.from(bucket).createSignedUrl(path, 60 * 60, {
+    transform: {
+      width: transform.width,
+      height: transform.height,
+      quality: transform.quality ?? 75,
+      resize: transform.resize ?? "cover",
+      format: (transform.format ?? "webp") as "origin",
+    },
+  });
   if (error) return null;
   return data.signedUrl;
 }
