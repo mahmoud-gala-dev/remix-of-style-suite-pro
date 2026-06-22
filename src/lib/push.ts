@@ -59,7 +59,7 @@ export async function subscribeToPush(): Promise<boolean> {
   if (!sub) {
     sub = await reg.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: b64urlToUint8(VAPID_PUBLIC_KEY_B64URL),
+      applicationServerKey: b64urlToUint8(VAPID_PUBLIC_KEY_B64URL) as BufferSource,
     });
   }
   await savePushSubscription({ data: subToJSON(sub) });
