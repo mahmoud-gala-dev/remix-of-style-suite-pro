@@ -93,10 +93,18 @@ let _sentryMetric: ((name: string, value: number, ctx?: Record<string, unknown>)
 async function initWebVitals() {
   if (typeof window === "undefined") return;
   try {
+    type WebVitalMetric = { name: string; value: number; id: string; rating?: string };
+    type WebVitalsModule = {
+      onCLS?: (cb: (m: WebVitalMetric) => void) => void;
+      onINP?: (cb: (m: WebVitalMetric) => void) => void;
+      onLCP?: (cb: (m: WebVitalMetric) => void) => void;
+      onFCP?: (cb: (m: WebVitalMetric) => void) => void;
+      onTTFB?: (cb: (m: WebVitalMetric) => void) => void;
+    };
     const mod = "web-vitals";
-    const wv: any = await import(/* @vite-ignore */ mod).catch(() => null);
+    const wv = (await import(/* @vite-ignore */ mod).catch(() => null)) as WebVitalsModule | null;
     if (!wv) return;
-    const report = (metric: { name: string; value: number; id: string; rating?: string }) => {
+    const report = (metric: WebVitalMetric) => {
       const ctx = { id: metric.id, rating: metric.rating, route: window.location.pathname };
       try {
         window.__lovableEvents?.captureMetric?.(metric.name, metric.value, ctx);
