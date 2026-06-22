@@ -3,8 +3,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, Bell, ShieldAlert, X } from "lucide-react";
 import { Surface } from "@/components/shell/page";
 import { dismissAlert, getAlerts } from "@/lib/alerts.functions";
+import { useT } from "@/lib/i18n";
 
 export function AlertsWidget() {
+  const t = useT();
   const fetchAlerts = useServerFn(getAlerts);
   const dismiss = useServerFn(dismissAlert);
   const qc = useQueryClient();
@@ -42,8 +44,8 @@ export function AlertsWidget() {
                 onClick={() => m.mutate(a.id)}
                 disabled={m.isPending}
                 className="opacity-0 group-hover:opacity-100 transition-opacity text-dim hover:text-foreground"
-                title="Dismiss"
-                aria-label="Dismiss alert"
+                title={t("dismiss")}
+                aria-label={t("dismissAlert")}
               >
                 <X className="size-3.5" />
               </button>
