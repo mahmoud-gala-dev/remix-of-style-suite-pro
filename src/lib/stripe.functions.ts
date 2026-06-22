@@ -153,8 +153,8 @@ export const verifyStripeWebhook = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ payload: z.string(), signature: z.string() }).parse(d))
   .handler(async ({ data }) => {
     const cfg = await loadConfig();
-    if (!cfg.enabled) return { skipped: true };
-    if (!cfg.webhook_secret) return { skipped: true, reason: "no webhook secret" };
+    if (!cfg.enabled) return { skipped: true as const, reason: "disabled" as const };
+    if (!cfg.webhook_secret) return { skipped: true as const, reason: "no webhook secret" as const };
 
     const { createHmac, timingSafeEqual } = await import("crypto");
     const expected = createHmac("sha256", cfg.webhook_secret)
@@ -166,5 +166,8 @@ export const verifyStripeWebhook = createServerFn({ method: "POST" })
       throw new Response("Invalid signature", { status: 401 });
     }
     const event = JSON.parse(data.payload);
-    return { type: event.type as string, object: event.data?.object as Record<string, unknown> };
+    return {
+      type: String(event.type ?? ""),
+      object: JSON.stringify(event.data?.object ?? {}),
+    };
   });
