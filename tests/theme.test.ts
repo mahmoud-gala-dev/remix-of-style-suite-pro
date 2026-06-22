@@ -1,5 +1,23 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { resolveTheme, useTheme } from "@/lib/theme";
+import { describe, it, expect, beforeAll, beforeEach, afterEach } from "vitest";
+
+// Stub localStorage + window before importing the module so zustand/persist
+// can initialise without throwing in the node test environment.
+beforeAll(() => {
+  const store = new Map<string, string>();
+  (globalThis as { localStorage?: unknown }).localStorage = {
+    getItem: (k: string) => store.get(k) ?? null,
+    setItem: (k: string, v: string) => void store.set(k, v),
+    removeItem: (k: string) => void store.delete(k),
+    clear: () => store.clear(),
+    key: () => null,
+    length: 0,
+  };
+  if (typeof (globalThis as { window?: unknown }).window === "undefined") {
+    (globalThis as { window: unknown }).window = globalThis;
+  }
+});
+
+const { resolveTheme, useTheme } = await import("@/lib/theme");
 
 describe("resolveTheme", () => {
   const origWindow = globalThis.window;
