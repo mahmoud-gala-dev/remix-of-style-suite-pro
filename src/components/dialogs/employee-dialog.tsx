@@ -83,7 +83,7 @@ export function EmployeeDialog({
               <option value="admin">{t("admin")}</option>
             </select>
           </Field>
-          <Field label={t("commissionPct")}>
+          <Field label={`${t("commission")} %`}>
             <input type="number" min={0} max={100} value={commissionPct} onChange={(e) => setCommissionPct(+e.target.value)} className={inputCls} />
           </Field>
         </div>
