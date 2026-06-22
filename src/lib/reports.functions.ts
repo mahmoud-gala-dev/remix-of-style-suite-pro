@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { aggregateReports, REVENUE_STATUSES } from "@/lib/reports-aggregate";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const inputSchema = z.object({
@@ -13,16 +14,7 @@ const inputSchema = z.object({
     .transform((v) => (v && UUID_RE.test(v) ? v : null)),
 });
 
-const revenueStatuses = new Set(["completed", "in_progress"]);
-const statusLabels: Record<string, string> = {
-  pending: "pending",
-  confirmed: "confirmed",
-  arrived: "arrived",
-  in_progress: "inProgress",
-  completed: "completed",
-  cancelled: "cancelled",
-  no_show: "noShow",
-};
+const revenueStatuses = REVENUE_STATUSES;
 
 function addDays(date: Date, days: number) {
   const next = new Date(date);
@@ -56,68 +48,14 @@ export const getReportsSummary = createServerFn({ method: "GET" })
     const { data: bookings, error } = await bookingsQuery;
     if (error) throw new Error(error.message);
 
-    const branchMap = new Map((branchesRes.data ?? []).map((b) => [b.id, b]));
-    const serviceMap = new Map((servicesRes.data ?? []).map((s) => [s.id, s]));
-    const rows = bookings ?? [];
-
-    const byBranch = (branchesRes.data ?? [])
-      .filter((b) => !data.branchId || b.id === data.branchId)
-      .map((b) => ({
-        id: b.id,
-        name: b.name_en.split(" ")[0],
-        revenue: rows
-          .filter((x) => x.branch_id === b.id && revenueStatuses.has(x.status))
-          .reduce((sum, x) => sum + Number(x.price), 0),
-      }));
-
-    const statusOrder = ["completed", "in_progress", "confirmed", "pending", "cancelled", "no_show"];
-    const byStatus = statusOrder.map((status) => ({
-      name: statusLabels[status] ?? status,
-      value: rows.filter((b) => b.status === status).length,
-    }));
-
-    const trend: { name: string; revenue: number; bookings: number }[] = [];
-    for (let day = new Date(from); day < toExclusive; day = addDays(day, 1)) {
-      const key = day.toISOString().slice(0, 10);
-      const dayRows = rows.filter((b) => b.start_at.slice(0, 10) === key);
-      trend.push({
-        name: day.toLocaleDateString(undefined, { month: "short", day: "numeric" }),
-        revenue: dayRows.filter((b) => revenueStatuses.has(b.status)).reduce((sum, b) => sum + Number(b.price), 0),
-        bookings: dayRows.length,
-      });
-    }
-
-    const peakHours = Array.from({ length: 12 }, (_, i) => ({ name: `${i + 9}:00`, count: 0 }));
-    rows.forEach((b) => {
-      const idx = new Date(b.start_at).getHours() - 9;
-      if (idx >= 0 && idx < peakHours.length) peakHours[idx].count += 1;
+    return aggregateReports({
+      bookings: bookings ?? [],
+      branches: branchesRes.data ?? [],
+      services: servicesRes.data ?? [],
+      from,
+      toExclusive,
+      branchId: data.branchId,
     });
-
-    const serviceCounts = new Map<string, number>();
-    rows.forEach((b) => serviceCounts.set(b.service_id, (serviceCounts.get(b.service_id) ?? 0) + 1));
-    const topServices = [...serviceCounts.entries()]
-      .map(([id, count]) => ({
-        id,
-        nameEn: serviceMap.get(id)?.name_en ?? "—",
-        nameAr: serviceMap.get(id)?.name_ar ?? "—",
-        count,
-      }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 6);
-
-    return {
-      branches: (branchesRes.data ?? []).map((b) => ({ id: b.id, nameEn: b.name_en, nameAr: b.name_ar })),
-      byBranch,
-      byStatus,
-      trend,
-      peakHours,
-      topServices,
-      totals: {
-        bookings: rows.length,
-        revenue: rows.filter((b) => revenueStatuses.has(b.status)).reduce((sum, b) => sum + Number(b.price), 0),
-        branches: new Set(rows.map((b) => branchMap.get(b.branch_id)?.id).filter(Boolean)).size,
-      },
-    };
   });
 
 function csvEscape(v: unknown): string {
