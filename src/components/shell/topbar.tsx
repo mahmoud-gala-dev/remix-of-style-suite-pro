@@ -122,11 +122,11 @@ export function Topbar() {
       <div className="flex items-center gap-3">
         <span className="hidden lg:block text-[10px] font-mono text-dim">{now}</span>
 
-        <div role="group" aria-label="Language" className="flex bg-surface rounded-md border border-border p-0.5">
+        <div role="group" aria-label={t("language")} className="flex bg-surface rounded-md border border-border p-0.5">
           <button
             onClick={() => setLang("en")}
             aria-pressed={lang === "en"}
-            aria-label="English"
+            aria-label={t("english")}
             className={cn(
               "px-2.5 py-1 text-[10px] font-bold rounded-sm transition-colors",
               lang === "en" ? "bg-surface-2 text-foreground" : "text-dim",
@@ -137,7 +137,7 @@ export function Topbar() {
           <button
             onClick={() => setLang("ar")}
             aria-pressed={lang === "ar"}
-            aria-label="العربية"
+            aria-label={t("arabic")}
             className={cn(
               "px-2.5 py-1 text-[10px] font-bold rounded-sm transition-colors",
               lang === "ar" ? "bg-surface-2 text-foreground" : "text-dim",
@@ -157,8 +157,8 @@ export function Topbar() {
         </button>
 
         <button
-          aria-label="Notifications"
-          title="Notifications"
+          aria-label={t("notifications")}
+          title={t("notifications")}
           className="size-8 grid place-items-center border border-border rounded-full text-dim hover:text-foreground transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           <Bell className="size-3.5" />
@@ -167,8 +167,8 @@ export function Topbar() {
         <button
           onClick={handleSignOut}
           className="size-8 grid place-items-center border border-border rounded-full text-dim hover:text-foreground transition-colors"
-          aria-label="Sign out"
-          title="Sign out"
+          aria-label={t("signOut")}
+          title={t("signOut")}
         >
           <LogOut className="size-3.5" />
         </button>
