@@ -14,7 +14,7 @@ const inputSchema = z.object({
     .transform((v) => (v && UUID_RE.test(v) ? v : null)),
 });
 
-const revenueStatuses = new Set(["completed", "in_progress"]);
+const revenueStatuses = REVENUE_STATUSES;
 
 function addDays(date: Date, days: number) {
   const next = new Date(date);
