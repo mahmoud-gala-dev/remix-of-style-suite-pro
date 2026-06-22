@@ -5,12 +5,20 @@ function sign(secret: string, body: string): string {
   return "sha256=" + createHmac("sha256", secret).update(body).digest("hex");
 }
 
+function authorized(request: Request): boolean {
+  const expected = process.env.CRON_SECRET;
+  if (!expected) return true; // no secret configured → keep open (dev)
+  const got = request.headers.get("x-cron-secret") ?? "";
+  return got === expected;
+}
+
 // P15 — cron-driven retry processor. Picks pending failed deliveries due for retry,
 // re-POSTs them, applies exponential backoff, and moves to DLQ after 5 attempts.
 export const Route = createFileRoute("/api/public/cron/process-webhooks")({
   server: {
     handlers: {
-      POST: async () => {
+      POST: async ({ request }) => {
+        if (!authorized(request)) return new Response("Unauthorized", { status: 401 });
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const nowIso = new Date().toISOString();
         const { data: rows, error } = await supabaseAdmin
