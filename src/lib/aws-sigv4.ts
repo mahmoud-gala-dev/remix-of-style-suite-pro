@@ -6,12 +6,12 @@ const enc = new TextEncoder();
 
 async function sha256Hex(data: Uint8Array | string): Promise<string> {
   const buf = typeof data === "string" ? enc.encode(data) : data;
-  const hash = await crypto.subtle.digest("SHA-256", buf);
+  const hash = await crypto.subtle.digest("SHA-256", buf as BufferSource);
   return [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 async function hmac(key: ArrayBuffer | Uint8Array, msg: string): Promise<ArrayBuffer> {
-  const k = await crypto.subtle.importKey("raw", key, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const k = await crypto.subtle.importKey("raw", key as BufferSource, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
   return crypto.subtle.sign("HMAC", k, enc.encode(msg));
 }
 
@@ -88,6 +88,6 @@ export async function signedS3Fetch(opts: SignS3Opts): Promise<Response> {
   return fetch(url, {
     method: opts.method,
     headers: { ...headers, Authorization: authHeader },
-    body: opts.method === "PUT" ? body : undefined,
+    body: opts.method === "PUT" ? (body as BodyInit) : undefined,
   });
 }
