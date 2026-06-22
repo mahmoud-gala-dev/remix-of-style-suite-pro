@@ -107,7 +107,9 @@ function SetupWizard() {
         <div className="flex items-center gap-2 mb-6 text-xs">
           <StepDot active={step === 1} done={step > 1} label="Database" n={1} />
           <div className="h-px flex-1 bg-border" />
-          <StepDot active={step === 2} done={false} label="Admin Account" n={2} />
+          <StepDot active={step === 2} done={step > 2} label="Admin Account" n={2} />
+          <div className="h-px flex-1 bg-border" />
+          <StepDot active={step === 3} done={false} label="Done" n={3} />
         </div>
 
         {step === 1 && (
@@ -181,6 +183,23 @@ function SetupWizard() {
               These credentials will be created and activated immediately. Copy them somewhere safe.
             </p>
 
+            <div className="flex gap-2 p-1 bg-muted rounded-lg">
+              <button
+                type="button"
+                onClick={() => { setPwMode("auto"); setPassword(genPassword()); }}
+                className={`flex-1 text-xs py-1.5 rounded-md transition ${pwMode === "auto" ? "bg-background shadow-sm font-medium" : "text-muted-foreground"}`}
+              >
+                Auto-generate
+              </button>
+              <button
+                type="button"
+                onClick={() => { setPwMode("manual"); setPassword(""); }}
+                className={`flex-1 text-xs py-1.5 rounded-md transition ${pwMode === "manual" ? "bg-background shadow-sm font-medium" : "text-muted-foreground"}`}
+              >
+                Manual entry
+              </button>
+            </div>
+
             <div className="space-y-3">
               <FieldRow
                 label="Email"
@@ -205,22 +224,58 @@ function SetupWizard() {
                 {copied === "all" ? <Check className="size-3.5 me-1.5" /> : <Copy className="size-3.5 me-1.5" />}
                 Copy both
               </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setPassword(genPassword())}
-                className="w-full text-xs"
-              >
-                Regenerate password
-              </Button>
+              {pwMode === "auto" && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setPassword(genPassword())}
+                  className="w-full text-xs"
+                >
+                  Regenerate password
+                </Button>
+              )}
             </div>
 
             <div className="flex justify-between pt-2">
               <Button variant="ghost" onClick={() => setStep(1)} disabled={busy}>
                 Back
               </Button>
-              <Button onClick={onCreateAdmin} disabled={busy}>
+              <Button onClick={onCreateAdmin} disabled={busy || password.length < 8}>
                 {busy ? "Creating…" : "Create & sign in"}
+              </Button>
+            </div>
+          </Card>
+        )}
+
+        {step === 3 && (
+          <Card className="p-6 space-y-5">
+            <div className="flex items-center gap-2">
+              <Check className="size-4 text-primary" />
+              <h2 className="font-semibold">Save your credentials</h2>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Store these somewhere safe — the password will not be shown again.
+            </p>
+            <div className="space-y-3">
+              <FieldRow label="Email" value={email} onChange={() => {}} copied={copied === "email"} onCopy={() => copy(email, "email")} />
+              <FieldRow label="Password" value={password} onChange={() => {}} copied={copied === "password"} onCopy={() => copy(password, "password")} />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => copy(`Email: ${email}\nPassword: ${password}`, "all")}
+                className="w-full"
+              >
+                {copied === "all" ? <Check className="size-3.5 me-1.5" /> : <Copy className="size-3.5 me-1.5" />}
+                Copy both
+              </Button>
+              <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
+                <input type="checkbox" checked={savedAck} onChange={(e) => setSavedAck(e.target.checked)} />
+                I have saved these credentials in a secure location
+              </label>
+            </div>
+            <div className="flex justify-end">
+              <Button onClick={() => navigate({ to: "/" })} disabled={!savedAck}>
+                Go to admin
               </Button>
             </div>
           </Card>
