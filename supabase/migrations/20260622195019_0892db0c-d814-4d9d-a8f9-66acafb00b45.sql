@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.cleanup_report_cache() FROM PUBLIC, anon, authenticated;
