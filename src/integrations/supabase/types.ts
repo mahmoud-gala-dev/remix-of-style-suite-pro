@@ -142,6 +142,12 @@ export type Database = {
           branch_id: string
           created_at: string
           customer_id: string
+          deposit_amount_cents: number | null
+          deposit_currency: string | null
+          deposit_held_at: string | null
+          deposit_intent_id: string | null
+          deposit_settled_at: string | null
+          deposit_status: string | null
           employee_id: string
           end_at: string
           id: string
@@ -160,6 +166,12 @@ export type Database = {
           branch_id: string
           created_at?: string
           customer_id: string
+          deposit_amount_cents?: number | null
+          deposit_currency?: string | null
+          deposit_held_at?: string | null
+          deposit_intent_id?: string | null
+          deposit_settled_at?: string | null
+          deposit_status?: string | null
           employee_id: string
           end_at: string
           id?: string
@@ -178,6 +190,12 @@ export type Database = {
           branch_id?: string
           created_at?: string
           customer_id?: string
+          deposit_amount_cents?: number | null
+          deposit_currency?: string | null
+          deposit_held_at?: string | null
+          deposit_intent_id?: string | null
+          deposit_settled_at?: string | null
+          deposit_status?: string | null
           employee_id?: string
           end_at?: string
           id?: string
