@@ -247,39 +247,28 @@ export const exportReportsPdf = createServerFn({ method: "GET" })
       .sort((a, b) => b.revenue - a.revenue)
       .slice(0, 10);
 
-    const { PDFDocument, StandardFonts, rgb } = await import("pdf-lib");
-    const pdf = await PDFDocument.create();
-    const page = pdf.addPage([595, 842]); // A4
-    const font = await pdf.embedFont(StandardFonts.Helvetica);
-    const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
-    const ink = rgb(0.07, 0.07, 0.08);
-    const dim = rgb(0.4, 0.4, 0.45);
-    let y = 800;
-    page.drawText("Vanguard Salon OS — Report", { x: 40, y, size: 18, font: bold, color: ink });
-    y -= 24;
+    // Consolidated on jspdf + jspdf-autotable (single PDF stack across app).
+    const { jsPDF } = await import("jspdf");
+    const autoTable = (await import("jspdf-autotable")).default;
+    const doc = new jsPDF({ unit: "pt", format: "a4" });
     const branchLabel = data.branchId ? branchMap.get(data.branchId) ?? "Selected branch" : "All branches";
-    page.drawText(`Period: ${data.from} → ${data.to}    Branch: ${branchLabel}`, {
-      x: 40, y, size: 10, font, color: dim,
+    doc.setFontSize(18);
+    doc.text("Vanguard Salon OS — Report", 40, 50);
+    doc.setFontSize(10);
+    doc.setTextColor(110);
+    doc.text(`Period: ${data.from} -> ${data.to}    Branch: ${branchLabel}`, 40, 70);
+    doc.setTextColor(20);
+    doc.setFontSize(12);
+    doc.text("Totals", 40, 100);
+    doc.setFontSize(10);
+    doc.text(`Bookings: ${all.length}`, 40, 118);
+    doc.text(`Revenue:  ${revenue.toFixed(2)}`, 40, 132);
+    autoTable(doc, {
+      startY: 160,
+      head: [["Service", "Bookings", "Revenue"]],
+      body: topServices.map((s) => [s.name, String(s.count), s.revenue.toFixed(2)]),
+      styles: { fontSize: 10 },
     });
-    y -= 30;
-    page.drawText("Totals", { x: 40, y, size: 12, font: bold, color: ink }); y -= 16;
-    page.drawText(`Bookings: ${all.length}`, { x: 40, y, size: 10, font, color: ink }); y -= 14;
-    page.drawText(`Revenue:  ${revenue.toFixed(2)}`, { x: 40, y, size: 10, font, color: ink }); y -= 24;
-
-    page.drawText("Top services", { x: 40, y, size: 12, font: bold, color: ink }); y -= 16;
-    page.drawText("Service", { x: 40, y, size: 9, font: bold, color: dim });
-    page.drawText("Bookings", { x: 360, y, size: 9, font: bold, color: dim });
-    page.drawText("Revenue", { x: 470, y, size: 9, font: bold, color: dim });
-    y -= 12;
-    for (const s of topServices) {
-      if (y < 60) break;
-      const name = s.name.length > 55 ? `${s.name.slice(0, 52)}…` : s.name;
-      page.drawText(name, { x: 40, y, size: 10, font, color: ink });
-      page.drawText(String(s.count), { x: 360, y, size: 10, font, color: ink });
-      page.drawText(s.revenue.toFixed(2), { x: 470, y, size: 10, font, color: ink });
-      y -= 14;
-    }
-
-    const bytes = await pdf.saveAsBase64();
-    return { base64: bytes, filename: `vanguard_report_${data.from}_${data.to}.pdf` };
+    const base64 = doc.output("datauristring").split(",")[1] ?? "";
+    return { base64, filename: `vanguard_report_${data.from}_${data.to}.pdf` };
   });
