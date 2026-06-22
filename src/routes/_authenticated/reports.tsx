@@ -144,27 +144,27 @@ function Page() {
       <Surface>
         <div className="grid gap-3 sm:grid-cols-4">
           <label className="space-y-1.5 text-xs text-dim">
-            <span className="block uppercase tracking-wider">From</span>
+            <span className="block uppercase tracking-wider">{t("from")}</span>
             <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" />
           </label>
           <label className="space-y-1.5 text-xs text-dim">
-            <span className="block uppercase tracking-wider">To</span>
+            <span className="block uppercase tracking-wider">{t("to")}</span>
             <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" />
           </label>
           <label className="space-y-1.5 text-xs text-dim sm:col-span-2">
-            <span className="block uppercase tracking-wider">Branch</span>
+            <span className="block uppercase tracking-wider">{t("branch")}</span>
             <select value={branchId} onChange={(e) => setBranchId(e.target.value)} className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground">
-              <option value="all">All branches</option>
+              <option value="all">{t("allBranches")}</option>
               {report.branches.map((b) => <option key={b.id} value={b.id}>{lang === "ar" ? b.nameAr : b.nameEn}</option>)}
             </select>
           </label>
         </div>
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          <Metric label="Revenue" value={fmtMoney(report.totals.revenue)} />
-          <Metric label="Bookings" value={String(report.totals.bookings)} />
-          <Metric label="Active branches" value={String(report.totals.branches)} />
+          <Metric label={t("revenue")} value={fmtMoney(report.totals.revenue)} />
+          <Metric label={t("bookings")} value={String(report.totals.bookings)} />
+          <Metric label={t("activeBranches")} value={String(report.totals.branches)} />
         </div>
-        {isFetching && <p className="mt-3 text-xs text-dim">Refreshing…</p>}
+        {isFetching && <p className="mt-3 text-xs text-dim">{t("loading")}</p>}
       </Surface>
 
       {compareQ.data && (
