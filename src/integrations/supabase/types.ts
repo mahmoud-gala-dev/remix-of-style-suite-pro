@@ -148,6 +148,7 @@ export type Database = {
           manage_token: string
           notes: string | null
           price: number
+          recurrence_group_id: string | null
           reminder_sent_at: string | null
           service_id: string
           start_at: string
@@ -164,6 +165,7 @@ export type Database = {
           manage_token?: string
           notes?: string | null
           price?: number
+          recurrence_group_id?: string | null
           reminder_sent_at?: string | null
           service_id: string
           start_at: string
@@ -180,6 +182,7 @@ export type Database = {
           manage_token?: string
           notes?: string | null
           price?: number
+          recurrence_group_id?: string | null
           reminder_sent_at?: string | null
           service_id?: string
           start_at?: string
@@ -940,6 +943,68 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      reviews: {
+        Row: {
+          booking_id: string
+          branch_id: string
+          comment: string | null
+          created_at: string
+          customer_id: string
+          employee_id: string
+          id: string
+          rating: number
+        }
+        Insert: {
+          booking_id: string
+          branch_id: string
+          comment?: string | null
+          created_at?: string
+          customer_id: string
+          employee_id: string
+          id?: string
+          rating: number
+        }
+        Update: {
+          booking_id?: string
+          branch_id?: string
+          comment?: string | null
+          created_at?: string
+          customer_id?: string
+          employee_id?: string
+          id?: string
+          rating?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       services: {
         Row: {
