@@ -10,6 +10,9 @@ import { fmtMoney } from "@/lib/format";
 import { useCurrentBranch, useData } from "@/lib/store";
 import { useI18n, useT } from "@/lib/i18n";
 import { DataState } from "@/components/shell/data-state";
+import type { Tables } from "@/integrations/supabase/types";
+
+type Member = Tables<"customer_memberships">;
 
 type Plan = {
   id: string;
