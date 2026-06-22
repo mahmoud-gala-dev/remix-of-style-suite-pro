@@ -101,7 +101,7 @@ function Page() {
               <tr><th className="py-2">{t("event")}</th><th>{t("url")}</th><th>{t("status")}</th><th></th></tr>
             </thead>
             <tbody>
-              {q.data?.map((h: any) => (
+              {q.data?.map((h: Hook) => (
                 <tr key={h.id} className="border-t border-border/40">
                   <td className="py-2 font-mono text-xs">{h.event}</td>
                   <td className="truncate max-w-[420px]">{h.url}</td>
@@ -137,7 +137,7 @@ function Page() {
                   </tr>
                 </thead>
                 <tbody>
-                  {dq.data?.map((d: any) => (
+                  {dq.data?.map((d: Delivery) => (
                     <tr key={d.id} className="border-t border-border/40">
                       <td className="py-2 font-mono text-xs">{d.event}</td>
                       <td>
