@@ -1,11 +1,10 @@
-import * as XLSX from "xlsx";
-
-export function downloadXlsx<T extends Record<string, unknown>>(
+export async function downloadXlsx<T extends Record<string, unknown>>(
   filename: string,
   rows: T[],
   headers: { key: keyof T; label: string }[],
   sheetName = "Sheet1",
 ) {
+  const XLSX = await import("xlsx");
   const data = rows.map((r) => {
     const o: Record<string, unknown> = {};
     for (const h of headers) o[h.label] = r[h.key] ?? "";
