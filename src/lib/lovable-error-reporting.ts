@@ -47,11 +47,18 @@ let _installed = false;
 // __lovableEvents pipeline when DSN is absent.
 let _sentry: { captureException: (e: unknown, ctx?: unknown) => void } | null = null;
 async function initSentry() {
-  const dsn = (import.meta as any).env?.VITE_SENTRY_DSN as string | undefined;
+  const dsn = (import.meta as ImportMeta).env?.VITE_SENTRY_DSN as string | undefined;
   if (!dsn || typeof window === "undefined") return;
   try {
     const mod = "@sentry/browser";
-    const Sentry: any = await import(/* @vite-ignore */ mod).catch(() => null);
+    type SentryLike = {
+      init: (opts: Record<string, unknown>) => void;
+      captureException: (e: unknown, ctx?: { extra?: unknown }) => void;
+      browserTracingIntegration?: () => unknown;
+      addBreadcrumb?: (b: Record<string, unknown>) => void;
+      metrics?: { distribution?: (name: string, value: number, opts?: { tags?: Record<string, unknown> }) => void };
+    };
+    const Sentry: SentryLike | null = (await import(/* @vite-ignore */ mod).catch(() => null)) as SentryLike | null;
     if (!Sentry) return;
     Sentry.init({
       dsn,
@@ -61,12 +68,12 @@ async function initSentry() {
         ? [Sentry.browserTracingIntegration()]
         : undefined,
     });
-    _sentry = { captureException: (e, ctx) => Sentry.captureException(e, { extra: ctx as any }) };
+    _sentry = { captureException: (e, ctx) => Sentry.captureException(e, { extra: ctx }) };
     _sentryMetric = (name, value, ctx) => {
       try {
         // Prefer Sentry.metrics.distribution when available, else breadcrumb.
-        const m = (Sentry as any).metrics;
-        if (m?.distribution) m.distribution(name, value, { tags: ctx as any });
+        const m = Sentry.metrics;
+        if (m?.distribution) m.distribution(name, value, { tags: ctx });
         else Sentry.addBreadcrumb?.({ category: "web-vitals", message: name, data: { value, ...(ctx ?? {}) } });
       } catch {
         /* ignore */
