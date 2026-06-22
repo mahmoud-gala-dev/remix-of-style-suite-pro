@@ -72,7 +72,7 @@ export function RemindersWidget() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={t("send" as never) || "Send WhatsApp"}
-                className="inline-flex items-center gap-1 rounded-md bg-[#25D366] px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white hover:opacity-90"
+                className="inline-flex items-center gap-1 rounded-md bg-whatsapp text-whatsapp-foreground px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-widest hover:opacity-90"
               >
                 <MessageCircle className="size-3" />
                 {lang === "ar" ? "إرسال" : "Send"}

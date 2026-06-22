@@ -26,7 +26,7 @@
 
 ## P4 (nice-to-have / future)
 - [ ] Consolidate PDF libraries (keep one of jspdf / pdf-lib).
-- [ ] Tokenize WhatsApp brand color into theme.
-- [ ] Populate sitemap.xml with real public URLs.
+- [x] WhatsApp brand color tokenized as `--color-whatsapp` / `bg-whatsapp` / `text-whatsapp-foreground`; `book.tsx` and `reminders-widget` updated. (cycle #3)
+- [x] `sitemap.xml` now derives origin from the request URL (works on preview, prod, custom domain) and emits priority + changefreq per page. (cycle #3)
 - [ ] Theme-able kiosk (`display.$branch.tsx`).
 - [ ] Background-jobs UI (queue inspector for `webhook_deliveries`).

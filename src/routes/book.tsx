@@ -706,7 +706,7 @@ function ConfirmedView({
             href={waLink({ branch: lang === "ar" ? branch.nameAr : branch.nameEn, phone: branch.phone, service: lang === "ar" ? service.nameAr : service.nameEn, date, time, lang })}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-md bg-[#25D366] px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-md bg-whatsapp text-whatsapp-foreground px-4 py-2 text-sm font-semibold transition hover:opacity-90"
           >
             <MessageCircle className="h-4 w-4" />
             {lang === "ar" ? "إرسال عبر واتساب" : "Send via WhatsApp"}
