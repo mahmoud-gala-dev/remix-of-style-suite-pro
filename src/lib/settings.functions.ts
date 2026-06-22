@@ -9,6 +9,8 @@ const KEYS = [
   "deposits_enabled",
   "deposit_type",
   "deposit_amount",
+  "whatsapp_reminders_enabled",
+  "whatsapp_api_enabled",
 ] as const;
 
 export type AppSettings = {
@@ -18,6 +20,8 @@ export type AppSettings = {
   deposits_enabled: boolean;
   deposit_type: "fixed" | "percent";
   deposit_amount: number;
+  whatsapp_reminders_enabled: boolean;
+  whatsapp_api_enabled: boolean;
 };
 
 export const getAppSettings = createServerFn({ method: "GET" }).handler(async (): Promise<AppSettings> => {
@@ -33,6 +37,8 @@ export const getAppSettings = createServerFn({ method: "GET" }).handler(async ()
     deposits_enabled: false,
     deposit_type: "percent",
     deposit_amount: 20,
+    whatsapp_reminders_enabled: true,
+    whatsapp_api_enabled: false,
   };
   for (const row of data ?? []) {
     if (row.key === "booking_otp_required") out.booking_otp_required = Boolean(row.value);
@@ -41,6 +47,8 @@ export const getAppSettings = createServerFn({ method: "GET" }).handler(async ()
     else if (row.key === "deposits_enabled") out.deposits_enabled = Boolean(row.value);
     else if (row.key === "deposit_type") out.deposit_type = row.value === "fixed" ? "fixed" : "percent";
     else if (row.key === "deposit_amount") out.deposit_amount = Number(row.value) || 0;
+    else if (row.key === "whatsapp_reminders_enabled") out.whatsapp_reminders_enabled = Boolean(row.value);
+    else if (row.key === "whatsapp_api_enabled") out.whatsapp_api_enabled = Boolean(row.value);
   }
   return out;
 });
