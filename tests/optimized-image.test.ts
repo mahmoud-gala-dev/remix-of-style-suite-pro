@@ -34,7 +34,7 @@ describe("OptimizedImage srcset builder", () => {
       .map((w) => `${optimizedImageUrl("service-images", "a.jpg", { width: w })} ${w}w`)
       .join(", ");
     expect(srcset.split(", ")).toHaveLength(3);
-    expect(srcset).toContain("w=320 320w");
-    expect(srcset).toContain("w=960 960w");
+    expect(srcset).toContain("w=320&f=webp 320w");
+    expect(srcset).toContain("w=960&f=webp 960w");
   });
 });
