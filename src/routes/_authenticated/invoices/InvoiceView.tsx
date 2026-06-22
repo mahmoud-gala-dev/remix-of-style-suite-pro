@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Printer, FileDown } from "lucide-react";
+import { Printer, FileDown, Receipt } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { supabase } from "@/integrations/supabase/client";
 import { fmtMoney } from "@/lib/format";
@@ -59,6 +59,47 @@ export function InvoiceView({ invoice, customers, branchName, onClose }: Props) 
     doc.save(`${invoice.number}.pdf`);
   }
 
+  function printThermal() {
+    const w = window.open("", "_blank", "width=320,height=600");
+    if (!w) return;
+    const rows = items
+      .map(
+        (it) =>
+          `<tr><td>${it.description}</td><td style="text-align:right">${it.qty}×${fmtMoney(Number(it.unit_price))}</td><td style="text-align:right">${fmtMoney(Number(it.total))}</td></tr>`,
+      )
+      .join("");
+    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${invoice.number}</title>
+      <style>
+        @page { size: 80mm auto; margin: 0; }
+        body { width: 72mm; margin: 4mm; font-family: ui-monospace, monospace; font-size: 11px; color:#000; }
+        h1 { font-size: 13px; text-align:center; margin: 0 0 4px; }
+        .muted { color:#555; text-align:center; font-size:10px; }
+        hr { border: none; border-top: 1px dashed #000; margin: 6px 0; }
+        table { width:100%; border-collapse: collapse; }
+        td { padding: 2px 0; vertical-align: top; }
+        .total { font-size: 13px; font-weight: bold; }
+      </style></head><body>
+      <h1>${branchName}</h1>
+      <div class="muted">TAX INVOICE · ${invoice.number}</div>
+      <div class="muted">${new Date(invoice.issued_at).toLocaleString()}</div>
+      <hr>
+      <div>${customer?.name ?? "—"}${customer?.phone ? " · " + customer.phone : ""}</div>
+      <hr>
+      <table>${rows}</table>
+      <hr>
+      <table>
+        <tr><td>Subtotal</td><td style="text-align:right">${fmtMoney(Number(invoice.subtotal))}</td></tr>
+        ${Number(invoice.discount) > 0 ? `<tr><td>Discount</td><td style="text-align:right">- ${fmtMoney(Number(invoice.discount))}</td></tr>` : ""}
+        <tr><td>Tax</td><td style="text-align:right">${fmtMoney(Number(invoice.tax))}</td></tr>
+        <tr class="total"><td>Total</td><td style="text-align:right">${fmtMoney(Number(invoice.total))}</td></tr>
+      </table>
+      <hr>
+      <div class="muted">Thank you!</div>
+      <script>window.onload=()=>{window.print();setTimeout(()=>window.close(),300)}</script>
+      </body></html>`);
+    w.document.close();
+  }
+
   return (
     <Modal open onClose={onClose} title={`Invoice ${invoice.number}`} size="lg">
       <div id="printable-invoice" className="bg-white text-black rounded p-8 print:p-0">
@@ -111,6 +152,9 @@ export function InvoiceView({ invoice, customers, branchName, onClose }: Props) 
         </button>
         <button onClick={() => window.print()} className="px-3 py-2 text-xs uppercase tracking-widest font-bold bg-primary text-primary-foreground rounded-md inline-flex items-center gap-2">
           <Printer className="size-3.5" /> Print / Save PDF
+        </button>
+        <button onClick={printThermal} className="px-3 py-2 text-xs uppercase tracking-widest border border-white/10 rounded-md inline-flex items-center gap-2">
+          <Receipt className="size-3.5" /> 80mm
         </button>
       </div>
     </Modal>

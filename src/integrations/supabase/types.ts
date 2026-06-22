@@ -455,6 +455,7 @@ export type Database = {
         Row: {
           auth_user_id: string | null
           birthday: string | null
+          blocked: boolean
           branch_id: string
           created_at: string
           email: string | null
@@ -462,6 +463,7 @@ export type Database = {
           id: string
           last_visit: string | null
           name: string
+          no_show_count: number
           notes: string | null
           phone: string | null
           photo_url: string | null
@@ -473,6 +475,7 @@ export type Database = {
         Insert: {
           auth_user_id?: string | null
           birthday?: string | null
+          blocked?: boolean
           branch_id: string
           created_at?: string
           email?: string | null
@@ -480,6 +483,7 @@ export type Database = {
           id?: string
           last_visit?: string | null
           name: string
+          no_show_count?: number
           notes?: string | null
           phone?: string | null
           photo_url?: string | null
@@ -491,6 +495,7 @@ export type Database = {
         Update: {
           auth_user_id?: string | null
           birthday?: string | null
+          blocked?: boolean
           branch_id?: string
           created_at?: string
           email?: string | null
@@ -498,6 +503,7 @@ export type Database = {
           id?: string
           last_visit?: string | null
           name?: string
+          no_show_count?: number
           notes?: string | null
           phone?: string | null
           photo_url?: string | null
