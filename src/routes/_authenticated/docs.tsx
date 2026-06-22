@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { DocsNav } from "./docs/DocsNav";
-import { DocsTimeline } from "./docs/DocsTimeline";
-import { MODULES } from "./docs/modules-data";
+import { DocsNav } from "./docs/-DocsNav";
+import { DocsTimeline } from "./docs/-DocsTimeline";
+import { MODULES } from "./docs/-modules-data";
 
 export const Route = createFileRoute("/_authenticated/docs")({
   component: DocsPage,

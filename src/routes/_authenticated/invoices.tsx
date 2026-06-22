@@ -9,8 +9,8 @@ import { useCurrentBranch, useData } from "@/lib/store";
 import { useT } from "@/lib/i18n";
 import { fmtMoney } from "@/lib/format";
 import { DataState } from "@/components/shell/data-state";
-import { InvoiceForm } from "./invoices/InvoiceForm";
-import { InvoiceView } from "./invoices/InvoiceView";
+import { InvoiceForm } from "./invoices/-InvoiceForm";
+import { InvoiceView } from "./invoices/-InvoiceView";
 import type { Invoice } from "./invoices/-types";
 
 export const Route = createFileRoute("/_authenticated/invoices")({
