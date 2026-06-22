@@ -59,6 +59,10 @@ export const createRecurringSeries = createServerFn({ method: "POST" })
       if (code === "23P01") throw new Response("One of the recurring slots is already taken", { status: 409 });
       throw new Error(error.message);
     }
+    try {
+      const { invalidateReportCache } = await import("@/lib/report-cache.server");
+      await invalidateReportCache();
+    } catch { /* best-effort */ }
     return { ok: true as const, groupId, count: created?.length ?? 0 };
   });
 
@@ -79,5 +83,9 @@ export const cancelRecurringSeries = createServerFn({ method: "POST" })
       .gt("start_at", new Date().toISOString())
       .not("status", "in", "(completed,cancelled,no_show)");
     if (error) throw new Error(error.message);
+    try {
+      const { invalidateReportCache } = await import("@/lib/report-cache.server");
+      await invalidateReportCache();
+    } catch { /* best-effort */ }
     return { ok: true as const };
   });
