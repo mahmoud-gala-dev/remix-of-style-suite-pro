@@ -15,6 +15,7 @@ export const dict = {
   customers: { en: "Customers", ar: "العملاء" },
   services: { en: "Services", ar: "الخدمات" },
   employees: { en: "Employees", ar: "الموظفون" },
+  shifts: { en: "Shifts", ar: "الورديات" },
   branches: { en: "Branches", ar: "الفروع" },
   reports: { en: "Reports", ar: "التقارير" },
   settings: { en: "Settings", ar: "الإعدادات" },

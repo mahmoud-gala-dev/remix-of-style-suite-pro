@@ -17,6 +17,7 @@ import {
   Hourglass,
   Package,
   Wallet,
+  Clock,
 } from "lucide-react";
 import type { DictKey } from "@/lib/i18n";
 
@@ -37,6 +38,7 @@ export const MODULES: ModuleItem[] = [
   { id: "customers", to: "/customers", icon: Users, label: "customers", group: "operations" },
   { id: "services", to: "/services", icon: Scissors, label: "services", group: "management" },
   { id: "employees", to: "/employees", icon: UserCog, label: "employees", group: "management" },
+  { id: "shifts", to: "/shifts", icon: Clock, label: "shifts", group: "management" },
   { id: "branches", to: "/branches", icon: Store, label: "branches", group: "management" },
   { id: "reports", to: "/reports", icon: BarChart3, label: "reports", group: "management" },
   { id: "docs", to: "/docs", icon: BookOpen, label: "docs", group: "management" },
