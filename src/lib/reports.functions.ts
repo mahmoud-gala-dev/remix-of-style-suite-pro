@@ -2,10 +2,15 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const inputSchema = z.object({
   from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  branchId: z.string().uuid().nullable().optional(),
+  branchId: z
+    .string()
+    .nullable()
+    .optional()
+    .transform((v) => (v && UUID_RE.test(v) ? v : null)),
 });
 
 const revenueStatuses = new Set(["completed", "in_progress"]);

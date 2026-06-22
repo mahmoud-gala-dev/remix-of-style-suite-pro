@@ -16,10 +16,13 @@ export type Product = {
   active: boolean;
 };
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export const listProducts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ branchId: z.string().uuid() }).parse(d))
+  .inputValidator((d) => z.object({ branchId: z.string().min(1) }).parse(d))
   .handler(async ({ data, context }) => {
+    if (!UUID_RE.test(data.branchId)) return [] as Product[];
     const { data: rows, error } = await context.supabase
       .from("products").select("*").eq("branch_id", data.branchId).order("name");
     if (error) throw new Error(error.message);
