@@ -1,6 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireAdmin } from "@/lib/require-admin";
+import { rateLimit } from "@/lib/rate-limit";
 
 // Public — read whether the booking flow requires OTP.
 export const getBookingOtpEnabled = createServerFn({ method: "GET" }).handler(async () => {
@@ -14,11 +16,7 @@ export const setBookingOtpEnabled = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ enabled: z.boolean() }).parse(d))
   .handler(async ({ data, context }) => {
-    const [admin, superAdmin] = await Promise.all([
-      context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" }),
-      context.supabase.rpc("has_role", { _user_id: context.userId, _role: "super_admin" }),
-    ]);
-    if (!admin.data && !superAdmin.data) throw new Response("Forbidden", { status: 403 });
+    await requireAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("app_settings")
@@ -27,21 +25,28 @@ export const setBookingOtpEnabled = createServerFn({ method: "POST" })
     return { ok: true as const };
   });
 
-// Public — request a 6-digit OTP for a phone. Returns the code for now
-// (SMS provider hookup pending). In production this would only return {ok}.
 export const requestOtp = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ phone: z.string().trim().min(6).max(40) }).parse(d))
   .handler(async ({ data }) => {
+    // P1 — flood / brute-force protection: 5 codes per 10 minutes per phone.
+    await rateLimit(`otp:request:${data.phone}`, { capacity: 5, refillPerMin: 0.5 });
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: code, error } = await supabaseAdmin.rpc("request_otp", { p_phone: data.phone });
     if (error) throw new Error(error.message);
-    return { ok: true as const, code: code as string };
+    // Never leak the OTP code in production. Dev preview can expose it for tests.
+    const exposeCode =
+      process.env.NODE_ENV !== "production" || process.env.EXPOSE_OTP_FOR_TESTS === "1";
+    return exposeCode
+      ? { ok: true as const, code: code as string }
+      : { ok: true as const };
   });
 
 // Public — verify a 6-digit OTP for a phone.
 export const verifyOtp = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ phone: z.string().trim().min(6).max(40), code: z.string().trim().length(6) }).parse(d))
   .handler(async ({ data }) => {
+    // P1 — brute-force protection on verification attempts.
+    await rateLimit(`otp:verify:${data.phone}`, { capacity: 10, refillPerMin: 1 });
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: ok, error } = await supabaseAdmin.rpc("verify_otp", { p_phone: data.phone, p_code: data.code });
     if (error) throw new Error(error.message);
