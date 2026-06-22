@@ -17,6 +17,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as MyTokenRouteImport } from './routes/my.$token'
+import { Route as DisplayBranchRouteImport } from './routes/display.$branch'
 import { Route as AuthenticatedWebhooksRouteImport } from './routes/_authenticated/webhooks'
 import { Route as AuthenticatedWaitlistRouteImport } from './routes/_authenticated/waitlist'
 import { Route as AuthenticatedTenantsRouteImport } from './routes/_authenticated/tenants'
@@ -80,6 +81,11 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
 const MyTokenRoute = MyTokenRouteImport.update({
   id: '/my/$token',
   path: '/my/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DisplayBranchRoute = DisplayBranchRouteImport.update({
+  id: '/display/$branch',
+  path: '/display/$branch',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedWebhooksRoute = AuthenticatedWebhooksRouteImport.update({
@@ -240,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/tenants': typeof AuthenticatedTenantsRoute
   '/waitlist': typeof AuthenticatedWaitlistRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
+  '/display/$branch': typeof DisplayBranchRoute
   '/my/$token': typeof MyTokenRoute
   '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
   '/api/public/healthcheck': typeof ApiPublicHealthcheckRoute
@@ -273,6 +280,7 @@ export interface FileRoutesByTo {
   '/tenants': typeof AuthenticatedTenantsRoute
   '/waitlist': typeof AuthenticatedWaitlistRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
+  '/display/$branch': typeof DisplayBranchRoute
   '/my/$token': typeof MyTokenRoute
   '/': typeof AuthenticatedIndexRoute
   '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
@@ -309,6 +317,7 @@ export interface FileRoutesById {
   '/_authenticated/tenants': typeof AuthenticatedTenantsRoute
   '/_authenticated/waitlist': typeof AuthenticatedWaitlistRoute
   '/_authenticated/webhooks': typeof AuthenticatedWebhooksRoute
+  '/display/$branch': typeof DisplayBranchRoute
   '/my/$token': typeof MyTokenRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/api/public/client-errors': typeof ApiPublicClientErrorsRoute
@@ -346,6 +355,7 @@ export interface FileRouteTypes {
     | '/tenants'
     | '/waitlist'
     | '/webhooks'
+    | '/display/$branch'
     | '/my/$token'
     | '/api/public/client-errors'
     | '/api/public/healthcheck'
@@ -379,6 +389,7 @@ export interface FileRouteTypes {
     | '/tenants'
     | '/waitlist'
     | '/webhooks'
+    | '/display/$branch'
     | '/my/$token'
     | '/'
     | '/api/public/client-errors'
@@ -414,6 +425,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tenants'
     | '/_authenticated/waitlist'
     | '/_authenticated/webhooks'
+    | '/display/$branch'
     | '/my/$token'
     | '/_authenticated/'
     | '/api/public/client-errors'
@@ -429,6 +441,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SetupRoute: typeof SetupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  DisplayBranchRoute: typeof DisplayBranchRoute
   MyTokenRoute: typeof MyTokenRoute
   ApiPublicClientErrorsRoute: typeof ApiPublicClientErrorsRoute
   ApiPublicHealthcheckRoute: typeof ApiPublicHealthcheckRoute
@@ -492,6 +505,13 @@ declare module '@tanstack/react-router' {
       path: '/my/$token'
       fullPath: '/my/$token'
       preLoaderRoute: typeof MyTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/display/$branch': {
+      id: '/display/$branch'
+      path: '/display/$branch'
+      fullPath: '/display/$branch'
+      preLoaderRoute: typeof DisplayBranchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/webhooks': {
@@ -732,6 +752,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SetupRoute: SetupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  DisplayBranchRoute: DisplayBranchRoute,
   MyTokenRoute: MyTokenRoute,
   ApiPublicClientErrorsRoute: ApiPublicClientErrorsRoute,
   ApiPublicHealthcheckRoute: ApiPublicHealthcheckRoute,
