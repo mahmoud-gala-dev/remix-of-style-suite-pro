@@ -366,6 +366,8 @@ export const dict = {
   expires: { en: "Expires", ar: "ينتهي" },
   couponCodeOptional: { en: "Coupon code (optional)", ar: "رمز الكوبون (اختياري)" },
   birthday: { en: "Birthday", ar: "تاريخ الميلاد" },
+  opens: { en: "Opens", ar: "يفتح" },
+  closes: { en: "Closes", ar: "يغلق" },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;
