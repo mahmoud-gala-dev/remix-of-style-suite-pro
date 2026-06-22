@@ -9,7 +9,7 @@ import { DataState } from "@/components/shell/data-state";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { listStaffAccess, setUserBranches } from "@/lib/access.functions";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authenticated/access")({
   ssr: false,
@@ -22,6 +22,7 @@ export const Route = createFileRoute("/_authenticated/access")({
 });
 
 function Page() {
+  const t = useT();
   const lang = useI18n((s) => s.lang);
   const fetchAccess = useServerFn(listStaffAccess);
   const saveBranches = useServerFn(setUserBranches);
@@ -30,7 +31,7 @@ function Page() {
 
   return (
     <div className="p-8 max-w-[1400px] mx-auto space-y-6">
-      <PageHeader title="Access Control" subtitle="Assign branches to each staff member" />
+      <PageHeader title={t("accessControl")} subtitle={t("assignBranchesToStaff")} />
       <Surface>
         <DataState
           loading={q.isLoading}
