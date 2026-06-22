@@ -32,6 +32,7 @@ import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { useQueryClient } from "@tanstack/react-query";
 import { bulkImportCustomers } from "@/lib/customers.functions";
+import { usePersistedState } from "@/hooks/use-persisted-state";
 
 export const Route = createFileRoute("/_authenticated/customers")({
   ssr: false,
@@ -50,7 +51,7 @@ function Page() {
   const removeCustomer = useData((s) => s.removeCustomer);
   const updateCustomer = useData((s) => s.updateCustomer);
   const all = useMemo(() => allRaw.filter((c) => c.branchId === branchId), [allRaw, branchId]);
-  const [q, setQ] = useState("");
+  const [q, setQ] = usePersistedState<string>("customers.q", "");
   const [open, setOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const importFn = useServerFn(bulkImportCustomers);

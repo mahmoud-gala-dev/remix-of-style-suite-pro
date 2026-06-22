@@ -1,3 +1,4 @@
+import { usePersistedState } from "@/hooks/use-persisted-state";
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
@@ -27,9 +28,9 @@ function Page() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [viewing, setViewing] = useState<Invoice | null>(null);
-  const [status, setStatus] = useState<"all" | "paid" | "partial" | "unpaid">("all");
-  const [from, setFrom] = useState<string>("");
-  const [to, setTo] = useState<string>("");
+  const [status, setStatus] = usePersistedState<"all" | "paid" | "partial" | "unpaid">("invoices.status", "all");
+  const [from, setFrom] = usePersistedState<string>("invoices.from", "");
+  const [to, setTo] = usePersistedState<string>("invoices.to", "");
   const [page, setPage] = useState(0);
   const PAGE_SIZE = 25;
   const customers = useData((s) => s.customers);
