@@ -36,10 +36,13 @@ export const joinWaitlist = createServerFn({ method: "POST" })
     return { id: row.id };
   });
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export const listWaitlist = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ branchId: z.string().uuid() }).parse(d))
+  .inputValidator((d) => z.object({ branchId: z.string().min(1) }).parse(d))
   .handler(async ({ data, context }) => {
+    if (!UUID_RE.test(data.branchId)) return [];
     const { data: rows, error } = await context.supabase
       .from("waitlist")
       .select("*")
