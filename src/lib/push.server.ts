@@ -111,3 +111,29 @@ export async function sendWebPush(target: PushTarget, payload: { title: string; 
   });
   return { ok: res.ok, status: res.status };
 }
+
+// Server-side broadcast: send to every stored subscription, prune dead ones.
+// Safe to call from other server handlers without going through auth middleware.
+export async function broadcastWebPush(payload: { title: string; body?: string; url?: string; tag?: string }): Promise<{ sent: number }> {
+  if (!process.env.VAPID_PRIVATE_KEY) return { sent: 0 };
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: subs, error } = await supabaseAdmin
+    .from("push_subscriptions")
+    .select("endpoint,p256dh,auth");
+  if (error || !subs?.length) return { sent: 0 };
+  let sent = 0;
+  const stale: string[] = [];
+  await Promise.all(
+    subs.map(async (s) => {
+      try {
+        const res = await sendWebPush(s, payload);
+        if (res.ok) sent += 1;
+        else if (res.status === 404 || res.status === 410) stale.push(s.endpoint);
+      } catch { /* ignore */ }
+    }),
+  );
+  if (stale.length) {
+    await supabaseAdmin.from("push_subscriptions").delete().in("endpoint", stale);
+  }
+  return { sent };
+}
