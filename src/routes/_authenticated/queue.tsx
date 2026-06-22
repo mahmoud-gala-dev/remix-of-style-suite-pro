@@ -7,6 +7,8 @@ import { useCurrentBranch, useData } from "@/lib/store";
 import { supabase } from "@/integrations/supabase/client";
 import { useT } from "@/lib/i18n";
 import { notify } from "@/lib/push";
+import { useServerFn } from "@tanstack/react-start";
+import { broadcastPush } from "@/lib/push.functions";
 import { minutesSince } from "@/lib/format";
 import { ArrowRight, CheckCircle2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -25,6 +27,7 @@ function Page() {
   const t = useT();
   const branch = useCurrentBranch();
   const qc = useQueryClient();
+  const broadcast = useServerFn(broadcastPush);
   useEffect(() => {
     const ch = supabase
       .channel("realtime:queue_items")
@@ -52,6 +55,14 @@ function Page() {
     updateQueue(id, { status: "inProgress" });
     await supabase.from("queue_items").update({ status: "in_progress" }).eq("id", id);
     notify("Next customer", c?.name ? `${c.name} — please come in` : "Calling next customer");
+    void broadcast({
+      data: {
+        title: "Next customer",
+        body: c?.name ? `${c.name} — please come in` : "Calling next customer",
+        url: "/queue",
+        tag: `queue-${id}`,
+      },
+    }).catch(() => {});
   };
   const completeOrCancel = async (id: string) => {
     removeQueue(id);
