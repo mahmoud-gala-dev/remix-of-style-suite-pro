@@ -150,6 +150,7 @@ export type Database = {
           price: number
           recurrence_group_id: string | null
           reminder_sent_at: string | null
+          review_request_sent_at: string | null
           service_id: string
           start_at: string
           status: Database["public"]["Enums"]["booking_status"]
@@ -167,6 +168,7 @@ export type Database = {
           price?: number
           recurrence_group_id?: string | null
           reminder_sent_at?: string | null
+          review_request_sent_at?: string | null
           service_id: string
           start_at: string
           status?: Database["public"]["Enums"]["booking_status"]
@@ -184,6 +186,7 @@ export type Database = {
           price?: number
           recurrence_group_id?: string | null
           reminder_sent_at?: string | null
+          review_request_sent_at?: string | null
           service_id?: string
           start_at?: string
           status?: Database["public"]["Enums"]["booking_status"]
