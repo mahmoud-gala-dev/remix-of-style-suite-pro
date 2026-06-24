@@ -1,10 +1,11 @@
 import { createFileRoute, useParams, useSearch } from "@tanstack/react-router";
 import { z } from "zod";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect } from "react";
 import { getBranchDisplay } from "@/lib/display.functions";
 import { useI18n } from "@/lib/i18n";
+import { supabase } from "@/integrations/supabase/client";
 
 const searchSchema = z.object({
   theme: z.enum(["dark", "light"]).optional(),
@@ -37,11 +38,27 @@ function DisplayScreen() {
   const fetchDisplay = useServerFn(getBranchDisplay);
   const lang = useI18n((s) => s.lang);
   const isAr = lang === "ar";
+  const qc = useQueryClient();
   const { data } = useQuery({
     queryKey: ["branch-display", branch],
     queryFn: () => fetchDisplay({ data: { branchId: branch } }),
-    refetchInterval: 5000,
+    refetchInterval: 30000,
   });
+
+  useEffect(() => {
+    const ch = supabase
+      .channel(`realtime:display:${branch}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "queue_items", filter: `branch_id=eq.${branch}` }, () => {
+        qc.invalidateQueries({ queryKey: ["branch-display", branch] });
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "bookings", filter: `branch_id=eq.${branch}` }, () => {
+        qc.invalidateQueries({ queryKey: ["branch-display", branch] });
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
+  }, [branch, qc]);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
