@@ -140,6 +140,27 @@ export const useData = create<DataState>()((set, get) => ({
 }));
 
 // helpers
-export function useCurrentBranch() {
-  return useData((s) => s.branches.find((b) => b.id === s.currentBranchId) ?? s.branches[0]);
+// Stable empty-branch sentinel so consumers can safely read `.id`, `.nameAr`,
+// `.chairs`, etc. before any branch is configured/hydrated. Filters using
+// `branchId === ""` naturally return empty arrays.
+const EMPTY_BRANCH: Branch = {
+  id: "",
+  tenantId: null,
+  nameEn: "—",
+  nameAr: "—",
+  address: "",
+  phone: "",
+  chairs: 0,
+  hoursOpen: "09:00",
+  hoursClose: "22:00",
+  active: false,
+};
+
+export function useCurrentBranch(): Branch {
+  return useData(
+    (s) =>
+      s.branches.find((b) => b.id === s.currentBranchId) ??
+      s.branches[0] ??
+      EMPTY_BRANCH,
+  );
 }
