@@ -31,6 +31,7 @@ import {
   Calculator,
   ShieldCheck,
   PieChart,
+  KeyRound,
 } from "lucide-react";
 import type { DictKey } from "@/lib/i18n";
 
@@ -76,6 +77,7 @@ export const MODULES: ModuleItem[] = [
   { id: "expenses", to: "/expenses", icon: Coins, label: "expenses", group: "finance" },
   { id: "currency", to: "/currency", icon: DollarSign, label: "currency", group: "finance" },
   { id: "onboarding", to: "/onboarding", icon: Wand2, label: "setup_wizard", group: "management" },
+  { id: "api-keys", to: "/api-keys", icon: KeyRound, label: "api_keys_title", group: "management" },
 ];
 
 export const MODULE_GROUPS: DictKey[] = ["operations", "management", "finance"];
