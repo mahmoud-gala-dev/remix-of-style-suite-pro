@@ -147,6 +147,7 @@ export type Database = {
         Row: {
           branch_id: string
           created_at: string
+          currency: string
           customer_id: string
           deposit_amount_cents: number | null
           deposit_currency: string | null
@@ -171,6 +172,7 @@ export type Database = {
         Insert: {
           branch_id: string
           created_at?: string
+          currency?: string
           customer_id: string
           deposit_amount_cents?: number | null
           deposit_currency?: string | null
@@ -195,6 +197,7 @@ export type Database = {
         Update: {
           branch_id?: string
           created_at?: string
+          currency?: string
           customer_id?: string
           deposit_amount_cents?: number | null
           deposit_currency?: string | null
@@ -1257,8 +1260,10 @@ export type Database = {
           branch_id: string | null
           coupon_id: string | null
           created_at: string
+          currency: string
           customer_id: string | null
           discount: number
+          exchange_rate: number
           id: string
           issued_at: string
           notes: string | null
@@ -1274,8 +1279,10 @@ export type Database = {
           branch_id?: string | null
           coupon_id?: string | null
           created_at?: string
+          currency?: string
           customer_id?: string | null
           discount?: number
+          exchange_rate?: number
           id?: string
           issued_at?: string
           notes?: string | null
@@ -1291,8 +1298,10 @@ export type Database = {
           branch_id?: string | null
           coupon_id?: string | null
           created_at?: string
+          currency?: string
           customer_id?: string | null
           discount?: number
+          exchange_rate?: number
           id?: string
           issued_at?: string
           notes?: string | null
@@ -1523,6 +1532,7 @@ export type Database = {
           amount: number
           branch_id: string | null
           created_at: string
+          currency: string
           id: string
           invoice_id: string | null
           method: string
@@ -1533,6 +1543,7 @@ export type Database = {
           amount?: number
           branch_id?: string | null
           created_at?: string
+          currency?: string
           id?: string
           invoice_id?: string | null
           method?: string
@@ -1543,6 +1554,7 @@ export type Database = {
           amount?: number
           branch_id?: string | null
           created_at?: string
+          currency?: string
           id?: string
           invoice_id?: string | null
           method?: string
@@ -2527,6 +2539,7 @@ export type Database = {
       tenants: {
         Row: {
           created_at: string
+          default_currency: string
           id: string
           name: string
           plan: string
@@ -2537,6 +2550,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          default_currency?: string
           id?: string
           name: string
           plan?: string
@@ -2547,6 +2561,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          default_currency?: string
           id?: string
           name?: string
           plan?: string
