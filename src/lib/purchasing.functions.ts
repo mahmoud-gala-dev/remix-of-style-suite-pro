@@ -181,7 +181,7 @@ export const updatePOStatus = createServerFn({ method: "POST" })
     }).parse(d),
   )
   .handler(async ({ data, context }) => {
-    const patch: Record<string, unknown> = { status: data.status };
+    const patch: any = { status: data.status };
     if (data.status === "sent") patch.sent_at = new Date().toISOString();
     if (data.status === "received") patch.received_at = new Date().toISOString();
     const { error } = await context.supabase
@@ -190,6 +190,9 @@ export const updatePOStatus = createServerFn({ method: "POST" })
 
     // On receive: increment stock for each line item
     if (data.status === "received") {
+      const { data: po } = await context.supabase
+        .from("purchase_orders").select("branch_id").eq("id", data.id).single();
+      const branchId = (po as any)?.branch_id as string | undefined;
       const { data: items } = await context.supabase
         .from("purchase_order_items")
         .select("product_id,qty,unit_cost, products(stock)")
@@ -197,12 +200,16 @@ export const updatePOStatus = createServerFn({ method: "POST" })
       for (const it of items ?? []) {
         const newStock = Number((it as any).products?.stock ?? 0) + Number(it.qty);
         await context.supabase.from("products").update({ stock: newStock }).eq("id", it.product_id);
-        await context.supabase.from("stock_movements").insert({
-          product_id: it.product_id,
-          delta: it.qty,
-          reason: "purchase_received",
-          ref_id: data.id,
-        });
+        if (branchId) {
+          await context.supabase.from("stock_movements").insert({
+            product_id: it.product_id,
+            branch_id: branchId,
+            kind: "purchase",
+            qty: Number(it.qty),
+            unit_cost: Number(it.unit_cost ?? 0),
+            note: `PO ${data.id}`,
+          });
+        }
       }
     }
     return { ok: true };
