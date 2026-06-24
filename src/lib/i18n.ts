@@ -569,6 +569,20 @@ export const dict = {
   failedToSubscribePush: { en: "Failed to subscribe to push", ar: "فشل الاشتراك في الإشعارات" },
   notificationsEnabled: { en: "Notifications enabled", ar: "تم تفعيل الإشعارات" },
   notificationsEnabledBody: { en: "You'll get alerts for queue and bookings.", ar: "ستصلك تنبيهات لقائمة الانتظار والحجوزات." },
+  api_keys_title: { en: "API Keys", ar: "مفاتيح API" },
+  api_key_new: { en: "Create API key", ar: "إنشاء مفتاح API" },
+  api_keys_existing: { en: "Existing keys", ar: "المفاتيح الحالية" },
+  api_key_created: { en: "API key created — copy it now", ar: "تم إنشاء المفتاح — انسخه الآن" },
+  api_key_revoked: { en: "API key revoked", ar: "تم إلغاء المفتاح" },
+  api_key_show_once: { en: "Copy this key now — it won't be shown again.", ar: "انسخ هذا المفتاح الآن — لن يُعرض مرة أخرى." },
+  api_key_scope_write: { en: "Allow write scope", ar: "السماح بنطاق الكتابة" },
+  api_key_rate_min: { en: "Rate limit (req/min)", ar: "حد الطلبات (طلب/دقيقة)" },
+  api_key_prefix: { en: "Prefix", ar: "البادئة" },
+  api_key_scopes: { en: "Scopes", ar: "الصلاحيات" },
+  api_docs_hint: { en: "OpenAPI spec:", ar: "وثائق OpenAPI:" },
+  revoke: { en: "Revoke", ar: "إلغاء" },
+  revoked: { en: "Revoked", ar: "ملغى" },
+  dismiss: { en: "Dismiss", ar: "إغلاق" },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;
