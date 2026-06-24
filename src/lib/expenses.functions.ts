@@ -4,7 +4,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 async function tenantOfBranch(supabase: any, branchId: string): Promise<string | null> {
   const { data, error } = await supabase
-    .from("branches").select("tenant_id").eq("id", branchId).single();
+    .from("branches").select("tenant_id").eq("id", branchId).maybeSingle();
   if (error) throw new Error(error.message);
   return data?.tenant_id ?? null;
 }
