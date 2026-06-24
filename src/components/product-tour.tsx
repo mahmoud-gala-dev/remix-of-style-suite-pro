@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Sparkles, ChevronRight, ChevronLeft, X } from "lucide-react";
-import { useT } from "@/lib/i18n";
+import { useT, type DictKey } from "@/lib/i18n";
 
 const STORAGE_KEY = "vanguard_tour_done_v1";
 
-type Step = { titleKey: string; bodyKey: string };
+type Step = { titleKey: DictKey; bodyKey: DictKey };
 
 const STEPS: Step[] = [
   { titleKey: "tour_s1_title", bodyKey: "tour_s1_body" },
