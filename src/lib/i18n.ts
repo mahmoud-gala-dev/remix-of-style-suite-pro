@@ -32,6 +32,12 @@ export const dict = {
   gift_cards: { en: "Gift Cards", ar: "بطاقات الهدايا" },
   packages: { en: "Packages", ar: "الباقات" },
   referrals: { en: "Referrals", ar: "الإحالات" },
+  crm_timeline: { en: "CRM Timeline", ar: "سجل العميل" },
+  crm_timeline_sub: { en: "Unified customer activity", ar: "نشاط العميل الموحد" },
+  crm_select_customer: { en: "Select a customer to view their timeline", ar: "اختر عميلاً لعرض سجله" },
+  total_spend: { en: "Total Spend", ar: "إجمالي الإنفاق" },
+  no_shows: { en: "No-shows", ar: "غياب" },
+  avg_rating: { en: "Avg Rating", ar: "متوسط التقييم" },
   docs: { en: "Documentation", ar: "التوثيق" },
   // generic
   search: { en: "Search", ar: "بحث" },
