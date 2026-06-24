@@ -78,6 +78,7 @@ export function Topbar() {
             </DropdownMenuContent>
           </DropdownMenu>
         )}
+        {branch && (
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center gap-2 bg-surface border border-border px-3 py-1.5 rounded-md hover:bg-surface-2 transition-colors">
             <span className="text-xs text-dim">{t("branch")}:</span>
@@ -99,6 +100,7 @@ export function Topbar() {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        )}
 
         <div className="relative hidden md:flex items-center">
           <Search className="size-3.5 absolute start-3 text-dim" />
