@@ -13,6 +13,9 @@ import { Plus, Download, Check, X, Trash2, Play, Calendar } from "lucide-react";
 import { EmptyState } from "@/components/shell/empty-state";
 import { useState } from "react";
 import { BookingDialog } from "@/components/dialogs/booking-dialog";
+import { useServerFn } from "@tanstack/react-start";
+import { sendBookingWhatsapp } from "@/lib/bookings.functions";
+import { MessageCircle } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -73,6 +76,7 @@ function Page() {
   const services = useData((s) => s.services);
   const updateBooking = useData((s) => s.updateBooking);
   const removeBooking = useData((s) => s.removeBooking);
+  const sendWa = useServerFn(sendBookingWhatsapp);
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const toggle = (id: string) => setSelected((p) => { const n = new Set(p); if (n.has(id)) n.delete(id); else n.add(id); return n; });
@@ -186,6 +190,19 @@ function Page() {
                     </ContextMenuItem>
                     <ContextMenuItem onSelect={() => updateBooking(b.id, { status: "completed" })}>
                       <Check className="size-3.5 me-2" /> {t("complete")}
+                    </ContextMenuItem>
+                    <ContextMenuSeparator />
+                    <ContextMenuItem
+                      onSelect={async () => {
+                        try {
+                          await sendWa({ data: { bookingId: b.id, kind: "confirm" } });
+                          toast.success("WhatsApp sent");
+                        } catch (e) {
+                          toast.error(e instanceof Error ? e.message : "Failed to send");
+                        }
+                      }}
+                    >
+                      <MessageCircle className="size-3.5 me-2" /> Send WhatsApp
                     </ContextMenuItem>
                     <ContextMenuSeparator />
                     <ContextMenuItem onSelect={() => updateBooking(b.id, { status: "cancelled" })}>

@@ -68,6 +68,23 @@ async function runJob(kind: string, payload: Record<string, unknown>): Promise<v
       });
       return;
     }
+    case "booking_whatsapp_confirm":
+    case "booking_whatsapp_reminder": {
+      const { sendWhatsappInternal } = await import("@/lib/twilio.functions");
+      const to = String(payload.to ?? "");
+      if (!to) return;
+      const name = String(payload.customerName ?? "");
+      const when = new Date(String(payload.whenIso ?? "")).toLocaleString();
+      const manage = payload.manageUrl ? String(payload.manageUrl) : "";
+      const body = kind === "booking_whatsapp_reminder"
+        ? `Reminder: ${name}, your booking is on ${when}.${manage ? ` Manage: ${manage}` : ""}`
+        : `${name}, your booking is confirmed for ${when}.${manage ? ` Manage: ${manage}` : ""}`;
+      const r = await sendWhatsappInternal(to, body);
+      if (!r.sent && r.reason !== "disabled" && r.reason !== "not_configured") {
+        throw new Error(r.reason);
+      }
+      return;
+    }
     default:
       throw new Error(`Unknown notification kind: ${kind}`);
   }
