@@ -56,6 +56,71 @@ export type Database = {
         }
         Relationships: []
       }
+      approval_requests: {
+        Row: {
+          amount: number | null
+          branch_id: string
+          created_at: string
+          currency: string | null
+          id: string
+          kind: Database["public"]["Enums"]["approval_kind"]
+          payload: Json
+          reason: string | null
+          reference_id: string | null
+          requested_by: string
+          resolution_note: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          status: Database["public"]["Enums"]["approval_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number | null
+          branch_id: string
+          created_at?: string
+          currency?: string | null
+          id?: string
+          kind: Database["public"]["Enums"]["approval_kind"]
+          payload?: Json
+          reason?: string | null
+          reference_id?: string | null
+          requested_by: string
+          resolution_note?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number | null
+          branch_id?: string
+          created_at?: string
+          currency?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["approval_kind"]
+          payload?: Json
+          reason?: string | null
+          reference_id?: string | null
+          requested_by?: string
+          resolution_note?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_requests_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_log: {
         Row: {
           action: string
@@ -2942,6 +3007,14 @@ export type Database = {
     }
     Enums: {
       app_role: "super_admin" | "admin" | "reception" | "staff" | "customer"
+      approval_kind:
+        | "discount"
+        | "refund"
+        | "cancel_paid_invoice"
+        | "customer_delete"
+        | "price_override"
+        | "other"
+      approval_status: "pending" | "approved" | "rejected" | "cancelled"
       billing_tier: "free" | "pro" | "enterprise"
       booking_status:
         | "pending"
@@ -3086,6 +3159,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["super_admin", "admin", "reception", "staff", "customer"],
+      approval_kind: [
+        "discount",
+        "refund",
+        "cancel_paid_invoice",
+        "customer_delete",
+        "price_override",
+        "other",
+      ],
+      approval_status: ["pending", "approved", "rejected", "cancelled"],
       billing_tier: ["free", "pro", "enterprise"],
       booking_status: [
         "pending",

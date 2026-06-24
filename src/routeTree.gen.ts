@@ -44,6 +44,7 @@ import { Route as AuthenticatedCustomersRouteImport } from './routes/_authentica
 import { Route as AuthenticatedCurrencyRouteImport } from './routes/_authenticated/currency'
 import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated/crm'
 import { Route as AuthenticatedCouponsRouteImport } from './routes/_authenticated/coupons'
+import { Route as AuthenticatedCostAllocationRouteImport } from './routes/_authenticated/cost-allocation'
 import { Route as AuthenticatedCommissionsRouteImport } from './routes/_authenticated/commissions'
 import { Route as AuthenticatedCampaignsRouteImport } from './routes/_authenticated/campaigns'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
@@ -51,6 +52,7 @@ import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedBookingsRouteImport } from './routes/_authenticated/bookings'
 import { Route as AuthenticatedBiRouteImport } from './routes/_authenticated/bi'
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
+import { Route as AuthenticatedApprovalsRouteImport } from './routes/_authenticated/approvals'
 import { Route as AuthenticatedAccountingRouteImport } from './routes/_authenticated/accounting'
 import { Route as AuthenticatedAccessRouteImport } from './routes/_authenticated/access'
 import { Route as ApiPublicWebVitalsRouteImport } from './routes/api/public/web-vitals'
@@ -58,6 +60,7 @@ import { Route as ApiPublicHealthcheckRouteImport } from './routes/api/public/he
 import { Route as ApiPublicClientErrorsRouteImport } from './routes/api/public/client-errors'
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 import { Route as ApiPublicCronWebVitalsAlertRouteImport } from './routes/api/public/cron/web-vitals-alert'
+import { Route as ApiPublicCronWarehouseExportRouteImport } from './routes/api/public/cron/warehouse-export'
 import { Route as ApiPublicCronWaitlistPromoteRouteImport } from './routes/api/public/cron/waitlist-promote'
 import { Route as ApiPublicCronUptimeCheckRouteImport } from './routes/api/public/cron/uptime-check'
 import { Route as ApiPublicCronReviewRequestsRouteImport } from './routes/api/public/cron/review-requests'
@@ -252,6 +255,12 @@ const AuthenticatedCouponsRoute = AuthenticatedCouponsRouteImport.update({
   path: '/coupons',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCostAllocationRoute =
+  AuthenticatedCostAllocationRouteImport.update({
+    id: '/cost-allocation',
+    path: '/cost-allocation',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedCommissionsRoute =
   AuthenticatedCommissionsRouteImport.update({
     id: '/commissions',
@@ -288,6 +297,11 @@ const AuthenticatedAuditRoute = AuthenticatedAuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedApprovalsRoute = AuthenticatedApprovalsRouteImport.update({
+  id: '/approvals',
+  path: '/approvals',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAccountingRoute = AuthenticatedAccountingRouteImport.update({
   id: '/accounting',
   path: '/accounting',
@@ -322,6 +336,12 @@ const ApiPublicCronWebVitalsAlertRoute =
   ApiPublicCronWebVitalsAlertRouteImport.update({
     id: '/api/public/cron/web-vitals-alert',
     path: '/api/public/cron/web-vitals-alert',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronWarehouseExportRoute =
+  ApiPublicCronWarehouseExportRouteImport.update({
+    id: '/api/public/cron/warehouse-export',
+    path: '/api/public/cron/warehouse-export',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicCronWaitlistPromoteRoute =
@@ -439,6 +459,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/access': typeof AuthenticatedAccessRoute
   '/accounting': typeof AuthenticatedAccountingRoute
+  '/approvals': typeof AuthenticatedApprovalsRoute
   '/audit': typeof AuthenticatedAuditRoute
   '/bi': typeof AuthenticatedBiRoute
   '/bookings': typeof AuthenticatedBookingsRoute
@@ -446,6 +467,7 @@ export interface FileRoutesByFullPath {
   '/calendar': typeof AuthenticatedCalendarRoute
   '/campaigns': typeof AuthenticatedCampaignsRoute
   '/commissions': typeof AuthenticatedCommissionsRoute
+  '/cost-allocation': typeof AuthenticatedCostAllocationRoute
   '/coupons': typeof AuthenticatedCouponsRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/currency': typeof AuthenticatedCurrencyRoute
@@ -493,6 +515,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
   '/api/public/cron/uptime-check': typeof ApiPublicCronUptimeCheckRoute
   '/api/public/cron/waitlist-promote': typeof ApiPublicCronWaitlistPromoteRoute
+  '/api/public/cron/warehouse-export': typeof ApiPublicCronWarehouseExportRoute
   '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRouteWithChildren
@@ -506,6 +529,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/access': typeof AuthenticatedAccessRoute
   '/accounting': typeof AuthenticatedAccountingRoute
+  '/approvals': typeof AuthenticatedApprovalsRoute
   '/audit': typeof AuthenticatedAuditRoute
   '/bi': typeof AuthenticatedBiRoute
   '/bookings': typeof AuthenticatedBookingsRoute
@@ -513,6 +537,7 @@ export interface FileRoutesByTo {
   '/calendar': typeof AuthenticatedCalendarRoute
   '/campaigns': typeof AuthenticatedCampaignsRoute
   '/commissions': typeof AuthenticatedCommissionsRoute
+  '/cost-allocation': typeof AuthenticatedCostAllocationRoute
   '/coupons': typeof AuthenticatedCouponsRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/currency': typeof AuthenticatedCurrencyRoute
@@ -561,6 +586,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
   '/api/public/cron/uptime-check': typeof ApiPublicCronUptimeCheckRoute
   '/api/public/cron/waitlist-promote': typeof ApiPublicCronWaitlistPromoteRoute
+  '/api/public/cron/warehouse-export': typeof ApiPublicCronWarehouseExportRoute
   '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRouteWithChildren
@@ -576,6 +602,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/access': typeof AuthenticatedAccessRoute
   '/_authenticated/accounting': typeof AuthenticatedAccountingRoute
+  '/_authenticated/approvals': typeof AuthenticatedApprovalsRoute
   '/_authenticated/audit': typeof AuthenticatedAuditRoute
   '/_authenticated/bi': typeof AuthenticatedBiRoute
   '/_authenticated/bookings': typeof AuthenticatedBookingsRoute
@@ -583,6 +610,7 @@ export interface FileRoutesById {
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/campaigns': typeof AuthenticatedCampaignsRoute
   '/_authenticated/commissions': typeof AuthenticatedCommissionsRoute
+  '/_authenticated/cost-allocation': typeof AuthenticatedCostAllocationRoute
   '/_authenticated/coupons': typeof AuthenticatedCouponsRoute
   '/_authenticated/crm': typeof AuthenticatedCrmRoute
   '/_authenticated/currency': typeof AuthenticatedCurrencyRoute
@@ -631,6 +659,7 @@ export interface FileRoutesById {
   '/api/public/cron/review-requests': typeof ApiPublicCronReviewRequestsRoute
   '/api/public/cron/uptime-check': typeof ApiPublicCronUptimeCheckRoute
   '/api/public/cron/waitlist-promote': typeof ApiPublicCronWaitlistPromoteRoute
+  '/api/public/cron/warehouse-export': typeof ApiPublicCronWarehouseExportRoute
   '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRouteWithChildren
@@ -647,6 +676,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/access'
     | '/accounting'
+    | '/approvals'
     | '/audit'
     | '/bi'
     | '/bookings'
@@ -654,6 +684,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/campaigns'
     | '/commissions'
+    | '/cost-allocation'
     | '/coupons'
     | '/crm'
     | '/currency'
@@ -701,6 +732,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/review-requests'
     | '/api/public/cron/uptime-check'
     | '/api/public/cron/waitlist-promote'
+    | '/api/public/cron/warehouse-export'
     | '/api/public/cron/web-vitals-alert'
     | '/api/public/webhooks/stripe'
     | '/api/public/scim/v2/Users'
@@ -714,6 +746,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/access'
     | '/accounting'
+    | '/approvals'
     | '/audit'
     | '/bi'
     | '/bookings'
@@ -721,6 +754,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/campaigns'
     | '/commissions'
+    | '/cost-allocation'
     | '/coupons'
     | '/crm'
     | '/currency'
@@ -769,6 +803,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/review-requests'
     | '/api/public/cron/uptime-check'
     | '/api/public/cron/waitlist-promote'
+    | '/api/public/cron/warehouse-export'
     | '/api/public/cron/web-vitals-alert'
     | '/api/public/webhooks/stripe'
     | '/api/public/scim/v2/Users'
@@ -783,6 +818,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_authenticated/access'
     | '/_authenticated/accounting'
+    | '/_authenticated/approvals'
     | '/_authenticated/audit'
     | '/_authenticated/bi'
     | '/_authenticated/bookings'
@@ -790,6 +826,7 @@ export interface FileRouteTypes {
     | '/_authenticated/calendar'
     | '/_authenticated/campaigns'
     | '/_authenticated/commissions'
+    | '/_authenticated/cost-allocation'
     | '/_authenticated/coupons'
     | '/_authenticated/crm'
     | '/_authenticated/currency'
@@ -838,6 +875,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/review-requests'
     | '/api/public/cron/uptime-check'
     | '/api/public/cron/waitlist-promote'
+    | '/api/public/cron/warehouse-export'
     | '/api/public/cron/web-vitals-alert'
     | '/api/public/webhooks/stripe'
     | '/api/public/scim/v2/Users'
@@ -873,6 +911,7 @@ export interface RootRouteChildren {
   ApiPublicCronReviewRequestsRoute: typeof ApiPublicCronReviewRequestsRoute
   ApiPublicCronUptimeCheckRoute: typeof ApiPublicCronUptimeCheckRoute
   ApiPublicCronWaitlistPromoteRoute: typeof ApiPublicCronWaitlistPromoteRoute
+  ApiPublicCronWarehouseExportRoute: typeof ApiPublicCronWarehouseExportRoute
   ApiPublicCronWebVitalsAlertRoute: typeof ApiPublicCronWebVitalsAlertRoute
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
   ApiPublicScimV2UsersRoute: typeof ApiPublicScimV2UsersRouteWithChildren
@@ -1125,6 +1164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCouponsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/cost-allocation': {
+      id: '/_authenticated/cost-allocation'
+      path: '/cost-allocation'
+      fullPath: '/cost-allocation'
+      preLoaderRoute: typeof AuthenticatedCostAllocationRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/commissions': {
       id: '/_authenticated/commissions'
       path: '/commissions'
@@ -1174,6 +1220,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAuditRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/approvals': {
+      id: '/_authenticated/approvals'
+      path: '/approvals'
+      fullPath: '/approvals'
+      preLoaderRoute: typeof AuthenticatedApprovalsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/accounting': {
       id: '/_authenticated/accounting'
       path: '/accounting'
@@ -1221,6 +1274,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/cron/web-vitals-alert'
       fullPath: '/api/public/cron/web-vitals-alert'
       preLoaderRoute: typeof ApiPublicCronWebVitalsAlertRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/warehouse-export': {
+      id: '/api/public/cron/warehouse-export'
+      path: '/api/public/cron/warehouse-export'
+      fullPath: '/api/public/cron/warehouse-export'
+      preLoaderRoute: typeof ApiPublicCronWarehouseExportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/cron/waitlist-promote': {
@@ -1355,6 +1415,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccessRoute: typeof AuthenticatedAccessRoute
   AuthenticatedAccountingRoute: typeof AuthenticatedAccountingRoute
+  AuthenticatedApprovalsRoute: typeof AuthenticatedApprovalsRoute
   AuthenticatedAuditRoute: typeof AuthenticatedAuditRoute
   AuthenticatedBiRoute: typeof AuthenticatedBiRoute
   AuthenticatedBookingsRoute: typeof AuthenticatedBookingsRoute
@@ -1362,6 +1423,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedCampaignsRoute: typeof AuthenticatedCampaignsRoute
   AuthenticatedCommissionsRoute: typeof AuthenticatedCommissionsRoute
+  AuthenticatedCostAllocationRoute: typeof AuthenticatedCostAllocationRoute
   AuthenticatedCouponsRoute: typeof AuthenticatedCouponsRoute
   AuthenticatedCrmRoute: typeof AuthenticatedCrmRoute
   AuthenticatedCurrencyRoute: typeof AuthenticatedCurrencyRoute
@@ -1393,6 +1455,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccessRoute: AuthenticatedAccessRoute,
   AuthenticatedAccountingRoute: AuthenticatedAccountingRoute,
+  AuthenticatedApprovalsRoute: AuthenticatedApprovalsRoute,
   AuthenticatedAuditRoute: AuthenticatedAuditRoute,
   AuthenticatedBiRoute: AuthenticatedBiRoute,
   AuthenticatedBookingsRoute: AuthenticatedBookingsRoute,
@@ -1400,6 +1463,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedCampaignsRoute: AuthenticatedCampaignsRoute,
   AuthenticatedCommissionsRoute: AuthenticatedCommissionsRoute,
+  AuthenticatedCostAllocationRoute: AuthenticatedCostAllocationRoute,
   AuthenticatedCouponsRoute: AuthenticatedCouponsRoute,
   AuthenticatedCrmRoute: AuthenticatedCrmRoute,
   AuthenticatedCurrencyRoute: AuthenticatedCurrencyRoute,
@@ -1472,6 +1536,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronReviewRequestsRoute: ApiPublicCronReviewRequestsRoute,
   ApiPublicCronUptimeCheckRoute: ApiPublicCronUptimeCheckRoute,
   ApiPublicCronWaitlistPromoteRoute: ApiPublicCronWaitlistPromoteRoute,
+  ApiPublicCronWarehouseExportRoute: ApiPublicCronWarehouseExportRoute,
   ApiPublicCronWebVitalsAlertRoute: ApiPublicCronWebVitalsAlertRoute,
   ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
   ApiPublicScimV2UsersRoute: ApiPublicScimV2UsersRouteWithChildren,
