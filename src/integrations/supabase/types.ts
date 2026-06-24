@@ -922,6 +922,117 @@ export type Database = {
           },
         ]
       }
+      expense_categories: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          name_ar: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          name_ar?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          name_ar?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expense_categories_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expenses: {
+        Row: {
+          amount: number
+          branch_id: string | null
+          category_id: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          description: string | null
+          expense_date: string
+          id: string
+          payment_method: string | null
+          reference: string | null
+          tenant_id: string
+          updated_at: string
+          vendor: string | null
+        }
+        Insert: {
+          amount: number
+          branch_id?: string | null
+          category_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          expense_date?: string
+          id?: string
+          payment_method?: string | null
+          reference?: string | null
+          tenant_id: string
+          updated_at?: string
+          vendor?: string | null
+        }
+        Update: {
+          amount?: number
+          branch_id?: string | null
+          category_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          expense_date?: string
+          id?: string
+          payment_method?: string | null
+          reference?: string | null
+          tenant_id?: string
+          updated_at?: string
+          vendor?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expenses_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "expense_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expenses_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       feature_flags: {
         Row: {
           created_at: string
