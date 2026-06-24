@@ -7,8 +7,13 @@
  *
  * Job kinds:
  *   - "booking_confirmation_email": { to, customerName, whenIso, manageUrl? }
+ *   - "booking_whatsapp_confirm":   { to, customerName, whenIso, manageUrl? }
+ *   - "booking_whatsapp_reminder":  { to, customerName, whenIso, manageUrl? }
  */
-export type NotificationKind = "booking_confirmation_email";
+export type NotificationKind =
+  | "booking_confirmation_email"
+  | "booking_whatsapp_confirm"
+  | "booking_whatsapp_reminder";
 
 export async function enqueueNotification(
   kind: NotificationKind,
