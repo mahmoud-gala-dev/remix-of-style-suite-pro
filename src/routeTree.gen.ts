@@ -30,6 +30,7 @@ import { Route as AuthenticatedReferralsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedQueueRouteImport } from './routes/_authenticated/queue'
 import { Route as AuthenticatedPurchasingRouteImport } from './routes/_authenticated/purchasing'
 import { Route as AuthenticatedPackagesRouteImport } from './routes/_authenticated/packages'
+import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedMembershipsRouteImport } from './routes/_authenticated/memberships'
 import { Route as AuthenticatedLoyaltyRouteImport } from './routes/_authenticated/loyalty'
 import { Route as AuthenticatedInvoicesRouteImport } from './routes/_authenticated/invoices'
@@ -176,6 +177,11 @@ const AuthenticatedPurchasingRoute = AuthenticatedPurchasingRouteImport.update({
 const AuthenticatedPackagesRoute = AuthenticatedPackagesRouteImport.update({
   id: '/packages',
   path: '/packages',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMembershipsRoute =
@@ -439,6 +445,7 @@ export interface FileRoutesByFullPath {
   '/invoices': typeof AuthenticatedInvoicesRoute
   '/loyalty': typeof AuthenticatedLoyaltyRoute
   '/memberships': typeof AuthenticatedMembershipsRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
   '/packages': typeof AuthenticatedPackagesRoute
   '/purchasing': typeof AuthenticatedPurchasingRoute
   '/queue': typeof AuthenticatedQueueRoute
@@ -503,6 +510,7 @@ export interface FileRoutesByTo {
   '/invoices': typeof AuthenticatedInvoicesRoute
   '/loyalty': typeof AuthenticatedLoyaltyRoute
   '/memberships': typeof AuthenticatedMembershipsRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
   '/packages': typeof AuthenticatedPackagesRoute
   '/purchasing': typeof AuthenticatedPurchasingRoute
   '/queue': typeof AuthenticatedQueueRoute
@@ -570,6 +578,7 @@ export interface FileRoutesById {
   '/_authenticated/invoices': typeof AuthenticatedInvoicesRoute
   '/_authenticated/loyalty': typeof AuthenticatedLoyaltyRoute
   '/_authenticated/memberships': typeof AuthenticatedMembershipsRoute
+  '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/packages': typeof AuthenticatedPackagesRoute
   '/_authenticated/purchasing': typeof AuthenticatedPurchasingRoute
   '/_authenticated/queue': typeof AuthenticatedQueueRoute
@@ -638,6 +647,7 @@ export interface FileRouteTypes {
     | '/invoices'
     | '/loyalty'
     | '/memberships'
+    | '/onboarding'
     | '/packages'
     | '/purchasing'
     | '/queue'
@@ -702,6 +712,7 @@ export interface FileRouteTypes {
     | '/invoices'
     | '/loyalty'
     | '/memberships'
+    | '/onboarding'
     | '/packages'
     | '/purchasing'
     | '/queue'
@@ -768,6 +779,7 @@ export interface FileRouteTypes {
     | '/_authenticated/invoices'
     | '/_authenticated/loyalty'
     | '/_authenticated/memberships'
+    | '/_authenticated/onboarding'
     | '/_authenticated/packages'
     | '/_authenticated/purchasing'
     | '/_authenticated/queue'
@@ -989,6 +1001,13 @@ declare module '@tanstack/react-router' {
       path: '/packages'
       fullPath: '/packages'
       preLoaderRoute: typeof AuthenticatedPackagesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/onboarding': {
+      id: '/_authenticated/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/memberships': {
@@ -1316,6 +1335,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedInvoicesRoute: typeof AuthenticatedInvoicesRoute
   AuthenticatedLoyaltyRoute: typeof AuthenticatedLoyaltyRoute
   AuthenticatedMembershipsRoute: typeof AuthenticatedMembershipsRoute
+  AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedPackagesRoute: typeof AuthenticatedPackagesRoute
   AuthenticatedPurchasingRoute: typeof AuthenticatedPurchasingRoute
   AuthenticatedQueueRoute: typeof AuthenticatedQueueRoute
@@ -1351,6 +1371,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedInvoicesRoute: AuthenticatedInvoicesRoute,
   AuthenticatedLoyaltyRoute: AuthenticatedLoyaltyRoute,
   AuthenticatedMembershipsRoute: AuthenticatedMembershipsRoute,
+  AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedPackagesRoute: AuthenticatedPackagesRoute,
   AuthenticatedPurchasingRoute: AuthenticatedPurchasingRoute,
   AuthenticatedQueueRoute: AuthenticatedQueueRoute,
