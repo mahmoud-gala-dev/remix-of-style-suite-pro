@@ -131,7 +131,6 @@ async function runCampaignMessage(recipientId: string): Promise<void> {
     await supabaseAdmin.from("campaign_recipients")
       .update({ status: "sent", sent_at: new Date().toISOString(), error: null })
       .eq("id", recipientId);
-    await supabaseAdmin.rpc("noop" as never).then(() => undefined).catch(() => undefined); // no-op
     await bumpCampaignCounter(rec.campaign_id, "sent_count");
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
