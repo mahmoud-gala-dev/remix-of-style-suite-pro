@@ -53,6 +53,7 @@ import { Route as AuthenticatedBookingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedBiRouteImport } from './routes/_authenticated/bi'
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
 import { Route as AuthenticatedApprovalsRouteImport } from './routes/_authenticated/approvals'
+import { Route as AuthenticatedApiKeysRouteImport } from './routes/_authenticated/api-keys'
 import { Route as AuthenticatedAccountingRouteImport } from './routes/_authenticated/accounting'
 import { Route as AuthenticatedAccessRouteImport } from './routes/_authenticated/access'
 import { Route as ApiPublicWebVitalsRouteImport } from './routes/api/public/web-vitals'
@@ -306,6 +307,11 @@ const AuthenticatedApprovalsRoute = AuthenticatedApprovalsRouteImport.update({
   path: '/approvals',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedApiKeysRoute = AuthenticatedApiKeysRouteImport.update({
+  id: '/api-keys',
+  path: '/api-keys',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAccountingRoute = AuthenticatedAccountingRouteImport.update({
   id: '/accounting',
   path: '/accounting',
@@ -483,6 +489,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/access': typeof AuthenticatedAccessRoute
   '/accounting': typeof AuthenticatedAccountingRoute
+  '/api-keys': typeof AuthenticatedApiKeysRoute
   '/approvals': typeof AuthenticatedApprovalsRoute
   '/audit': typeof AuthenticatedAuditRoute
   '/bi': typeof AuthenticatedBiRoute
@@ -557,6 +564,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/access': typeof AuthenticatedAccessRoute
   '/accounting': typeof AuthenticatedAccountingRoute
+  '/api-keys': typeof AuthenticatedApiKeysRoute
   '/approvals': typeof AuthenticatedApprovalsRoute
   '/audit': typeof AuthenticatedAuditRoute
   '/bi': typeof AuthenticatedBiRoute
@@ -634,6 +642,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/access': typeof AuthenticatedAccessRoute
   '/_authenticated/accounting': typeof AuthenticatedAccountingRoute
+  '/_authenticated/api-keys': typeof AuthenticatedApiKeysRoute
   '/_authenticated/approvals': typeof AuthenticatedApprovalsRoute
   '/_authenticated/audit': typeof AuthenticatedAuditRoute
   '/_authenticated/bi': typeof AuthenticatedBiRoute
@@ -712,6 +721,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/access'
     | '/accounting'
+    | '/api-keys'
     | '/approvals'
     | '/audit'
     | '/bi'
@@ -786,6 +796,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/access'
     | '/accounting'
+    | '/api-keys'
     | '/approvals'
     | '/audit'
     | '/bi'
@@ -862,6 +873,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_authenticated/access'
     | '/_authenticated/accounting'
+    | '/_authenticated/api-keys'
     | '/_authenticated/approvals'
     | '/_authenticated/audit'
     | '/_authenticated/bi'
@@ -1279,6 +1291,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedApprovalsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/api-keys': {
+      id: '/_authenticated/api-keys'
+      path: '/api-keys'
+      fullPath: '/api-keys'
+      preLoaderRoute: typeof AuthenticatedApiKeysRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/accounting': {
       id: '/_authenticated/accounting'
       path: '/accounting'
@@ -1495,6 +1514,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccessRoute: typeof AuthenticatedAccessRoute
   AuthenticatedAccountingRoute: typeof AuthenticatedAccountingRoute
+  AuthenticatedApiKeysRoute: typeof AuthenticatedApiKeysRoute
   AuthenticatedApprovalsRoute: typeof AuthenticatedApprovalsRoute
   AuthenticatedAuditRoute: typeof AuthenticatedAuditRoute
   AuthenticatedBiRoute: typeof AuthenticatedBiRoute
@@ -1535,6 +1555,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccessRoute: AuthenticatedAccessRoute,
   AuthenticatedAccountingRoute: AuthenticatedAccountingRoute,
+  AuthenticatedApiKeysRoute: AuthenticatedApiKeysRoute,
   AuthenticatedApprovalsRoute: AuthenticatedApprovalsRoute,
   AuthenticatedAuditRoute: AuthenticatedAuditRoute,
   AuthenticatedBiRoute: AuthenticatedBiRoute,
