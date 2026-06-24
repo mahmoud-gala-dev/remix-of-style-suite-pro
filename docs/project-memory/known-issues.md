@@ -10,7 +10,7 @@
 |---|---|---|---|---|
 | KI-001 | Twilio not connected to OTP send pipe | OTP works only via API response in dev | Use 2FA TOTP for now | Open (P1) |
 | KI-002 | ~~Hardcoded VAPID private key fallback in `push.server.ts`~~ | — | — | **Resolved (cycle #3)** — fallback removed, env now required in every environment |
-| KI-003 | No realtime; kiosk display polls | Queue updates lag | Manual refresh | Open (P2) |
+| KI-003 | ~~No realtime; kiosk display polls~~ | — | — | **Resolved (cycle #19)** — Realtime on bookings/queue/invoices/payments + kiosk display |
 | KI-004 | 11 admin pages lack loading/error states | Blank screen on query failure | Refresh page | Open (P2) |
 | KI-005 | Entire app eager-bundled | Slow first paint on cold cache | — | Open (P2) |
 | KI-006 | Calendar is non-interactive | Cannot drag bookings | Edit via booking form | Open (P2) |

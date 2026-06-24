@@ -4,7 +4,7 @@ import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Plus, Printer, CheckCircle2 } from "lucide-react";
 import { useCurrentBranch, useData } from "@/lib/store";
 import { useT } from "@/lib/i18n";
@@ -29,6 +29,20 @@ function Page() {
   const t = useT();
   const branch = useCurrentBranch();
   const qc = useQueryClient();
+  useEffect(() => {
+    const ch = supabase
+      .channel("realtime:invoices")
+      .on("postgres_changes", { event: "*", schema: "public", table: "invoices" }, () => {
+        qc.invalidateQueries({ queryKey: ["invoices"] });
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "payments" }, () => {
+        qc.invalidateQueries({ queryKey: ["invoices"] });
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
+  }, [qc]);
   const [open, setOpen] = useState(false);
   const [viewing, setViewing] = useState<Invoice | null>(null);
   const [status, setStatus] = usePersistedState<"all" | "paid" | "partial" | "unpaid">("invoices.status", "all");
