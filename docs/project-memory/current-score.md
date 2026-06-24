@@ -19,12 +19,12 @@
 | Production Readiness  | 8.0   |
 | Maintainability       | 8.5   |
 
-**Overall: 8.3 / 10**
+**Overall: 8.4 / 10** (cycle #37)
 
 ## Business Readiness
 - **Small Business**: 95% — full POS, bookings, loyalty, invoicing covered.
 - **Medium Business**: 93% — calendar DnD + shifts/days-off admin closed.
-- **Large Business**: 85% — Sentry APM + Slack alerts + uptime cron + geo-backup (admin-toggled) shipped this cycle.
+- **Large Business**: 95% — Public REST API v1 + per-key rate limits + OpenAPI spec (cycle #37); approvals + cost allocation + warehouse export (cycle #36); Sentry APM + Slack alerts + uptime cron + geo-backup.
 - **Enterprise**: 76% — observability stack closed (errors, latency, web vitals, uptime); SSO + audit chain + SCIM in place.
 
 ## Score Floor (do not regress)
