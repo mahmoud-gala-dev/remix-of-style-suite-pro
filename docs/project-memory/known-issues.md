@@ -13,4 +13,4 @@
 | KI-003 | ~~No realtime; kiosk display polls~~ | — | — | **Resolved (cycle #19)** — Realtime on bookings/queue/invoices/payments + kiosk display |
 | KI-004 | 11 admin pages lack loading/error states | Blank screen on query failure | Refresh page | Open (P2) |
 | KI-005 | Entire app eager-bundled | Slow first paint on cold cache | — | Open (P2) |
-| KI-006 | Calendar is non-interactive | Cannot drag bookings | Edit via booking form | Open (P2) |
+| KI-006 | ~~Calendar is non-interactive~~ | — | — | **Resolved** — HTML5 drag-and-drop + `rescheduleBooking` + optimistic rollback already wired in `calendar.tsx` |
