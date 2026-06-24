@@ -37,6 +37,7 @@ import { Route as AuthenticatedGiftCardsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedEmployeesRouteImport } from './routes/_authenticated/employees'
 import { Route as AuthenticatedDocsRouteImport } from './routes/_authenticated/docs'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
+import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated/crm'
 import { Route as AuthenticatedCouponsRouteImport } from './routes/_authenticated/coupons'
 import { Route as AuthenticatedCommissionsRouteImport } from './routes/_authenticated/commissions'
 import { Route as AuthenticatedCampaignsRouteImport } from './routes/_authenticated/campaigns'
@@ -207,6 +208,11 @@ const AuthenticatedDocsRoute = AuthenticatedDocsRouteImport.update({
 const AuthenticatedCustomersRoute = AuthenticatedCustomersRouteImport.update({
   id: '/customers',
   path: '/customers',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCrmRoute = AuthenticatedCrmRouteImport.update({
+  id: '/crm',
+  path: '/crm',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedCouponsRoute = AuthenticatedCouponsRouteImport.update({
@@ -397,6 +403,7 @@ export interface FileRoutesByFullPath {
   '/campaigns': typeof AuthenticatedCampaignsRoute
   '/commissions': typeof AuthenticatedCommissionsRoute
   '/coupons': typeof AuthenticatedCouponsRoute
+  '/crm': typeof AuthenticatedCrmRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/docs': typeof AuthenticatedDocsRoute
   '/employees': typeof AuthenticatedEmployeesRoute
@@ -456,6 +463,7 @@ export interface FileRoutesByTo {
   '/campaigns': typeof AuthenticatedCampaignsRoute
   '/commissions': typeof AuthenticatedCommissionsRoute
   '/coupons': typeof AuthenticatedCouponsRoute
+  '/crm': typeof AuthenticatedCrmRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/docs': typeof AuthenticatedDocsRoute
   '/employees': typeof AuthenticatedEmployeesRoute
@@ -518,6 +526,7 @@ export interface FileRoutesById {
   '/_authenticated/campaigns': typeof AuthenticatedCampaignsRoute
   '/_authenticated/commissions': typeof AuthenticatedCommissionsRoute
   '/_authenticated/coupons': typeof AuthenticatedCouponsRoute
+  '/_authenticated/crm': typeof AuthenticatedCrmRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
   '/_authenticated/docs': typeof AuthenticatedDocsRoute
   '/_authenticated/employees': typeof AuthenticatedEmployeesRoute
@@ -581,6 +590,7 @@ export interface FileRouteTypes {
     | '/campaigns'
     | '/commissions'
     | '/coupons'
+    | '/crm'
     | '/customers'
     | '/docs'
     | '/employees'
@@ -640,6 +650,7 @@ export interface FileRouteTypes {
     | '/campaigns'
     | '/commissions'
     | '/coupons'
+    | '/crm'
     | '/customers'
     | '/docs'
     | '/employees'
@@ -701,6 +712,7 @@ export interface FileRouteTypes {
     | '/_authenticated/campaigns'
     | '/_authenticated/commissions'
     | '/_authenticated/coupons'
+    | '/_authenticated/crm'
     | '/_authenticated/customers'
     | '/_authenticated/docs'
     | '/_authenticated/employees'
@@ -980,6 +992,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCustomersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/crm': {
+      id: '/_authenticated/crm'
+      path: '/crm'
+      fullPath: '/crm'
+      preLoaderRoute: typeof AuthenticatedCrmRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/coupons': {
       id: '/_authenticated/coupons'
       path: '/coupons'
@@ -1209,6 +1228,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCampaignsRoute: typeof AuthenticatedCampaignsRoute
   AuthenticatedCommissionsRoute: typeof AuthenticatedCommissionsRoute
   AuthenticatedCouponsRoute: typeof AuthenticatedCouponsRoute
+  AuthenticatedCrmRoute: typeof AuthenticatedCrmRoute
   AuthenticatedCustomersRoute: typeof AuthenticatedCustomersRoute
   AuthenticatedDocsRoute: typeof AuthenticatedDocsRoute
   AuthenticatedEmployeesRoute: typeof AuthenticatedEmployeesRoute
@@ -1239,6 +1259,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCampaignsRoute: AuthenticatedCampaignsRoute,
   AuthenticatedCommissionsRoute: AuthenticatedCommissionsRoute,
   AuthenticatedCouponsRoute: AuthenticatedCouponsRoute,
+  AuthenticatedCrmRoute: AuthenticatedCrmRoute,
   AuthenticatedCustomersRoute: AuthenticatedCustomersRoute,
   AuthenticatedDocsRoute: AuthenticatedDocsRoute,
   AuthenticatedEmployeesRoute: AuthenticatedEmployeesRoute,

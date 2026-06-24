@@ -21,6 +21,7 @@ import {
   Megaphone,
   Gift,
   Share2,
+  Activity,
 } from "lucide-react";
 import type { DictKey } from "@/lib/i18n";
 
@@ -39,6 +40,7 @@ export const MODULES: ModuleItem[] = [
   { id: "queue", to: "/queue", icon: ListOrdered, label: "queue", group: "operations" },
   { id: "waitlist", to: "/waitlist", icon: Hourglass, label: "waitlist", group: "operations" },
   { id: "customers", to: "/customers", icon: Users, label: "customers", group: "operations" },
+  { id: "crm", to: "/crm", icon: Activity, label: "crm_timeline", group: "operations" },
   { id: "services", to: "/services", icon: Scissors, label: "services", group: "management" },
   { id: "employees", to: "/employees", icon: UserCog, label: "employees", group: "management" },
   { id: "shifts", to: "/shifts", icon: Clock, label: "shifts", group: "management" },
