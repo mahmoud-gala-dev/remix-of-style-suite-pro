@@ -11,17 +11,18 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { useT } from "@/lib/i18n";
-import { useBranchId } from "@/lib/store";
+// no store import needed; AppShell handles branch context
 import { listApiKeys, createApiKey, revokeApiKey } from "@/lib/api-keys.functions";
 import { listTenants } from "@/lib/tenants.functions";
 
 export const Route = createFileRoute("/_authenticated/api-keys")({
+  ssr: false,
+  head: () => ({ meta: [{ title: "API Keys" }] }),
   component: ApiKeysPage,
 });
 
 function ApiKeysPage() {
   const t = useT();
-  const branchId = useBranchId();
   const qc = useQueryClient();
   const tenantsFn = useServerFn(listTenants);
   const listFn = useServerFn(listApiKeys);
@@ -74,7 +75,8 @@ function ApiKeysPage() {
   });
 
   return (
-    <AppShell title={t("api_keys_title")} branchId={branchId ?? undefined}>
+    <AppShell>
+      <h1 className="mb-4 text-xl font-semibold">{t("api_keys_title")}</h1>
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader>
@@ -109,7 +111,7 @@ function ApiKeysPage() {
               onClick={() => create.mutate()}
               disabled={!tenantId || !name.trim() || create.isPending}
             >
-              {t("create")}
+              {t("api_key_new")}
             </Button>
             {created ? (
               <div className="mt-3 rounded border border-amber-500/40 bg-amber-500/10 p-3 text-sm">
@@ -163,7 +165,7 @@ function ApiKeysPage() {
                 {keys.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={4} className="text-center text-sm text-muted-foreground">
-                      {t("no_data")}
+                      {t("noData")}
                     </TableCell>
                   </TableRow>
                 ) : null}
