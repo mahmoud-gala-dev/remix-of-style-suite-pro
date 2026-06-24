@@ -29,6 +29,20 @@ function Page() {
   const t = useT();
   const branch = useCurrentBranch();
   const qc = useQueryClient();
+  useEffect(() => {
+    const ch = supabase
+      .channel("realtime:invoices")
+      .on("postgres_changes", { event: "*", schema: "public", table: "invoices" }, () => {
+        qc.invalidateQueries({ queryKey: ["invoices"] });
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "payments" }, () => {
+        qc.invalidateQueries({ queryKey: ["invoices"] });
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
+  }, [qc]);
   const [open, setOpen] = useState(false);
   const [viewing, setViewing] = useState<Invoice | null>(null);
   const [status, setStatus] = usePersistedState<"all" | "paid" | "partial" | "unpaid">("invoices.status", "all");
