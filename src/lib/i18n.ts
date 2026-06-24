@@ -30,6 +30,7 @@ export const dict = {
   commissions: { en: "Commissions", ar: "العمولات" },
   campaigns: { en: "Campaigns", ar: "الحملات" },
   gift_cards: { en: "Gift Cards", ar: "بطاقات الهدايا" },
+  packages: { en: "Packages", ar: "الباقات" },
   docs: { en: "Documentation", ar: "التوثيق" },
   // generic
   search: { en: "Search", ar: "بحث" },
