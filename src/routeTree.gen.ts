@@ -59,6 +59,9 @@ import { Route as ApiPublicWebVitalsRouteImport } from './routes/api/public/web-
 import { Route as ApiPublicHealthcheckRouteImport } from './routes/api/public/healthcheck'
 import { Route as ApiPublicClientErrorsRouteImport } from './routes/api/public/client-errors'
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
+import { Route as ApiPublicV1ServicesRouteImport } from './routes/api/public/v1/services'
+import { Route as ApiPublicV1BranchesRouteImport } from './routes/api/public/v1/branches'
+import { Route as ApiPublicV1BookingsRouteImport } from './routes/api/public/v1/bookings'
 import { Route as ApiPublicCronWebVitalsAlertRouteImport } from './routes/api/public/cron/web-vitals-alert'
 import { Route as ApiPublicCronWarehouseExportRouteImport } from './routes/api/public/cron/warehouse-export'
 import { Route as ApiPublicCronWaitlistPromoteRouteImport } from './routes/api/public/cron/waitlist-promote'
@@ -77,6 +80,7 @@ import { Route as ApiPublicCronDailyDigestRouteImport } from './routes/api/publi
 import { Route as ApiPublicCronBookingRemindersRouteImport } from './routes/api/public/cron/booking-reminders'
 import { Route as ApiPublicCronBirthdayCouponsRouteImport } from './routes/api/public/cron/birthday-coupons'
 import { Route as ApiPublicCronAutoBlockNoshowRouteImport } from './routes/api/public/cron/auto-block-noshow'
+import { Route as ApiPublicV1OpenapiJsonRouteImport } from './routes/api/public/v1/openapi.json'
 import { Route as ApiPublicScimV2UsersRouteImport } from './routes/api/public/scim/v2/Users'
 import { Route as ApiPublicScimV2UsersIdRouteImport } from './routes/api/public/scim/v2/Users.$id'
 
@@ -332,6 +336,21 @@ const ApiPublicWebhooksStripeRoute = ApiPublicWebhooksStripeRouteImport.update({
   path: '/api/public/webhooks/stripe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1ServicesRoute = ApiPublicV1ServicesRouteImport.update({
+  id: '/api/public/v1/services',
+  path: '/api/public/v1/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1BranchesRoute = ApiPublicV1BranchesRouteImport.update({
+  id: '/api/public/v1/branches',
+  path: '/api/public/v1/branches',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1BookingsRoute = ApiPublicV1BookingsRouteImport.update({
+  id: '/api/public/v1/bookings',
+  path: '/api/public/v1/bookings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCronWebVitalsAlertRoute =
   ApiPublicCronWebVitalsAlertRouteImport.update({
     id: '/api/public/cron/web-vitals-alert',
@@ -439,6 +458,11 @@ const ApiPublicCronAutoBlockNoshowRoute =
     path: '/api/public/cron/auto-block-noshow',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicV1OpenapiJsonRoute = ApiPublicV1OpenapiJsonRouteImport.update({
+  id: '/api/public/v1/openapi/json',
+  path: '/api/public/v1/openapi/json',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicScimV2UsersRoute = ApiPublicScimV2UsersRouteImport.update({
   id: '/api/public/scim/v2/Users',
   path: '/api/public/scim/v2/Users',
@@ -517,8 +541,12 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/waitlist-promote': typeof ApiPublicCronWaitlistPromoteRoute
   '/api/public/cron/warehouse-export': typeof ApiPublicCronWarehouseExportRoute
   '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
+  '/api/public/v1/bookings': typeof ApiPublicV1BookingsRoute
+  '/api/public/v1/branches': typeof ApiPublicV1BranchesRoute
+  '/api/public/v1/services': typeof ApiPublicV1ServicesRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRouteWithChildren
+  '/api/public/v1/openapi/json': typeof ApiPublicV1OpenapiJsonRoute
   '/api/public/scim/v2/Users/$id': typeof ApiPublicScimV2UsersIdRoute
 }
 export interface FileRoutesByTo {
@@ -588,8 +616,12 @@ export interface FileRoutesByTo {
   '/api/public/cron/waitlist-promote': typeof ApiPublicCronWaitlistPromoteRoute
   '/api/public/cron/warehouse-export': typeof ApiPublicCronWarehouseExportRoute
   '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
+  '/api/public/v1/bookings': typeof ApiPublicV1BookingsRoute
+  '/api/public/v1/branches': typeof ApiPublicV1BranchesRoute
+  '/api/public/v1/services': typeof ApiPublicV1ServicesRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRouteWithChildren
+  '/api/public/v1/openapi/json': typeof ApiPublicV1OpenapiJsonRoute
   '/api/public/scim/v2/Users/$id': typeof ApiPublicScimV2UsersIdRoute
 }
 export interface FileRoutesById {
@@ -661,8 +693,12 @@ export interface FileRoutesById {
   '/api/public/cron/waitlist-promote': typeof ApiPublicCronWaitlistPromoteRoute
   '/api/public/cron/warehouse-export': typeof ApiPublicCronWarehouseExportRoute
   '/api/public/cron/web-vitals-alert': typeof ApiPublicCronWebVitalsAlertRoute
+  '/api/public/v1/bookings': typeof ApiPublicV1BookingsRoute
+  '/api/public/v1/branches': typeof ApiPublicV1BranchesRoute
+  '/api/public/v1/services': typeof ApiPublicV1ServicesRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/scim/v2/Users': typeof ApiPublicScimV2UsersRouteWithChildren
+  '/api/public/v1/openapi/json': typeof ApiPublicV1OpenapiJsonRoute
   '/api/public/scim/v2/Users/$id': typeof ApiPublicScimV2UsersIdRoute
 }
 export interface FileRouteTypes {
@@ -734,8 +770,12 @@ export interface FileRouteTypes {
     | '/api/public/cron/waitlist-promote'
     | '/api/public/cron/warehouse-export'
     | '/api/public/cron/web-vitals-alert'
+    | '/api/public/v1/bookings'
+    | '/api/public/v1/branches'
+    | '/api/public/v1/services'
     | '/api/public/webhooks/stripe'
     | '/api/public/scim/v2/Users'
+    | '/api/public/v1/openapi/json'
     | '/api/public/scim/v2/Users/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -805,8 +845,12 @@ export interface FileRouteTypes {
     | '/api/public/cron/waitlist-promote'
     | '/api/public/cron/warehouse-export'
     | '/api/public/cron/web-vitals-alert'
+    | '/api/public/v1/bookings'
+    | '/api/public/v1/branches'
+    | '/api/public/v1/services'
     | '/api/public/webhooks/stripe'
     | '/api/public/scim/v2/Users'
+    | '/api/public/v1/openapi/json'
     | '/api/public/scim/v2/Users/$id'
   id:
     | '__root__'
@@ -877,8 +921,12 @@ export interface FileRouteTypes {
     | '/api/public/cron/waitlist-promote'
     | '/api/public/cron/warehouse-export'
     | '/api/public/cron/web-vitals-alert'
+    | '/api/public/v1/bookings'
+    | '/api/public/v1/branches'
+    | '/api/public/v1/services'
     | '/api/public/webhooks/stripe'
     | '/api/public/scim/v2/Users'
+    | '/api/public/v1/openapi/json'
     | '/api/public/scim/v2/Users/$id'
   fileRoutesById: FileRoutesById
 }
@@ -913,8 +961,12 @@ export interface RootRouteChildren {
   ApiPublicCronWaitlistPromoteRoute: typeof ApiPublicCronWaitlistPromoteRoute
   ApiPublicCronWarehouseExportRoute: typeof ApiPublicCronWarehouseExportRoute
   ApiPublicCronWebVitalsAlertRoute: typeof ApiPublicCronWebVitalsAlertRoute
+  ApiPublicV1BookingsRoute: typeof ApiPublicV1BookingsRoute
+  ApiPublicV1BranchesRoute: typeof ApiPublicV1BranchesRoute
+  ApiPublicV1ServicesRoute: typeof ApiPublicV1ServicesRoute
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
   ApiPublicScimV2UsersRoute: typeof ApiPublicScimV2UsersRouteWithChildren
+  ApiPublicV1OpenapiJsonRoute: typeof ApiPublicV1OpenapiJsonRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1269,6 +1321,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWebhooksStripeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/services': {
+      id: '/api/public/v1/services'
+      path: '/api/public/v1/services'
+      fullPath: '/api/public/v1/services'
+      preLoaderRoute: typeof ApiPublicV1ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/branches': {
+      id: '/api/public/v1/branches'
+      path: '/api/public/v1/branches'
+      fullPath: '/api/public/v1/branches'
+      preLoaderRoute: typeof ApiPublicV1BranchesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/bookings': {
+      id: '/api/public/v1/bookings'
+      path: '/api/public/v1/bookings'
+      fullPath: '/api/public/v1/bookings'
+      preLoaderRoute: typeof ApiPublicV1BookingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/web-vitals-alert': {
       id: '/api/public/cron/web-vitals-alert'
       path: '/api/public/cron/web-vitals-alert'
@@ -1393,6 +1466,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/cron/auto-block-noshow'
       fullPath: '/api/public/cron/auto-block-noshow'
       preLoaderRoute: typeof ApiPublicCronAutoBlockNoshowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/openapi/json': {
+      id: '/api/public/v1/openapi/json'
+      path: '/api/public/v1/openapi/json'
+      fullPath: '/api/public/v1/openapi/json'
+      preLoaderRoute: typeof ApiPublicV1OpenapiJsonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/scim/v2/Users': {
@@ -1538,8 +1618,12 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronWaitlistPromoteRoute: ApiPublicCronWaitlistPromoteRoute,
   ApiPublicCronWarehouseExportRoute: ApiPublicCronWarehouseExportRoute,
   ApiPublicCronWebVitalsAlertRoute: ApiPublicCronWebVitalsAlertRoute,
+  ApiPublicV1BookingsRoute: ApiPublicV1BookingsRoute,
+  ApiPublicV1BranchesRoute: ApiPublicV1BranchesRoute,
+  ApiPublicV1ServicesRoute: ApiPublicV1ServicesRoute,
   ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
   ApiPublicScimV2UsersRoute: ApiPublicScimV2UsersRouteWithChildren,
+  ApiPublicV1OpenapiJsonRoute: ApiPublicV1OpenapiJsonRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
