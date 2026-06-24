@@ -144,7 +144,9 @@ export const useData = create<DataState>()((set, get) => ({
 // `.chairs`, etc. before any branch is configured/hydrated. Filters using
 // `branchId === ""` naturally return empty arrays.
 const EMPTY_BRANCH: Branch = {
-  id: "",
+  // Valid zero-UUID so server-fn validators (z.string().uuid()) accept it
+  // while still matching zero rows in the database.
+  id: "00000000-0000-0000-0000-000000000000",
   tenantId: null,
   nameEn: "—",
   nameAr: "—",
