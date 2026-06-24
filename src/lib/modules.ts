@@ -27,6 +27,8 @@ import {
   Coins,
   DollarSign,
   Wand2,
+  TrendingUp,
+  Calculator,
 } from "lucide-react";
 import type { DictKey } from "@/lib/i18n";
 
@@ -51,6 +53,8 @@ export const MODULES: ModuleItem[] = [
   { id: "shifts", to: "/shifts", icon: Clock, label: "shifts", group: "management" },
   { id: "branches", to: "/branches", icon: Store, label: "branches", group: "management" },
   { id: "reports", to: "/reports", icon: BarChart3, label: "reports", group: "management" },
+  { id: "bi", to: "/bi", icon: TrendingUp, label: "bi", group: "management" },
+  { id: "accounting", to: "/accounting", icon: Calculator, label: "accounting", group: "finance" },
   { id: "docs", to: "/docs", icon: BookOpen, label: "docs", group: "management" },
   { id: "settings", to: "/settings", icon: Settings, label: "settings", group: "management" },
   { id: "invoices", to: "/invoices", icon: Receipt, label: "invoices", group: "finance" },

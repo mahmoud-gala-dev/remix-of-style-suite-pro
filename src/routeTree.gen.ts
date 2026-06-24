@@ -49,7 +49,9 @@ import { Route as AuthenticatedCampaignsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticated/branches'
 import { Route as AuthenticatedBookingsRouteImport } from './routes/_authenticated/bookings'
+import { Route as AuthenticatedBiRouteImport } from './routes/_authenticated/bi'
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
+import { Route as AuthenticatedAccountingRouteImport } from './routes/_authenticated/accounting'
 import { Route as AuthenticatedAccessRouteImport } from './routes/_authenticated/access'
 import { Route as ApiPublicWebVitalsRouteImport } from './routes/api/public/web-vitals'
 import { Route as ApiPublicHealthcheckRouteImport } from './routes/api/public/healthcheck'
@@ -276,9 +278,19 @@ const AuthenticatedBookingsRoute = AuthenticatedBookingsRouteImport.update({
   path: '/bookings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedBiRoute = AuthenticatedBiRouteImport.update({
+  id: '/bi',
+  path: '/bi',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAuditRoute = AuthenticatedAuditRouteImport.update({
   id: '/audit',
   path: '/audit',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAccountingRoute = AuthenticatedAccountingRouteImport.update({
+  id: '/accounting',
+  path: '/accounting',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAccessRoute = AuthenticatedAccessRouteImport.update({
@@ -426,7 +438,9 @@ export interface FileRoutesByFullPath {
   '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/access': typeof AuthenticatedAccessRoute
+  '/accounting': typeof AuthenticatedAccountingRoute
   '/audit': typeof AuthenticatedAuditRoute
+  '/bi': typeof AuthenticatedBiRoute
   '/bookings': typeof AuthenticatedBookingsRoute
   '/branches': typeof AuthenticatedBranchesRoute
   '/calendar': typeof AuthenticatedCalendarRoute
@@ -491,7 +505,9 @@ export interface FileRoutesByTo {
   '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/access': typeof AuthenticatedAccessRoute
+  '/accounting': typeof AuthenticatedAccountingRoute
   '/audit': typeof AuthenticatedAuditRoute
+  '/bi': typeof AuthenticatedBiRoute
   '/bookings': typeof AuthenticatedBookingsRoute
   '/branches': typeof AuthenticatedBranchesRoute
   '/calendar': typeof AuthenticatedCalendarRoute
@@ -559,7 +575,9 @@ export interface FileRoutesById {
   '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/access': typeof AuthenticatedAccessRoute
+  '/_authenticated/accounting': typeof AuthenticatedAccountingRoute
   '/_authenticated/audit': typeof AuthenticatedAuditRoute
+  '/_authenticated/bi': typeof AuthenticatedBiRoute
   '/_authenticated/bookings': typeof AuthenticatedBookingsRoute
   '/_authenticated/branches': typeof AuthenticatedBranchesRoute
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
@@ -628,7 +646,9 @@ export interface FileRouteTypes {
     | '/setup'
     | '/sitemap.xml'
     | '/access'
+    | '/accounting'
     | '/audit'
+    | '/bi'
     | '/bookings'
     | '/branches'
     | '/calendar'
@@ -693,7 +713,9 @@ export interface FileRouteTypes {
     | '/setup'
     | '/sitemap.xml'
     | '/access'
+    | '/accounting'
     | '/audit'
+    | '/bi'
     | '/bookings'
     | '/branches'
     | '/calendar'
@@ -760,7 +782,9 @@ export interface FileRouteTypes {
     | '/setup'
     | '/sitemap.xml'
     | '/_authenticated/access'
+    | '/_authenticated/accounting'
     | '/_authenticated/audit'
+    | '/_authenticated/bi'
     | '/_authenticated/bookings'
     | '/_authenticated/branches'
     | '/_authenticated/calendar'
@@ -1136,11 +1160,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBookingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/bi': {
+      id: '/_authenticated/bi'
+      path: '/bi'
+      fullPath: '/bi'
+      preLoaderRoute: typeof AuthenticatedBiRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/audit': {
       id: '/_authenticated/audit'
       path: '/audit'
       fullPath: '/audit'
       preLoaderRoute: typeof AuthenticatedAuditRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/accounting': {
+      id: '/_authenticated/accounting'
+      path: '/accounting'
+      fullPath: '/accounting'
+      preLoaderRoute: typeof AuthenticatedAccountingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/access': {
@@ -1316,7 +1354,9 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccessRoute: typeof AuthenticatedAccessRoute
+  AuthenticatedAccountingRoute: typeof AuthenticatedAccountingRoute
   AuthenticatedAuditRoute: typeof AuthenticatedAuditRoute
+  AuthenticatedBiRoute: typeof AuthenticatedBiRoute
   AuthenticatedBookingsRoute: typeof AuthenticatedBookingsRoute
   AuthenticatedBranchesRoute: typeof AuthenticatedBranchesRoute
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
@@ -1352,7 +1392,9 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccessRoute: AuthenticatedAccessRoute,
+  AuthenticatedAccountingRoute: AuthenticatedAccountingRoute,
   AuthenticatedAuditRoute: AuthenticatedAuditRoute,
+  AuthenticatedBiRoute: AuthenticatedBiRoute,
   AuthenticatedBookingsRoute: AuthenticatedBookingsRoute,
   AuthenticatedBranchesRoute: AuthenticatedBranchesRoute,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
