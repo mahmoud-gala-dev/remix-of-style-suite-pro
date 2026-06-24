@@ -812,6 +812,149 @@ export type Database = {
         }
         Relationships: []
       }
+      gift_card_transactions: {
+        Row: {
+          amount: number
+          balance_after: number
+          created_at: string
+          gift_card_id: string
+          id: string
+          invoice_id: string | null
+          kind: string
+          note: string | null
+          performed_by: string | null
+          tenant_id: string | null
+        }
+        Insert: {
+          amount: number
+          balance_after: number
+          created_at?: string
+          gift_card_id: string
+          id?: string
+          invoice_id?: string | null
+          kind: string
+          note?: string | null
+          performed_by?: string | null
+          tenant_id?: string | null
+        }
+        Update: {
+          amount?: number
+          balance_after?: number
+          created_at?: string
+          gift_card_id?: string
+          id?: string
+          invoice_id?: string | null
+          kind?: string
+          note?: string | null
+          performed_by?: string | null
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gift_card_transactions_gift_card_id_fkey"
+            columns: ["gift_card_id"]
+            isOneToOne: false
+            referencedRelation: "gift_cards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gift_card_transactions_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gift_card_transactions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gift_cards: {
+        Row: {
+          balance: number
+          branch_id: string | null
+          code: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          expires_at: string | null
+          id: string
+          initial_amount: number
+          issued_to_customer_id: string | null
+          issued_to_email: string | null
+          issued_to_name: string | null
+          issued_to_phone: string | null
+          message: string | null
+          status: string
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          balance: number
+          branch_id?: string | null
+          code: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          expires_at?: string | null
+          id?: string
+          initial_amount: number
+          issued_to_customer_id?: string | null
+          issued_to_email?: string | null
+          issued_to_name?: string | null
+          issued_to_phone?: string | null
+          message?: string | null
+          status?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          balance?: number
+          branch_id?: string | null
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          expires_at?: string | null
+          id?: string
+          initial_amount?: number
+          issued_to_customer_id?: string | null
+          issued_to_email?: string | null
+          issued_to_name?: string | null
+          issued_to_phone?: string | null
+          message?: string | null
+          status?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gift_cards_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gift_cards_issued_to_customer_id_fkey"
+            columns: ["issued_to_customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gift_cards_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invoice_items: {
         Row: {
           created_at: string
