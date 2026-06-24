@@ -191,17 +191,40 @@ export const createBooking = createServerFn({ method: "POST" })
         tag: `booking-${row.id}`,
       });
     } catch { /* push failures must not break booking */ }
-    // Best-effort WhatsApp confirmation to the customer when Twilio is enabled.
-    if (data.customerPhone) {
-      try {
-        const { sendWhatsappInternal } = await import("./twilio.functions");
-        const when = new Date(data.startAt).toLocaleString();
-        await sendWhatsappInternal(
-          data.customerPhone,
-          `Booking confirmed for ${when}. Manage: ${row.manage_token ? `/my/${row.manage_token}` : "(see email)"}`,
-        );
-      } catch { /* Twilio failures must not break booking */ }
-    }
+    // WhatsApp via Twilio — enqueue confirm + 24h reminder based on admin
+    // Settings → Twilio toggles. Sends are non-blocking; the drain worker
+    // gracefully no-ops if Twilio is disabled.
+    try {
+      const phone = data.customerPhone ?? null;
+      if (phone) {
+        const { data: tw } = await supabaseAdmin
+          .from("app_settings").select("value").eq("key", "twilio_whatsapp").maybeSingle();
+        const cfg = (tw?.value ?? {}) as {
+          enabled?: boolean;
+          notify_booking_created?: boolean;
+          notify_reminders?: boolean;
+        };
+        if (cfg.enabled) {
+          const { enqueueNotification } = await import("./notification-queue.server");
+          const manageUrl = row.manage_token ? `/my/${row.manage_token}` : undefined;
+          const payload = {
+            to: phone,
+            customerName: data.customerName ?? "",
+            whenIso: data.startAt,
+            manageUrl,
+          };
+          if (cfg.notify_booking_created) {
+            await enqueueNotification("booking_whatsapp_confirm", payload);
+          }
+          if (cfg.notify_reminders) {
+            const remindAt = new Date(new Date(data.startAt).getTime() - 24 * 3600_000);
+            if (remindAt.getTime() > Date.now()) {
+              await enqueueNotification("booking_whatsapp_reminder", payload, remindAt);
+            }
+          }
+        }
+      }
+    } catch { /* enqueue failures must not break booking */ }
     // Enqueue confirmation email — drained in batches by the cron worker
     // /api/public/cron/drain-notifications (cycle #16, step 2). The booking
     // request returns immediately instead of blocking on Resend.
