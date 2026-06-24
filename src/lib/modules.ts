@@ -20,6 +20,7 @@ import {
   Clock,
   Megaphone,
   Gift,
+  Share2,
 } from "lucide-react";
 import type { DictKey } from "@/lib/i18n";
 
@@ -54,6 +55,7 @@ export const MODULES: ModuleItem[] = [
   { id: "campaigns", to: "/campaigns", icon: Megaphone, label: "campaigns", group: "management" },
   { id: "gift_cards", to: "/gift-cards", icon: Gift, label: "gift_cards", group: "finance" },
   { id: "packages", to: "/packages", icon: Package, label: "packages", group: "finance" },
+  { id: "referrals", to: "/referrals", icon: Share2, label: "referrals", group: "finance" },
 ];
 
 export const MODULE_GROUPS: DictKey[] = ["operations", "management", "finance"];

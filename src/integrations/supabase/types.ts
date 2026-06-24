@@ -1655,6 +1655,157 @@ export type Database = {
         }
         Relationships: []
       }
+      referral_codes: {
+        Row: {
+          active: boolean
+          branch_id: string
+          code: string
+          created_at: string
+          customer_id: string
+          id: string
+          max_uses: number | null
+          referee_reward: number
+          referrer_reward: number
+          reward_type: string
+          tenant_id: string | null
+          updated_at: string
+          uses_count: number
+        }
+        Insert: {
+          active?: boolean
+          branch_id: string
+          code: string
+          created_at?: string
+          customer_id: string
+          id?: string
+          max_uses?: number | null
+          referee_reward?: number
+          referrer_reward?: number
+          reward_type?: string
+          tenant_id?: string | null
+          updated_at?: string
+          uses_count?: number
+        }
+        Update: {
+          active?: boolean
+          branch_id?: string
+          code?: string
+          created_at?: string
+          customer_id?: string
+          id?: string
+          max_uses?: number | null
+          referee_reward?: number
+          referrer_reward?: number
+          reward_type?: string
+          tenant_id?: string | null
+          updated_at?: string
+          uses_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_codes_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_codes_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: true
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_codes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referrals: {
+        Row: {
+          branch_id: string
+          completed_at: string | null
+          created_at: string
+          id: string
+          referee_customer_id: string
+          referee_reward: number
+          referral_code_id: string
+          referrer_customer_id: string
+          referrer_reward: number
+          reward_type: string
+          status: string
+          tenant_id: string | null
+        }
+        Insert: {
+          branch_id: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          referee_customer_id: string
+          referee_reward?: number
+          referral_code_id: string
+          referrer_customer_id: string
+          referrer_reward?: number
+          reward_type?: string
+          status?: string
+          tenant_id?: string | null
+        }
+        Update: {
+          branch_id?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          referee_customer_id?: string
+          referee_reward?: number
+          referral_code_id?: string
+          referrer_customer_id?: string
+          referrer_reward?: number
+          reward_type?: string
+          status?: string
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referee_customer_id_fkey"
+            columns: ["referee_customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referral_code_id_fkey"
+            columns: ["referral_code_id"]
+            isOneToOne: false
+            referencedRelation: "referral_codes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_customer_id_fkey"
+            columns: ["referrer_customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       report_cache: {
         Row: {
           created_at: string
