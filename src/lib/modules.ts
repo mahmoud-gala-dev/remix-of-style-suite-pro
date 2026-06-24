@@ -26,6 +26,7 @@ import {
   Truck,
   Coins,
   DollarSign,
+  Wand2,
 } from "lucide-react";
 import type { DictKey } from "@/lib/i18n";
 
