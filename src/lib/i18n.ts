@@ -28,6 +28,7 @@ export const dict = {
   loyalty: { en: "Loyalty", ar: "الولاء" },
   inventory: { en: "Inventory", ar: "المخزون" },
   commissions: { en: "Commissions", ar: "العمولات" },
+  campaigns: { en: "Campaigns", ar: "الحملات" },
   docs: { en: "Documentation", ar: "التوثيق" },
   // generic
   search: { en: "Search", ar: "بحث" },
