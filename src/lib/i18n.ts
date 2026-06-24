@@ -61,8 +61,6 @@ export const dict = {
   finish_setup: { en: "Finish setup", ar: "إنهاء الإعداد" },
   finish_later: { en: "Finish later", ar: "إكمال لاحقاً" },
   skip: { en: "Skip", ar: "تخطي" },
-  back: { en: "Back", ar: "رجوع" },
-  next: { en: "Next", ar: "التالي" },
   no_branches_cta: { en: "Welcome — let's set up your first branch", ar: "مرحباً — لنُعدّ أول فرع لك" },
   start_setup: { en: "Start setup", ar: "ابدأ الإعداد" },
   expenses: { en: "Expenses", ar: "المصروفات" },
