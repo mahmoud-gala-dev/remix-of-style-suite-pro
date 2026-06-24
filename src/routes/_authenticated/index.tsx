@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
+import { Link } from "@tanstack/react-router";
+import { Wand2 } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { useCurrentBranch, useData } from "@/lib/store";
 import { useT, useI18n } from "@/lib/i18n";
@@ -30,6 +32,7 @@ function DashboardBody() {
   const t = useT();
   const lang = useI18n((s) => s.lang);
   const branch = useCurrentBranch();
+  const realBranchCount = useData((s) => s.branches.length);
   const bookings = useData((s) => s.bookings).filter((b) => b.branchId === branch?.id);
   const queue = useData((s) => s.queue).filter((q) => q.branchId === branch?.id);
   const employees = useData((s) => s.employees).filter((e) => e.branchId === branch?.id);
@@ -94,6 +97,22 @@ function DashboardBody() {
 
   return (
     <div className="p-8 space-y-8 max-w-[1600px] mx-auto">
+      {realBranchCount === 0 && (
+        <div className="rounded-lg border border-primary/40 bg-primary/5 p-6 flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <h2 className="font-display text-lg uppercase tracking-tight flex items-center gap-2">
+              <Wand2 className="size-4 text-primary" /> {t("no_branches_cta")}
+            </h2>
+            <p className="text-xs text-dim mt-1">{t("setup_wizard_sub")}</p>
+          </div>
+          <Link
+            to="/onboarding"
+            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest"
+          >
+            {t("start_setup")}
+          </Link>
+        </div>
+      )}
       <div>
         <h1 className="font-display text-3xl uppercase tracking-tight">{t("dashboard")}</h1>
         <p className="text-xs text-dim mt-1">
