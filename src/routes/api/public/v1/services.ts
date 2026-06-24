@@ -28,4 +28,3 @@ export const Route = createFileRoute("/api/public/v1/services")({
     },
   },
 });
-*** End Patch

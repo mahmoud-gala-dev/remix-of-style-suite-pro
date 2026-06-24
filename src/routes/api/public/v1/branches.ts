@@ -19,4 +19,3 @@ export const Route = createFileRoute("/api/public/v1/branches")({
     },
   },
 });
-*** End Patch

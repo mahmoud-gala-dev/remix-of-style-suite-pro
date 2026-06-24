@@ -133,4 +133,3 @@ export const Route = createFileRoute("/api/public/v1/openapi/json")({
     },
   },
 });
-*** End Patch
