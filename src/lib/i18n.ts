@@ -29,6 +29,7 @@ export const dict = {
   inventory: { en: "Inventory", ar: "المخزون" },
   commissions: { en: "Commissions", ar: "العمولات" },
   campaigns: { en: "Campaigns", ar: "الحملات" },
+  gift_cards: { en: "Gift Cards", ar: "بطاقات الهدايا" },
   docs: { en: "Documentation", ar: "التوثيق" },
   // generic
   search: { en: "Search", ar: "بحث" },

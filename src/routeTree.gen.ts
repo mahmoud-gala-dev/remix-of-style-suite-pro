@@ -31,6 +31,7 @@ import { Route as AuthenticatedMembershipsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedLoyaltyRouteImport } from './routes/_authenticated/loyalty'
 import { Route as AuthenticatedInvoicesRouteImport } from './routes/_authenticated/invoices'
 import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
+import { Route as AuthenticatedGiftCardsRouteImport } from './routes/_authenticated/gift-cards'
 import { Route as AuthenticatedEmployeesRouteImport } from './routes/_authenticated/employees'
 import { Route as AuthenticatedDocsRouteImport } from './routes/_authenticated/docs'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
@@ -174,6 +175,11 @@ const AuthenticatedInvoicesRoute = AuthenticatedInvoicesRouteImport.update({
 const AuthenticatedInventoryRoute = AuthenticatedInventoryRouteImport.update({
   id: '/inventory',
   path: '/inventory',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedGiftCardsRoute = AuthenticatedGiftCardsRouteImport.update({
+  id: '/gift-cards',
+  path: '/gift-cards',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedEmployeesRoute = AuthenticatedEmployeesRouteImport.update({
@@ -382,6 +388,7 @@ export interface FileRoutesByFullPath {
   '/customers': typeof AuthenticatedCustomersRoute
   '/docs': typeof AuthenticatedDocsRoute
   '/employees': typeof AuthenticatedEmployeesRoute
+  '/gift-cards': typeof AuthenticatedGiftCardsRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/invoices': typeof AuthenticatedInvoicesRoute
   '/loyalty': typeof AuthenticatedLoyaltyRoute
@@ -438,6 +445,7 @@ export interface FileRoutesByTo {
   '/customers': typeof AuthenticatedCustomersRoute
   '/docs': typeof AuthenticatedDocsRoute
   '/employees': typeof AuthenticatedEmployeesRoute
+  '/gift-cards': typeof AuthenticatedGiftCardsRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/invoices': typeof AuthenticatedInvoicesRoute
   '/loyalty': typeof AuthenticatedLoyaltyRoute
@@ -497,6 +505,7 @@ export interface FileRoutesById {
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
   '/_authenticated/docs': typeof AuthenticatedDocsRoute
   '/_authenticated/employees': typeof AuthenticatedEmployeesRoute
+  '/_authenticated/gift-cards': typeof AuthenticatedGiftCardsRoute
   '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
   '/_authenticated/invoices': typeof AuthenticatedInvoicesRoute
   '/_authenticated/loyalty': typeof AuthenticatedLoyaltyRoute
@@ -557,6 +566,7 @@ export interface FileRouteTypes {
     | '/customers'
     | '/docs'
     | '/employees'
+    | '/gift-cards'
     | '/inventory'
     | '/invoices'
     | '/loyalty'
@@ -613,6 +623,7 @@ export interface FileRouteTypes {
     | '/customers'
     | '/docs'
     | '/employees'
+    | '/gift-cards'
     | '/inventory'
     | '/invoices'
     | '/loyalty'
@@ -671,6 +682,7 @@ export interface FileRouteTypes {
     | '/_authenticated/customers'
     | '/_authenticated/docs'
     | '/_authenticated/employees'
+    | '/_authenticated/gift-cards'
     | '/_authenticated/inventory'
     | '/_authenticated/invoices'
     | '/_authenticated/loyalty'
@@ -900,6 +912,13 @@ declare module '@tanstack/react-router' {
       path: '/inventory'
       fullPath: '/inventory'
       preLoaderRoute: typeof AuthenticatedInventoryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/gift-cards': {
+      id: '/_authenticated/gift-cards'
+      path: '/gift-cards'
+      fullPath: '/gift-cards'
+      preLoaderRoute: typeof AuthenticatedGiftCardsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/employees': {
@@ -1155,6 +1174,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCustomersRoute: typeof AuthenticatedCustomersRoute
   AuthenticatedDocsRoute: typeof AuthenticatedDocsRoute
   AuthenticatedEmployeesRoute: typeof AuthenticatedEmployeesRoute
+  AuthenticatedGiftCardsRoute: typeof AuthenticatedGiftCardsRoute
   AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
   AuthenticatedInvoicesRoute: typeof AuthenticatedInvoicesRoute
   AuthenticatedLoyaltyRoute: typeof AuthenticatedLoyaltyRoute
@@ -1182,6 +1202,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCustomersRoute: AuthenticatedCustomersRoute,
   AuthenticatedDocsRoute: AuthenticatedDocsRoute,
   AuthenticatedEmployeesRoute: AuthenticatedEmployeesRoute,
+  AuthenticatedGiftCardsRoute: AuthenticatedGiftCardsRoute,
   AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
   AuthenticatedInvoicesRoute: AuthenticatedInvoicesRoute,
   AuthenticatedLoyaltyRoute: AuthenticatedLoyaltyRoute,
