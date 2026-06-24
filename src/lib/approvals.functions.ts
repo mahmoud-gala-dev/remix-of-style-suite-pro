@@ -58,7 +58,7 @@ export const createApproval = createServerFn({ method: "POST" })
         amount: data.amount ?? null,
         currency: data.currency ?? null,
         reference_id: data.referenceId ?? null,
-        payload: data.payload ?? {},
+        payload: (data.payload ?? {}) as never,
       })
       .select("id")
       .single();

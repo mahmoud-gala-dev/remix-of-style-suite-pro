@@ -75,7 +75,7 @@ export const Route = createFileRoute("/api/public/cron/warehouse-export")({
         }
 
         for (const row of records) {
-          logger.info({ event: "warehouse.fact", ...row });
+          logger.info("warehouse.fact", row);
         }
 
         return Response.json({ ok: true, exported: records.length, period: { start, end } });

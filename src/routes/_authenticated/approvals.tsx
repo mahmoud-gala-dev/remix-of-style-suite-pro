@@ -32,8 +32,7 @@ function Page() {
   const t = useT();
   const lang = useI18n((s) => s.lang);
   const branch = useCurrentBranch();
-  const role = useRole();
-  const isAdmin = role === "admin" || role === "super_admin";
+  const { isAdmin } = useRole();
   const [status, setStatus] = useState<(typeof STATUSES)[number]>("pending");
   const fetchList = useServerFn(listApprovals);
   const resolveFn = useServerFn(resolveApproval);
