@@ -67,9 +67,9 @@ function Page() {
             />
           </div>
           <DataState
-            isLoading={customersQ.isLoading}
-            isError={customersQ.isError}
-            isEmpty={!filtered.length}
+            loading={customersQ.isLoading}
+            error={customersQ.error}
+            empty={!filtered.length}
           >
             <ul className="max-h-[70vh] overflow-y-auto divide-y">
               {filtered.map((c) => (
@@ -96,9 +96,9 @@ function Page() {
             </div>
           ) : (
             <DataState
-              isLoading={timelineQ.isLoading}
-              isError={timelineQ.isError}
-              isEmpty={!timelineQ.data?.events.length}
+              loading={timelineQ.isLoading}
+              error={timelineQ.error}
+              empty={!timelineQ.data?.events.length}
             >
               {timelineQ.data && (
                 <div className="space-y-4">
