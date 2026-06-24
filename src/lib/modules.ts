@@ -22,6 +22,7 @@ import {
   Gift,
   Share2,
   Activity,
+  Camera,
 } from "lucide-react";
 import type { DictKey } from "@/lib/i18n";
 
@@ -58,6 +59,7 @@ export const MODULES: ModuleItem[] = [
   { id: "gift_cards", to: "/gift-cards", icon: Gift, label: "gift_cards", group: "finance" },
   { id: "packages", to: "/packages", icon: Package, label: "packages", group: "finance" },
   { id: "referrals", to: "/referrals", icon: Share2, label: "referrals", group: "finance" },
+  { id: "gallery", to: "/gallery", icon: Camera, label: "gallery", group: "management" },
 ];
 
 export const MODULE_GROUPS: DictKey[] = ["operations", "management", "finance"];
