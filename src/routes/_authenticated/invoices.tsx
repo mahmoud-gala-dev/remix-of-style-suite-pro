@@ -4,7 +4,7 @@ import { AppShell } from "@/components/shell/app-shell";
 import { PageHeader, Surface } from "@/components/shell/page";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Plus, Printer, CheckCircle2 } from "lucide-react";
 import { useCurrentBranch, useData } from "@/lib/store";
 import { useT } from "@/lib/i18n";
