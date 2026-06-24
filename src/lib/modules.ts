@@ -24,7 +24,7 @@ import {
   Activity,
   Camera,
   Truck,
-  Wallet as WalletIcon,
+  Coins,
 } from "lucide-react";
 import type { DictKey } from "@/lib/i18n";
 
@@ -63,7 +63,7 @@ export const MODULES: ModuleItem[] = [
   { id: "referrals", to: "/referrals", icon: Share2, label: "referrals", group: "finance" },
   { id: "gallery", to: "/gallery", icon: Camera, label: "gallery", group: "management" },
   { id: "purchasing", to: "/purchasing", icon: Truck, label: "purchasing", group: "management" },
-  { id: "expenses", to: "/expenses", icon: WalletIcon, label: "expenses", group: "finance" },
+  { id: "expenses", to: "/expenses", icon: Coins, label: "expenses", group: "finance" },
 ];
 
 export const MODULE_GROUPS: DictKey[] = ["operations", "management", "finance"];
