@@ -29,6 +29,8 @@ import {
   Wand2,
   TrendingUp,
   Calculator,
+  ShieldCheck,
+  PieChart,
 } from "lucide-react";
 import type { DictKey } from "@/lib/i18n";
 
@@ -55,6 +57,8 @@ export const MODULES: ModuleItem[] = [
   { id: "reports", to: "/reports", icon: BarChart3, label: "reports", group: "management" },
   { id: "bi", to: "/bi", icon: TrendingUp, label: "bi", group: "management" },
   { id: "accounting", to: "/accounting", icon: Calculator, label: "accounting", group: "finance" },
+  { id: "approvals", to: "/approvals", icon: ShieldCheck, label: "approvals_title", group: "management" },
+  { id: "cost-allocation", to: "/cost-allocation", icon: PieChart, label: "cost_alloc_title", group: "management" },
   { id: "docs", to: "/docs", icon: BookOpen, label: "docs", group: "management" },
   { id: "settings", to: "/settings", icon: Settings, label: "settings", group: "management" },
   { id: "invoices", to: "/invoices", icon: Receipt, label: "invoices", group: "finance" },
