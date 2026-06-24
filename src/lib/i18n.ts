@@ -31,6 +31,7 @@ export const dict = {
   campaigns: { en: "Campaigns", ar: "الحملات" },
   gift_cards: { en: "Gift Cards", ar: "بطاقات الهدايا" },
   packages: { en: "Packages", ar: "الباقات" },
+  referrals: { en: "Referrals", ar: "الإحالات" },
   docs: { en: "Documentation", ar: "التوثيق" },
   // generic
   search: { en: "Search", ar: "بحث" },
