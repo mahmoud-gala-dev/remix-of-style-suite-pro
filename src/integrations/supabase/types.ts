@@ -668,6 +668,63 @@ export type Database = {
           },
         ]
       }
+      customer_photos: {
+        Row: {
+          booking_id: string | null
+          branch_id: string | null
+          caption: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string
+          id: string
+          kind: string
+          storage_path: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          booking_id?: string | null
+          branch_id?: string | null
+          caption?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id: string
+          id?: string
+          kind?: string
+          storage_path: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string | null
+          branch_id?: string | null
+          caption?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string
+          id?: string
+          kind?: string
+          storage_path?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_photos_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_photos_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customers: {
         Row: {
           auth_user_id: string | null
@@ -1951,6 +2008,69 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_photos: {
+        Row: {
+          branch_id: string | null
+          caption: string | null
+          created_at: string
+          created_by: string | null
+          employee_id: string | null
+          id: string
+          is_public: boolean
+          kind: string
+          service_id: string | null
+          sort_order: number
+          storage_path: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          branch_id?: string | null
+          caption?: string | null
+          created_at?: string
+          created_by?: string | null
+          employee_id?: string | null
+          id?: string
+          is_public?: boolean
+          kind?: string
+          service_id?: string | null
+          sort_order?: number
+          storage_path: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string | null
+          caption?: string | null
+          created_at?: string
+          created_by?: string | null
+          employee_id?: string | null
+          id?: string
+          is_public?: boolean
+          kind?: string
+          service_id?: string | null
+          sort_order?: number
+          storage_path?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_photos_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_photos_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
             referencedColumns: ["id"]
           },
         ]
