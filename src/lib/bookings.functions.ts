@@ -249,3 +249,38 @@ export const createBooking = createServerFn({ method: "POST" })
     } catch { /* invalidation is best-effort */ }
     return { ok: true as const, id: row.id, manageToken: row.manage_token as string };
   });
+// Manual WhatsApp send for a single booking — admin-triggered from the
+// bookings list. No-ops cleanly if Twilio is disabled in Settings.
+export const sendBookingWhatsapp = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) =>
+    z.object({
+      bookingId: z.string().uuid(),
+      kind: z.enum(["confirm", "reminder"]).default("confirm"),
+    }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    await requireAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: b, error } = await supabaseAdmin
+      .from("bookings")
+      .select("id, start_at, manage_token, customers(name, phone)")
+      .eq("id", data.bookingId)
+      .single();
+    if (error || !b) throw new Error("Booking not found");
+    const cust = b.customers as { name: string | null; phone: string | null } | null;
+    if (!cust?.phone) throw new Error("Customer has no phone number");
+    const { sendWhatsappInternal } = await import("./twilio.functions");
+    const when = new Date(b.start_at as string).toLocaleString();
+    const manage = b.manage_token ? `/my/${b.manage_token}` : "";
+    const body = data.kind === "reminder"
+      ? `Reminder: ${cust.name ?? ""}, your booking is on ${when}.${manage ? ` Manage: ${manage}` : ""}`
+      : `${cust.name ?? ""}, your booking is confirmed for ${when}.${manage ? ` Manage: ${manage}` : ""}`;
+    const r = await sendWhatsappInternal(cust.phone, body);
+    if (!r.sent) {
+      if (r.reason === "disabled") throw new Error("WhatsApp is disabled in Settings → Twilio");
+      if (r.reason === "not_configured") throw new Error("Twilio is not fully configured");
+      throw new Error(r.reason);
+    }
+    return { ok: true as const, sid: r.sid };
+  });
