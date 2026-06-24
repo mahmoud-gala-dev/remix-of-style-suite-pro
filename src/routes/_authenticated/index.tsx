@@ -30,9 +30,9 @@ function DashboardBody() {
   const t = useT();
   const lang = useI18n((s) => s.lang);
   const branch = useCurrentBranch();
-  const bookings = useData((s) => s.bookings).filter((b) => b.branchId === branch.id);
-  const queue = useData((s) => s.queue).filter((q) => q.branchId === branch.id);
-  const employees = useData((s) => s.employees).filter((e) => e.branchId === branch.id);
+  const bookings = useData((s) => s.bookings).filter((b) => b.branchId === branch?.id);
+  const queue = useData((s) => s.queue).filter((q) => q.branchId === branch?.id);
+  const employees = useData((s) => s.employees).filter((e) => e.branchId === branch?.id);
   const services = useData((s) => s.services);
   const customers = useData((s) => s.customers);
 
@@ -53,7 +53,7 @@ function DashboardBody() {
     for (let i = days - 1; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const seed = (d.getDate() * 37 + d.getMonth() * 11 + branch.id.length) % 100;
+      const seed = (d.getDate() * 37 + d.getMonth() * 11 + (branch?.id.length ?? 0)) % 100;
       out.push({
         day: d.toLocaleDateString([], { month: "short", day: "numeric" }),
         revenue: 800 + seed * 35,
@@ -61,7 +61,7 @@ function DashboardBody() {
     }
     out[out.length - 1].revenue = Math.max(out[out.length - 1].revenue, revenueToday);
     return out;
-  }, [branch.id, revenueToday]);
+  }, [branch?.id, revenueToday]);
 
   const topEmployees = useMemo(() => {
     const map = new Map<string, number>();
@@ -97,14 +97,14 @@ function DashboardBody() {
       <div>
         <h1 className="font-display text-3xl uppercase tracking-tight">{t("dashboard")}</h1>
         <p className="text-xs text-dim mt-1">
-          {lang === "ar" ? branch.nameAr : branch.nameEn} · {new Date().toLocaleDateString([], { dateStyle: "full" })}
+          {branch ? (lang === "ar" ? branch.nameAr : branch.nameEn) : "—"} · {new Date().toLocaleDateString([], { dateStyle: "full" })}
         </p>
       </div>
 
       <DashboardKPIs
         revenueToday={revenueToday}
         todayCount={todayBookings.length}
-        slotsLeft={Math.max(0, branch.chairs * 8 - todayBookings.length)}
+        slotsLeft={Math.max(0, (branch?.chairs ?? 0) * 8 - todayBookings.length)}
         inQueue={inQueue}
         avgWait={avgWait}
       />
