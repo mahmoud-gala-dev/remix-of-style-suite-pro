@@ -41,6 +41,7 @@ function Page() {
   const q = useQuery({
     queryKey: ["campaigns", branch.id],
     queryFn: () => list({ data: { branchId: branch.id } }),
+    enabled: !!branch.id,
   });
 
   const [name, setName] = useState("");
