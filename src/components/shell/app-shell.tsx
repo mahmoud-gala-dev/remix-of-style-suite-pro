@@ -13,6 +13,7 @@ import { useGlobalShortcuts } from "@/hooks/use-shortcuts";
 import { ShortcutsHelp } from "@/components/shell/shortcuts-help";
 import { OfflineBanner } from "@/components/shell/offline-banner";
 import { AppContextMenu } from "@/components/shell/app-context-menu";
+import { ProductTour } from "@/components/product-tour";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const lang = useI18n((s) => s.lang);
@@ -60,6 +61,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <PwaInstall />
         <BottomNav />
         <ShortcutsHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
+        <ProductTour />
       </div>
       </AppContextMenu>
     );
@@ -87,6 +89,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <PwaInstall />
       <BottomNav />
       <ShortcutsHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
+      <ProductTour />
     </div>
     </AppContextMenu>
   );
