@@ -582,7 +582,6 @@ export const dict = {
   api_docs_hint: { en: "OpenAPI spec:", ar: "وثائق OpenAPI:" },
   revoke: { en: "Revoke", ar: "إلغاء" },
   revoked: { en: "Revoked", ar: "ملغى" },
-  dismiss: { en: "Dismiss", ar: "إغلاق" },
 } satisfies Dict;
 
 export type DictKey = keyof typeof dict;
